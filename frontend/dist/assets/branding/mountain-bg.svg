@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="none" fill="none">
+  <!-- Subtle background gradients & mountain contours for light theme -->
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F1F5F9" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="mtnGrad1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E2E8F0" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#CBD5E1" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="mtnGrad2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#93C5FD" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#BFDBFE" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#DBEAFE" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="infraLineGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0.03"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Base soft sky -->
+  <rect width="1600" height="900" fill="url(#skyGrad)"/>
+
+  <!-- Distant Himalayan Peaks Silhouette Layer 1 -->
+  <path d="M0 450 L120 380 L280 440 L450 320 L620 420 L780 340 L950 410 L1150 290 L1340 390 L1480 330 L1600 370 L1600 900 L0 900 Z" fill="url(#mtnGrad1)"/>
+
+  <!-- Midground Mountain Silhouette Layer 2 -->
+  <path d="M0 520 L180 440 L350 510 L520 410 L700 490 L890 390 L1080 480 L1260 400 L1420 470 L1600 430 L1600 900 L0 900 Z" fill="url(#mtnGrad2)"/>
+
+  <!-- Subtle Contour & Topographic Lines -->
+  <g stroke="#94A3B8" stroke-opacity="0.12" stroke-width="1.2" fill="none">
+    <path d="M0 600 Q 400 520, 800 600 T 1600 580"/>
+    <path d="M0 650 Q 500 590, 1000 660 T 1600 630"/>
+    <path d="M0 720 Q 300 680, 850 730 T 1600 700"/>
+    <path d="M0 800 Q 600 740, 1200 810 T 1600 770"/>
+  </g>
+
+  <!-- Subtle Geometric Grid / Cadastral Coordinate Hashmarks in corner -->
+  <g stroke="url(#infraLineGrad)" stroke-width="1" stroke-dasharray="4 8">
+    <line x1="0" y1="200" x2="1600" y2="200"/>
+    <line x1="0" y1="400" x2="1600" y2="400"/>
+    <line x1="0" y1="600" x2="1600" y2="600"/>
+    <line x1="300" y1="0" x2="300" y2="900"/>
+    <line x1="600" y1="0" x2="600" y2="900"/>
+    <line x1="900" y1="0" x2="900" y2="900"/>
+    <line x1="1200" y1="0" x2="1200" y2="900"/>
+  </g>
+</svg>

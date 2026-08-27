@@ -1,0 +1,527 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum StateType {
+  STATE
+  UNION_TERRITORY
+}
+
+enum DataSource {
+  OFFICIAL
+  IMPORTED
+  USER_ENTERED
+  DEMO
+}
+
+enum GeometryMatchStatus {
+  AUTO_MATCHED
+  REVIEW_REQUIRED
+  VERIFIED
+  REJECTED
+}
+
+enum ProjectType {
+  HIGHWAY
+  RAILWAY
+  IRRIGATION
+  INDUSTRIAL_CORRIDOR
+  URBAN_DEVELOPMENT
+  RENEWABLE_ENERGY
+  DEFENCE
+  AIRPORT
+  PORT
+  OTHER
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+  ON_HOLD
+}
+
+enum AcquisitionStage {
+  INITIATED
+  SURVEY
+  NOTIFICATION
+  OBJECTION
+  VALUATION
+  AWARD
+  COMPENSATION
+  POSSESSION
+  COMPLETED
+  REJECTED
+  ON_HOLD
+  CANCELLED
+}
+
+enum LandUseType {
+  AGRICULTURAL
+  RESIDENTIAL
+  COMMERCIAL
+  FOREST
+  GOVERNMENT
+  INDUSTRIAL
+  OTHER
+}
+
+enum ParcelAcquisitionStatus {
+  PROPOSED
+  SURVEYED
+  NOTIFIED
+  VALUED
+  AWARDED
+  ACQUIRED
+  DISPUTED
+}
+
+enum PaymentStatus {
+  PENDING
+  ASSESSED
+  APPROVED
+  PARTIALLY_PAID
+  PAID
+  ON_HOLD
+}
+
+enum RRStatus {
+  PENDING
+  IDENTIFIED
+  RESETTLED
+  REHABILITATED
+}
+
+enum DocumentCategory {
+  PROPOSAL
+  SURVEY_REPORT
+  NOTIFICATION_3A
+  NOTIFICATION_3D
+  NOTIFICATION_3G
+  OBJECTION_RECORD
+  VALUATION_SHEET
+  AWARD_ORDER
+  COMPENSATION_RECEIPT
+  POSSESSION_CERTIFICATE
+  RR_PLAN
+  OTHER
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  RETURNED
+}
+
+enum UserRoleCode {
+  CENTRAL_ADMIN
+  CENTRAL_OFFICER
+  STATE_ADMIN
+  STATE_OFFICER
+  DISTRICT_ADMIN
+  DISTRICT_OFFICER
+  PROJECT_AGENCY
+  LAND_ACQUISITION_OFFICER
+  FIELD_OFFICER
+}
+
+model State {
+  id                String            @id @default(uuid())
+  lgd_code          Int               @unique
+  name              String            @unique
+  short_name        String?
+  local_name        String?
+  census2011_code   String?
+  type              StateType         @default(STATE)
+  capital           String?
+  is_active         Boolean           @default(true)
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+
+  districts         District[]
+  state_geometries  StateGeometry[]
+  project_districts ProjectDistrict[]
+  acquisition_cases AcquisitionCase[]
+  users             User[]
+
+  @@map("states")
+  @@index([lgd_code])
+  @@index([name])
+}
+
+model District {
+  id                  String             @id @default(uuid())
+  lgd_code            Int                @unique
+  state_id            String
+  name                String
+  local_name          String?
+  census2011_code     String?
+  is_active           Boolean            @default(true)
+  created_at          DateTime           @default(now())
+  updated_at          DateTime           @updatedAt
+
+  state               State              @relation(fields: [state_id], references: [id], onDelete: Cascade)
+  district_geometries DistrictGeometry[]
+  project_districts   ProjectDistrict[]
+  acquisition_cases   AcquisitionCase[]
+  parcels             Parcel[]
+  affected_families   AffectedFamily[]
+  users               User[]
+
+  @@map("districts")
+  @@index([lgd_code])
+  @@index([state_id])
+  @@index([name])
+}
+
+model StateGeometry {
+  id           String              @id @default(uuid())
+  state_id     String
+  geojson      String
+  source       String              @default("SOI")
+  version      String              @default("1.0")
+  match_status GeometryMatchStatus @default(VERIFIED)
+  confidence   Float               @default(1.0)
+  created_at   DateTime            @default(now())
+  updated_at   DateTime            @updatedAt
+
+  state        State               @relation(fields: [state_id], references: [id], onDelete: Cascade)
+
+  @@map("state_geometries")
+  @@index([state_id])
+}
+
+model DistrictGeometry {
+  id           String              @id @default(uuid())
+  district_id  String
+  geojson      String
+  source       String              @default("SOI")
+  version      String              @default("1.0")
+  match_status GeometryMatchStatus @default(AUTO_MATCHED)
+  confidence   Float               @default(1.0)
+  created_at   DateTime            @default(now())
+  updated_at   DateTime            @updatedAt
+
+  district     District            @relation(fields: [district_id], references: [id], onDelete: Cascade)
+
+  @@map("district_geometries")
+  @@index([district_id])
+}
+
+model Project {
+  id                    String            @id @default(uuid())
+  project_code          String            @unique
+  name                  String
+  description           String?
+  project_type          ProjectType       @default(HIGHWAY)
+  implementing_agency   String
+  ministry              String
+  status                ProjectStatus     @default(IN_PROGRESS)
+  total_land_required   Float             @default(0.0)
+  total_land_acquired   Float             @default(0.0)
+  estimated_cost        Float             @default(0.0)
+  start_date            DateTime?
+  target_completion_date DateTime?
+  data_source           DataSource        @default(DEMO)
+  created_by            String?
+  created_at            DateTime          @default(now())
+  updated_at            DateTime          @updatedAt
+
+  project_districts     ProjectDistrict[]
+  acquisition_cases     AcquisitionCase[]
+  parcels               Parcel[]
+  affected_families     AffectedFamily[]
+  documents             Document[]
+
+  @@map("projects")
+  @@index([project_code])
+  @@index([status])
+  @@index([project_type])
+  @@index([ministry])
+}
+
+model ProjectDistrict {
+  id            String    @id @default(uuid())
+  project_id    String
+  district_id   String
+  state_id      String
+  land_required Float     @default(0.0)
+  land_acquired Float     @default(0.0)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  project       Project   @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  district      District  @relation(fields: [district_id], references: [id], onDelete: Cascade)
+  state         State     @relation(fields: [state_id], references: [id], onDelete: Cascade)
+
+  @@map("project_districts")
+  @@unique([project_id, district_id])
+  @@index([project_id])
+  @@index([district_id])
+  @@index([state_id])
+}
+
+model AcquisitionCase {
+  id                String                          @id @default(uuid())
+  case_number       String                          @unique
+  project_id        String
+  district_id       String
+  state_id          String
+  current_status    AcquisitionStage                @default(INITIATED)
+  land_required     Float                           @default(0.0)
+  land_acquired     Float                           @default(0.0)
+  notification_date DateTime?
+  award_date        DateTime?
+  possession_date   DateTime?
+  data_source       DataSource                      @default(DEMO)
+  created_by        String?
+  created_at        DateTime                        @default(now())
+  updated_at        DateTime                        @updatedAt
+
+  project           Project                         @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  district          District                        @relation(fields: [district_id], references: [id], onDelete: Cascade)
+  state             State                           @relation(fields: [state_id], references: [id], onDelete: Cascade)
+  status_history    AcquisitionCaseStatusHistory[]
+  parcels           Parcel[]
+  affected_families AffectedFamily[]
+  compensation_records CompensationRecord[]
+  rr_records        RRRecord[]
+  documents         Document[]
+
+  @@map("acquisition_cases")
+  @@index([case_number])
+  @@index([project_id])
+  @@index([district_id])
+  @@index([state_id])
+  @@index([current_status])
+}
+
+model AcquisitionCaseStatusHistory {
+  id          String           @id @default(uuid())
+  case_id     String
+  old_status  AcquisitionStage?
+  new_status  AcquisitionStage
+  changed_by  String
+  remarks     String?
+  changed_at  DateTime         @default(now())
+
+  case        AcquisitionCase  @relation(fields: [case_id], references: [id], onDelete: Cascade)
+
+  @@map("acquisition_case_status_history")
+  @@index([case_id])
+}
+
+model Parcel {
+  id                 String                  @id @default(uuid())
+  parcel_number      String                  @unique
+  district_id        String
+  project_id         String?
+  case_id            String?
+  village            String
+  khasra_number      String?
+  area_hectares      Float                   @default(0.0)
+  land_use           LandUseType             @default(AGRICULTURAL)
+  acquisition_status ParcelAcquisitionStatus @default(PROPOSED)
+  geojson            String?
+  data_source        DataSource              @default(DEMO)
+  created_at         DateTime                @default(now())
+  updated_at         DateTime                @updatedAt
+
+  district           District                @relation(fields: [district_id], references: [id], onDelete: Cascade)
+  project            Project?                @relation(fields: [project_id], references: [id], onDelete: SetNull)
+  case               AcquisitionCase?        @relation(fields: [case_id], references: [id], onDelete: SetNull)
+  compensation_records CompensationRecord[]
+
+  @@map("parcels")
+  @@index([parcel_number])
+  @@index([district_id])
+  @@index([project_id])
+  @@index([case_id])
+  @@index([acquisition_status])
+}
+
+model AffectedFamily {
+  id                     String           @id @default(uuid())
+  case_id                String
+  project_id             String
+  district_id            String
+  family_reference       String           @unique
+  head_of_family         String
+  members_count          Int              @default(1)
+  vulnerability_category String?
+  affected_status        String           @default("TITLE_HOLDER")
+  eligibility_status     String           @default("ELIGIBLE")
+  rr_status              RRStatus         @default(PENDING)
+  data_source            DataSource       @default(DEMO)
+  created_at             DateTime         @default(now())
+  updated_at             DateTime         @updatedAt
+
+  case                   AcquisitionCase  @relation(fields: [case_id], references: [id], onDelete: Cascade)
+  project                Project          @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  district               District         @relation(fields: [district_id], references: [id], onDelete: Cascade)
+  rr_records             RRRecord[]
+
+  @@map("affected_families")
+  @@index([case_id])
+  @@index([project_id])
+  @@index([district_id])
+  @@index([rr_status])
+}
+
+model CompensationRecord {
+  id                    String         @id @default(uuid())
+  case_id               String
+  parcel_id             String?
+  beneficiary_reference String
+  beneficiary_name      String
+  assessed_amount       Float          @default(0.0)
+  approved_amount       Float          @default(0.0)
+  paid_amount           Float          @default(0.0)
+  payment_status        PaymentStatus  @default(PENDING)
+  payment_date          DateTime?
+  transaction_ref       String?
+  data_source           DataSource     @default(DEMO)
+  created_at            DateTime       @default(now())
+  updated_at            DateTime       @updatedAt
+
+  case                  AcquisitionCase @relation(fields: [case_id], references: [id], onDelete: Cascade)
+  parcel                Parcel?         @relation(fields: [parcel_id], references: [id], onDelete: SetNull)
+
+  @@map("compensation_records")
+  @@index([case_id])
+  @@index([payment_status])
+}
+
+model RRRecord {
+  id                    String          @id @default(uuid())
+  case_id               String
+  affected_family_id    String
+  eligibility_status    String          @default("ELIGIBLE")
+  entitlement_package   String?
+  rehabilitation_status String          @default("IN_PROGRESS")
+  resettlement_status   String          @default("IN_PROGRESS")
+  completion_date       DateTime?
+  remarks               String?
+  data_source           DataSource      @default(DEMO)
+  created_at            DateTime        @default(now())
+  updated_at            DateTime        @updatedAt
+
+  case                  AcquisitionCase @relation(fields: [case_id], references: [id], onDelete: Cascade)
+  affected_family       AffectedFamily  @relation(fields: [affected_family_id], references: [id], onDelete: Cascade)
+
+  @@map("rr_records")
+  @@index([case_id])
+  @@index([affected_family_id])
+}
+
+model Document {
+  id            String           @id @default(uuid())
+  project_id    String?
+  case_id       String?
+  document_type DocumentCategory @default(OTHER)
+  title         String
+  file_name     String
+  file_path     String
+  file_size     Int              @default(0)
+  mime_type     String           @default("application/pdf")
+  version       String           @default("1.0")
+  uploaded_by   String           @default("Officer")
+  data_source   DataSource       @default(DEMO)
+  created_at    DateTime         @default(now())
+
+  project       Project?         @relation(fields: [project_id], references: [id], onDelete: SetNull)
+  case          AcquisitionCase? @relation(fields: [case_id], references: [id], onDelete: SetNull)
+
+  @@map("documents")
+  @@index([project_id])
+  @@index([case_id])
+  @@index([document_type])
+}
+
+model Approval {
+  id            String         @id @default(uuid())
+  entity_type   String
+  entity_id     String
+  approval_type String
+  requested_by  String
+  assigned_to   String
+  status        ApprovalStatus @default(PENDING)
+  remarks       String?
+  approved_at   DateTime?
+  created_at    DateTime       @default(now())
+
+  @@map("approvals")
+  @@index([entity_type, entity_id])
+  @@index([assigned_to])
+  @@index([status])
+}
+
+model Notification {
+  id             String    @id @default(uuid())
+  user_id        String?
+  type           String
+  title          String
+  message        String
+  reference_type String?
+  reference_id   String?
+  is_read        Boolean   @default(false)
+  created_at     DateTime  @default(now())
+
+  user           User?     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+  @@index([user_id])
+  @@index([is_read])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  user_id     String?
+  user_email  String?
+  action      String
+  entity_type String
+  entity_id   String?
+  old_value   String?
+  new_value   String?
+  ip_address  String?
+  created_at  DateTime @default(now())
+
+  user        User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+  @@index([user_id])
+  @@index([entity_type])
+  @@index([created_at])
+}
+
+model User {
+  id            String         @id @default(uuid())
+  employee_id   String         @unique
+  name          String
+  email         String         @unique
+  password_hash String
+  role          UserRoleCode   @default(CENTRAL_ADMIN)
+  designation   String         @default("Officer")
+  ministry      String         @default("Ministry of Rural Development")
+  state_id      String?
+  district_id   String?
+  is_active     Boolean        @default(true)
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+
+  state         State?         @relation(fields: [state_id], references: [id], onDelete: SetNull)
+  district      District?      @relation(fields: [district_id], references: [id], onDelete: SetNull)
+  notifications Notification[]
+  audit_logs    AuditLog[]
+
+  @@map("users")
+  @@index([employee_id])
+  @@index([email])
+  @@index([role])
+}
