@@ -142,17 +142,27 @@ const STATE_CAPITALS: Record<string, string> = {
 };
 
 export function loadMasterGeographicData() {
-  // Resolve to project root (2SIH/) from backend/src/scripts/import-data/
-  const rootDir = path.resolve(__dirname, '../../../../scripts');
-  const statesPath = path.join(rootDir, 'data/raw/lgd_states.csv');
-  const districtsPath = path.join(rootDir, 'data/raw/lgd_districts.csv');
-  const autoMatchPath = path.join(rootDir, 'data/processed/district_geometry_auto_matches.csv');
-  const reviewMatchPath = path.join(rootDir, 'data/processed/district_geometry_review_prioritized.csv');
+  const candidateDirs = [
+    path.resolve(__dirname, '../../../data'),
+    path.resolve(__dirname, '../../data'),
+    path.resolve(__dirname, '../../../../data'),
+    path.resolve(process.cwd(), 'data'),
+    path.resolve(process.cwd(), 'backend/data'),
+    path.resolve(process.cwd(), '../data')
+  ];
 
-  const statesContent = fs.readFileSync(statesPath, 'utf8');
+  let dataDir = candidateDirs.find(dir => fs.existsSync(path.join(dir, 'raw/lgd_states.csv'))) || path.resolve(process.cwd(), 'data');
+
+  const statesPath = path.join(dataDir, 'raw/lgd_states.csv');
+  const districtsPath = path.join(dataDir, 'raw/lgd_districts.csv');
+  const autoMatchPath = path.join(dataDir, 'processed/district_geometry_auto_matches.csv');
+  const reviewMatchPath = path.join(dataDir, 'processed/district_geometry_review_prioritized.csv');
+
+  console.log(`[LGD] Loading geographic datasets from: ${dataDir}`);
+  const statesContent = fs.existsSync(statesPath) ? fs.readFileSync(statesPath, 'utf8') : '';
   const rawStates = parseCsv(statesContent);
 
-  const districtsContent = fs.readFileSync(districtsPath, 'utf8');
+  const districtsContent = fs.existsSync(districtsPath) ? fs.readFileSync(districtsPath, 'utf8') : '';
   const rawDistricts = parseCsv(districtsContent);
 
   const autoMatches = fs.existsSync(autoMatchPath) ? parseCsv(fs.readFileSync(autoMatchPath, 'utf8')) : [];

@@ -119,15 +119,23 @@ const STATE_CAPITALS = {
     'Lakshadweep': 'Kavaratti'
 };
 function loadMasterGeographicData() {
-    // Resolve to project root (2SIH/) from backend/src/scripts/import-data/
-    const rootDir = path_1.default.resolve(__dirname, '../../../../scripts');
-    const statesPath = path_1.default.join(rootDir, 'data/raw/lgd_states.csv');
-    const districtsPath = path_1.default.join(rootDir, 'data/raw/lgd_districts.csv');
-    const autoMatchPath = path_1.default.join(rootDir, 'data/processed/district_geometry_auto_matches.csv');
-    const reviewMatchPath = path_1.default.join(rootDir, 'data/processed/district_geometry_review_prioritized.csv');
-    const statesContent = fs_1.default.readFileSync(statesPath, 'utf8');
+    const candidateDirs = [
+        path_1.default.resolve(__dirname, '../../../data'),
+        path_1.default.resolve(__dirname, '../../data'),
+        path_1.default.resolve(__dirname, '../../../../data'),
+        path_1.default.resolve(process.cwd(), 'data'),
+        path_1.default.resolve(process.cwd(), 'backend/data'),
+        path_1.default.resolve(process.cwd(), '../data')
+    ];
+    let dataDir = candidateDirs.find(dir => fs_1.default.existsSync(path_1.default.join(dir, 'raw/lgd_states.csv'))) || path_1.default.resolve(process.cwd(), 'data');
+    const statesPath = path_1.default.join(dataDir, 'raw/lgd_states.csv');
+    const districtsPath = path_1.default.join(dataDir, 'raw/lgd_districts.csv');
+    const autoMatchPath = path_1.default.join(dataDir, 'processed/district_geometry_auto_matches.csv');
+    const reviewMatchPath = path_1.default.join(dataDir, 'processed/district_geometry_review_prioritized.csv');
+    console.log(`[LGD] Loading geographic datasets from: ${dataDir}`);
+    const statesContent = fs_1.default.existsSync(statesPath) ? fs_1.default.readFileSync(statesPath, 'utf8') : '';
     const rawStates = parseCsv(statesContent);
-    const districtsContent = fs_1.default.readFileSync(districtsPath, 'utf8');
+    const districtsContent = fs_1.default.existsSync(districtsPath) ? fs_1.default.readFileSync(districtsPath, 'utf8') : '';
     const rawDistricts = parseCsv(districtsContent);
     const autoMatches = fs_1.default.existsSync(autoMatchPath) ? parseCsv(fs_1.default.readFileSync(autoMatchPath, 'utf8')) : [];
     const reviewMatches = fs_1.default.existsSync(reviewMatchPath) ? parseCsv(fs_1.default.readFileSync(reviewMatchPath, 'utf8')) : [];

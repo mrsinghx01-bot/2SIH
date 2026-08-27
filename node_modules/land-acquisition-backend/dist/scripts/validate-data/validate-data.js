@@ -46,11 +46,19 @@ function runDataValidation() {
     console.log('========================================================');
     console.log('NATIONAL LAND ACQUISITION & MANAGEMENT SYSTEM - DATA VALIDATION');
     console.log('========================================================\n');
-    const rootDir = path_1.default.resolve(__dirname, '../../');
-    const statesPath = path_1.default.join(rootDir, 'data/raw/lgd_states.csv');
-    const districtsPath = path_1.default.join(rootDir, 'data/raw/lgd_districts.csv');
-    const autoMatchPath = path_1.default.join(rootDir, 'data/processed/district_geometry_auto_matches.csv');
-    const reviewMatchPath = path_1.default.join(rootDir, 'data/processed/district_geometry_review_prioritized.csv');
+    const candidateDirs = [
+        path_1.default.resolve(__dirname, '../../../data'),
+        path_1.default.resolve(__dirname, '../../data'),
+        path_1.default.resolve(__dirname, '../../../../data'),
+        path_1.default.resolve(process.cwd(), 'data'),
+        path_1.default.resolve(process.cwd(), 'backend/data'),
+        path_1.default.resolve(process.cwd(), '../data')
+    ];
+    const dataDir = candidateDirs.find(dir => fs_1.default.existsSync(path_1.default.join(dir, 'raw/lgd_states.csv'))) || path_1.default.resolve(process.cwd(), 'data');
+    const statesPath = path_1.default.join(dataDir, 'raw/lgd_states.csv');
+    const districtsPath = path_1.default.join(dataDir, 'raw/lgd_districts.csv');
+    const autoMatchPath = path_1.default.join(dataDir, 'processed/district_geometry_auto_matches.csv');
+    const reviewMatchPath = path_1.default.join(dataDir, 'processed/district_geometry_review_prioritized.csv');
     let errors = 0;
     let warnings = 0;
     // 1. Validate States
