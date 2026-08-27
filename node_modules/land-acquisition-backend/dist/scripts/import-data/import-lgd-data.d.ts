@@ -8,6 +8,7 @@ export interface StateRecord {
     type: 'STATE' | 'UNION_TERRITORY';
     capital: string;
     isActive: boolean;
+    areaKm2?: number;
 }
 export interface DistrictRecord {
     id: string;

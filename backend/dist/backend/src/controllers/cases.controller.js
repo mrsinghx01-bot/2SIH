@@ -6,11 +6,19 @@ exports.updateCaseStage = updateCaseStage;
 const database_1 = require("../config/database");
 async function getAllCases(req, res) {
     const store = (0, database_1.getDatabaseStore)();
+    const user = req.user;
     const projectId = req.query.projectId;
-    const stateId = req.query.stateId;
-    const districtId = req.query.districtId;
+    let stateId = req.query.stateId;
+    let districtId = req.query.districtId;
     const status = req.query.status;
     const searchQuery = (req.query.search || '').toLowerCase().trim();
+    // Enforce role-based geographic scope
+    if (user && user.role !== 'CENTRAL_ADMIN' && user.role !== 'CENTRAL_OFFICER') {
+        if (user.stateId)
+            stateId = user.stateId;
+        if (user.districtId)
+            districtId = user.districtId;
+    }
     let results = store.acquisitionCases;
     if (projectId) {
         results = results.filter(c => c.projectId === projectId);
@@ -49,6 +57,7 @@ async function getAllCases(req, res) {
 async function getCaseById(req, res) {
     const { id } = req.params;
     const store = (0, database_1.getDatabaseStore)();
+    const user = req.user;
     const acquisitionCase = store.acquisitionCases.find(c => c.id === id || c.caseNumber === id);
     if (!acquisitionCase) {
         res.status(404).json({
@@ -57,6 +66,17 @@ async function getCaseById(req, res) {
             message: `Acquisition case with identifier ${id} not found.`
         });
         return;
+    }
+    // Enforce role-based geographic scope
+    if (user && user.role !== 'CENTRAL_ADMIN' && user.role !== 'CENTRAL_OFFICER') {
+        if (user.stateId && acquisitionCase.stateId !== user.stateId) {
+            res.status(403).json({
+                success: false,
+                data: null,
+                message: 'Access denied: Case is outside your assigned State jurisdiction.'
+            });
+            return;
+        }
     }
     const project = store.projects.find(p => p.id === acquisitionCase.projectId);
     const state = store.states.find(s => s.id === acquisitionCase.stateId);

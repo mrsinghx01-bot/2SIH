@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDatabaseStore = getDatabaseStore;
 exports.getPrismaClient = getPrismaClient;
 const client_1 = require("@prisma/client");
-const seed_demo_data_1 = require("../../../scripts/seed-demo-data/seed-demo-data");
+const seed_demo_data_1 = require("../scripts/seed-demo-data/seed-demo-data");
 let prismaInstance = null;
 let inMemoryStore = null;
 function getDatabaseStore() {

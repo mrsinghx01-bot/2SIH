@@ -11,12 +11,43 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const database_1 = require("../config/database");
 const JWT_SECRET = process.env.JWT_SECRET || 'government_of_india_national_land_management_secret_key_2026';
 async function login(req, res) {
-    const { employeeId, password, roleOverride } = req.body;
+    const { employeeId, password, roleOverride, stateId } = req.body;
     const store = (0, database_1.getDatabaseStore)();
-    let user = store.users.find(u => u.employeeId === employeeId || u.email === employeeId);
-    // In demo mode, if roleOverride is passed, find user with that role
-    if (roleOverride) {
-        user = store.users.find(u => u.role === roleOverride) || user;
+    let user = null;
+    // 1. If stateId is explicitly selected for STATE_ADMIN
+    if (roleOverride === 'STATE_ADMIN' && stateId) {
+        const targetState = store.states.find(s => s.id === stateId ||
+            s.shortName?.toLowerCase() === stateId.toLowerCase() ||
+            s.lgdCode === parseInt(stateId, 10) ||
+            s.name.toLowerCase() === stateId.toLowerCase());
+        if (targetState) {
+            user = store.users.find(u => u.role === 'STATE_ADMIN' && u.stateId === targetState.id);
+            if (!user) {
+                user = {
+                    id: `user-state-admin-${targetState.shortName.toLowerCase()}`,
+                    employeeId: `${targetState.shortName}-SAD-101`,
+                    name: `${targetState.name} State Admin`,
+                    email: `secy.revenue@${targetState.shortName.toLowerCase()}.gov.in`,
+                    passwordHash: store.users[0]?.passwordHash || '',
+                    role: 'STATE_ADMIN',
+                    designation: `Principal Secretary (Revenue & Land Records)`,
+                    ministry: `Department of Revenue, ${targetState.name}`,
+                    stateId: targetState.id,
+                    districtId: null,
+                    isActive: true
+                };
+                store.users.push(user);
+            }
+        }
+    }
+    // 2. Look up existing user by employeeId, email, or role
+    if (!user) {
+        user = store.users.find(u => u.employeeId === employeeId ||
+            u.email === employeeId ||
+            u.id === employeeId ||
+            (roleOverride && u.employeeId === roleOverride) ||
+            (roleOverride && u.id === roleOverride) ||
+            (roleOverride && u.role === roleOverride));
     }
     if (!user) {
         // Default fallback to Central Admin
@@ -55,7 +86,7 @@ async function login(req, res) {
         entityType: 'AUTH',
         entityId: user.id,
         oldValue: null,
-        newValue: `Role: ${user.role}`,
+        newValue: `Role: ${user.role}, Scope: ${user.stateId || 'NATIONAL'}`,
         ipAddress: req.ip || '127.0.0.1',
         createdAt: new Date()
     });
@@ -65,7 +96,7 @@ async function login(req, res) {
             token,
             user: tokenPayload
         },
-        message: 'Login successful.'
+        message: `Logged in successfully as ${user.name} (${user.role}).`
     });
 }
 async function getCurrentUser(req, res) {

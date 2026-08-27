@@ -5,11 +5,21 @@ exports.getDistrictById = getDistrictById;
 const database_1 = require("../config/database");
 async function getAllDistricts(req, res) {
     const store = (0, database_1.getDatabaseStore)();
-    const stateId = req.query.stateId;
+    const user = req.user;
+    const stateIdQuery = req.query.stateId;
     const searchQuery = (req.query.search || '').toLowerCase().trim();
     let results = store.districts;
-    if (stateId) {
-        results = results.filter(d => d.stateId === stateId || d.stateLgdCode === parseInt(stateId, 10));
+    // Enforce role-based geographic isolation
+    if (user && user.role !== 'CENTRAL_ADMIN' && user.role !== 'CENTRAL_OFFICER') {
+        if (user.stateId) {
+            results = results.filter(d => d.stateId === user.stateId);
+        }
+        if (user.districtId) {
+            results = results.filter(d => d.id === user.districtId);
+        }
+    }
+    else if (stateIdQuery) {
+        results = results.filter(d => d.stateId === stateIdQuery || d.stateLgdCode === parseInt(stateIdQuery, 10));
     }
     if (searchQuery) {
         results = results.filter(d => d.name.toLowerCase().includes(searchQuery) ||
@@ -26,6 +36,7 @@ async function getAllDistricts(req, res) {
 async function getDistrictById(req, res) {
     const id = String(req.params.id || '');
     const store = (0, database_1.getDatabaseStore)();
+    const user = req.user;
     const district = store.districts.find(d => d.id === id || d.lgdCode === parseInt(id, 10));
     if (!district) {
         res.status(404).json({
@@ -34,6 +45,25 @@ async function getDistrictById(req, res) {
             message: `District with identifier ${id} not found.`
         });
         return;
+    }
+    // Enforce role-based geographic isolation
+    if (user && user.role !== 'CENTRAL_ADMIN' && user.role !== 'CENTRAL_OFFICER') {
+        if (user.stateId && district.stateId !== user.stateId) {
+            res.status(403).json({
+                success: false,
+                data: null,
+                message: 'Access denied: District is outside your assigned State jurisdiction.'
+            });
+            return;
+        }
+        if (user.districtId && district.id !== user.districtId) {
+            res.status(403).json({
+                success: false,
+                data: null,
+                message: 'Access denied: District is outside your assigned District jurisdiction.'
+            });
+            return;
+        }
     }
     const state = store.states.find(s => s.id === district.stateId);
     const districtProjects = store.projectDistricts

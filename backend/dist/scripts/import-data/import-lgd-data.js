@@ -119,7 +119,8 @@ const STATE_CAPITALS = {
     'Lakshadweep': 'Kavaratti'
 };
 function loadMasterGeographicData() {
-    const rootDir = path_1.default.resolve(__dirname, '../../');
+    // Resolve to project root (2SIH/) from backend/src/scripts/import-data/
+    const rootDir = path_1.default.resolve(__dirname, '../../../../scripts');
     const statesPath = path_1.default.join(rootDir, 'data/raw/lgd_states.csv');
     const districtsPath = path_1.default.join(rootDir, 'data/raw/lgd_districts.csv');
     const autoMatchPath = path_1.default.join(rootDir, 'data/processed/district_geometry_auto_matches.csv');

@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { generateSeedData, SeedDataset } from '../../../scripts/seed-demo-data/seed-demo-data';
+import { generateSeedData, SeedDataset } from '../scripts/seed-demo-data/seed-demo-data';
 
 let prismaInstance: PrismaClient | null = null;
 let inMemoryStore: SeedDataset | null = null;

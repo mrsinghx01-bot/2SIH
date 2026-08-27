@@ -34,11 +34,17 @@ app.get('/health', (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+// Serve static frontend assets in production
+const frontendDistPath = path_1.default.resolve(__dirname, '../../frontend/dist');
+app.use(express_1.default.static(frontendDistPath));
+// Fallback index.html for React Router SPA
+app.get(/^(?!\/api|\/storage|\/health).*$/, (req, res) => {
+    res.sendFile(path_1.default.join(frontendDistPath, 'index.html'));
+});
 app.listen(PORT, () => {
     console.log(`\n=============================================================`);
-    console.log(`🇮🇳 National Land Acquisition & Management System - Backend API`);
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📚 REST API active at http://localhost:${PORT}/api`);
+    console.log(`🇮🇳 National Land Acquisition & Management System - Production Server`);
+    console.log(`🚀 Exposing App & API on http://localhost:${PORT}`);
     console.log(`=============================================================\n`);
 });
 exports.default = app;
