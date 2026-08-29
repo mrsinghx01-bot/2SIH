@@ -57,7 +57,7 @@ export const AlertsPage: React.FC = () => {
         <p style={{ fontSize: '13px', color: '#64748B' }}>Real-time Legal Timelines, Overdue Approvals and Acquisition Impediments</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
+      <div className="responsive-grid grid-3" style={{ gap: '16px', marginBottom: '24px' }}>
         <div style={{ background: '#FEE2E2', border: '1px solid #FCA5A5', padding: '16px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#B91C1C', fontWeight: 700 }}>Critical Statutory Exceptions</div>
           <div style={{ fontSize: '24px', fontWeight: 800, color: '#7F1D1D', marginTop: '4px' }}>2 Cases</div>

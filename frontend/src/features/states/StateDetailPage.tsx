@@ -200,7 +200,7 @@ export const StateDetailPage: React.FC = () => {
       </div>
 
       {/* State KPI Counters Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+      <div className="responsive-grid grid-4" style={{ gap: '14px', marginBottom: '20px' }}>
         <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '14px 18px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#1D4ED8', fontWeight: 600 }}>Active Projects</div>
           <div style={{ fontSize: '22px', fontWeight: 800, color: '#1E3A8A', marginTop: '2px' }}>{projects.length || stateData.kpis?.projectsCount}</div>
@@ -243,7 +243,7 @@ export const StateDetailPage: React.FC = () => {
 
       {/* TAB 1: INTERACTIVE GIS MAP & PROJECT CORRIDORS */}
       {activeTab === 'map' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px', marginBottom: '24px' }}>
+        <div className="responsive-split-map" style={{ gap: '20px', marginBottom: '24px' }}>
           {/* Interactive GIS Map */}
           <div>
             <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -356,7 +356,7 @@ export const StateDetailPage: React.FC = () => {
           </div>
 
           {/* District Cards Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
+          <div className="responsive-grid grid-3" style={{ gap: '14px' }}>
             {filteredDistricts.map((d: any) => (
               <div
                 key={d.id}
@@ -457,16 +457,15 @@ export const StateDetailPage: React.FC = () => {
             {filteredProjects.map((p: any) => (
               <div
                 key={p.id}
+                className="responsive-flex-row-to-col"
                 style={{
                   padding: '16px 20px',
                   borderRadius: '12px',
                   border: '1px solid #E2E8F0',
                   background: '#FFFFFF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
                   gap: '16px',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                  alignItems: 'center'
                 }}
               >
                 <div>
@@ -485,7 +484,7 @@ export const StateDetailPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '11px', color: '#64748B' }}>Land Required / Acquired</div>
                     <div style={{ fontSize: '14px', fontWeight: 800, color: '#0F172A' }}>

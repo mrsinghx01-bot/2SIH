@@ -15,7 +15,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
 
   const menuItems = [
@@ -32,7 +37,7 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="gov-sidebar">
+    <aside className={`gov-sidebar ${isOpen ? 'mobile-open' : ''}`}>
       {menuItems.map((item) => {
         const Icon = item.icon;
         return (
@@ -42,6 +47,7 @@ export const Sidebar: React.FC = () => {
             className={({ isActive }) =>
               `sidebar-nav-item ${isActive ? 'active' : ''}`
             }
+            onClick={onClose}
           >
             <Icon className="nav-icon" />
             <span>{item.name}</span>
@@ -55,6 +61,7 @@ export const Sidebar: React.FC = () => {
         className={({ isActive }) =>
           `sidebar-nav-item ${isActive ? 'active' : ''}`
         }
+        onClick={onClose}
         style={{ marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px' }}
       >
         <Smartphone className="nav-icon" color="#60A5FA" />

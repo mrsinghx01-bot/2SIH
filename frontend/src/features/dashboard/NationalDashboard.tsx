@@ -92,25 +92,22 @@ export const NationalDashboard: React.FC = () => {
       {/* State Admin Scope Banner (if non-central) */}
       {!isCentral && (
         <div
+          className="responsive-detail-banner"
           style={{
             background: 'linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%)',
             color: '#FFFFFF',
             borderRadius: '16px',
             padding: '16px 20px',
             marginBottom: '20px',
-            boxShadow: 'var(--shadow-card)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '16px'
+            boxShadow: 'var(--shadow-card)'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ background: 'rgba(255, 255, 255, 0.15)', padding: '10px', borderRadius: '12px', backdropFilter: 'blur(4px)' }}>
+          <div className="responsive-flex-row-to-col" style={{ alignItems: 'center', gap: '14px' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.15)', padding: '10px', borderRadius: '12px', backdropFilter: 'blur(4px)', display: 'flex', flexShrink: 0 }}>
               <Shield size={24} color="#60A5FA" />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 <h2 style={{ fontSize: '18px', fontWeight: 800, margin: 0 }}>
                   State Administration Jurisdiction • {states[0]?.name || user?.name}
                 </h2>
@@ -138,6 +135,7 @@ export const NationalDashboard: React.FC = () => {
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '6px',
                 whiteSpace: 'nowrap'
               }}
@@ -323,9 +321,9 @@ export const NationalDashboard: React.FC = () => {
 
       {/* 5. Real Government Data Integration Panel (DILRMP & Census 2011) */}
       <div style={{ marginTop: '24px', background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '20px', boxShadow: 'var(--shadow-card)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
+        <div className="responsive-flex-row-to-col" style={{ marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ background: '#EFF6FF', padding: '8px', borderRadius: '8px', color: '#1D4ED8' }}>
+            <div style={{ background: '#EFF6FF', padding: '8px', borderRadius: '8px', color: '#1D4ED8', display: 'flex', flexShrink: 0 }}>
               <Shield size={20} />
             </div>
             <div>
@@ -342,13 +340,13 @@ export const NationalDashboard: React.FC = () => {
             href="https://dilrmp.gov.in"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', fontWeight: 700, color: '#2563EB', background: '#EFF6FF', padding: '6px 12px', borderRadius: '6px', textDecoration: 'none' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', fontWeight: 700, color: '#2563EB', background: '#EFF6FF', padding: '6px 12px', borderRadius: '6px', textDecoration: 'none', justifyContent: 'center' }}
           >
             DILRMP MIS Portal <ExternalLink size={12} />
           </a>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
+        <div className="responsive-grid grid-4" style={{ gap: '14px' }}>
           <div style={{ background: '#F8FAFC', padding: '14px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
             <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>RoR Computerized</span>
             <div style={{ fontSize: '22px', fontWeight: 800, color: '#0F172A', marginTop: '4px' }}>
@@ -391,11 +389,11 @@ export const NationalDashboard: React.FC = () => {
         </div>
 
         {summaryData?.nationalGovMasterData && (
-          <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11.5px', color: '#475569' }}>
+          <div className="responsive-flex-row-to-col" style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #F1F5F9', fontSize: '11.5px', color: '#475569' }}>
             <div>
               <strong>Official Master Demographics:</strong> Census 2011 Population ({summaryData.nationalGovMasterData.censusPopulation2011}) • Total MHA Districts ({summaryData.nationalGovMasterData.totalDistrictsMHA}) • Total Villages ({summaryData.nationalGovMasterData.totalVillagesDoLR})
             </div>
-            <div style={{ background: '#DCFCE7', color: '#15803D', padding: '2px 8px', borderRadius: '4px', fontWeight: 700, fontSize: '10.5px' }}>
+            <div style={{ background: '#DCFCE7', color: '#15803D', padding: '2px 8px', borderRadius: '4px', fontWeight: 700, fontSize: '10.5px', display: 'inline-block', textAlign: 'center' }}>
               data.gov.in API Live Connected
             </div>
           </div>

@@ -54,7 +54,7 @@ export const ReportsPage: React.FC = () => {
       </div>
 
       {/* Grid of Analytics Widgets */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '24px' }}>
+      <div className="responsive-grid grid-2" style={{ gap: '20px', marginBottom: '24px' }}>
         {/* Widget 1: Lifecycle Stage Distribution */}
         <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '20px', boxShadow: 'var(--shadow-card)' }}>
           <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>

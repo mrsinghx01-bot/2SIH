@@ -55,7 +55,7 @@ export const DistrictDetailPage: React.FC = () => {
         <ArrowLeft size={14} /> Back
       </button>
 
-      <div className="detail-banner-card">
+      <div className="detail-banner-card responsive-detail-banner">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#0F172A' }}>{district.name} District</h1>
@@ -84,7 +84,7 @@ export const DistrictDetailPage: React.FC = () => {
       </div>
 
       {/* District KPI Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
+      <div className="responsive-grid grid-3" style={{ gap: '16px', marginBottom: '24px' }}>
         <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '14px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#1D4ED8', fontWeight: 600 }}>Active Projects</div>
           <div style={{ fontSize: '20px', fontWeight: 800, color: '#1E3A8A' }}>{district.kpis?.projectsCount || 2}</div>

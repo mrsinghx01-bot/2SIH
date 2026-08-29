@@ -853,6 +853,10 @@ html, body {
 }
 
 /* Responsive Adaptations */
+.data-table-container {
+  overflow-x: auto;
+}
+
 @media (max-width: 1360px) {
   .kpi-cards-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -885,3 +889,190 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Mobile Drawer Sidebar & Backdrop --- */
+.sidebar-backdrop {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(5, 16, 31, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 90;
+  transition: opacity 0.3s ease;
+}
+
+.gov-sidebar {
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+@media (max-width: 1024px) {
+  .gov-sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    transform: translateX(-100%);
+    z-index: 100;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .gov-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .main-content-viewport {
+    border-top-left-radius: 0;
+    padding: 16px 16px 32px;
+  }
+}
+
+/* --- Responsive Utility Grid System (Replacing Hardcoded Inline Grid Columns) --- */
+.responsive-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.responsive-grid.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.responsive-grid.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.responsive-grid.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .responsive-grid.grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .responsive-grid.grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .responsive-grid.grid-4 {
+    grid-template-columns: 1fr;
+  }
+  .responsive-grid.grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .responsive-grid.grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Split Map Layout (Desktop: map + side panel; Mobile: Stacked) --- */
+.responsive-split-map {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .responsive-split-map {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Responsive Banner (Desktop: side-by-side; Mobile: stacked) --- */
+.responsive-detail-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .responsive-detail-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .responsive-detail-banner > div {
+    text-align: left !important;
+  }
+}
+
+/* --- Flexible Row to Column Stacking --- */
+.responsive-flex-row-to-col {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .responsive-flex-row-to-col {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* --- Leaflet Map Responsive Height Limit --- */
+.gis-map-container {
+  height: 480px;
+}
+
+@media (max-width: 768px) {
+  .gis-map-container {
+    height: 320px !important;
+  }
+}
+
+/* --- Header Responsive Adaptations & Sidebar Toggle --- */
+.header-sidebar-toggle-btn {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .header-sidebar-toggle-btn {
+    display: inline-flex !important;
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    margin-right: 8px;
+    border-radius: 4px;
+  }
+  .header-sidebar-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .header-motto {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-date-badge {
+    display: none !important;
+  }
+  .gov-top-header {
+    padding: 0 12px !important;
+  }
+  .branding-title {
+    font-size: 11px !important;
+  }
+  .branding-sub {
+    font-size: 9px !important;
+  }
+  .header-actions {
+    gap: 12px !important;
+  }
+  .user-meta {
+    display: none !important;
+  }
+}
+
+

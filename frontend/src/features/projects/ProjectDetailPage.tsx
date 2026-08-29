@@ -120,7 +120,7 @@ export const ProjectDetailPage: React.FC = () => {
       )}
 
       {/* Project Top Summary Banner */}
-      <div className="detail-banner-card">
+      <div className="detail-banner-card responsive-detail-banner">
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
             <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700 }}>
@@ -135,7 +135,7 @@ export const ProjectDetailPage: React.FC = () => {
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase' }}>Land Acquired</div>
             <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A' }}>
@@ -181,7 +181,7 @@ export const ProjectDetailPage: React.FC = () => {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            <div className="responsive-grid grid-3" style={{ gap: '16px' }}>
               <div style={{ background: '#F8FAFC', padding: '14px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
                 <span style={{ fontSize: '11px', color: '#64748B' }}>Target Completion Date</span>
                 <div style={{ fontSize: '15px', fontWeight: 700, color: '#0F172A', marginTop: '2px' }}>
@@ -223,7 +223,7 @@ export const ProjectDetailPage: React.FC = () => {
         {activeTab === 2 && (
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>Land Requisition Distribution</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+            <div className="responsive-grid grid-4" style={{ gap: '14px', marginBottom: '20px' }}>
               <div style={{ padding: '14px', borderRadius: '10px', background: '#EFF6FF', border: '1px solid #BFDBFE' }}>
                 <div style={{ fontSize: '11px', color: '#1D4ED8' }}>Private Agricultural Land</div>
                 <div style={{ fontSize: '18px', fontWeight: 800, color: '#1E3A8A' }}>{Math.round(project.totalLandRequired * 0.7)} Ha</div>

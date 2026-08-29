@@ -9,13 +9,23 @@ interface AppShellProps {
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="page-background-wrapper">
-      <Header onToggleNotification={() => setShowNotificationPanel(!showNotificationPanel)} />
+      <Header
+        onToggleNotification={() => setShowNotificationPanel(!showNotificationPanel)}
+        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+      />
       
       <div className="app-shell-container">
-        <Sidebar />
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        {isSidebarOpen && (
+          <div
+            className="sidebar-backdrop"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
         <main className="main-content-viewport">
           {children}
         </main>

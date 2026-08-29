@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, ChevronDown, LogOut, Shield, Building, User, Settings, CheckCircle2 } from 'lucide-react';
+import { Bell, ChevronDown, LogOut, Shield, Building, User, Settings, CheckCircle2, Menu } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
 
 interface HeaderProps {
   onToggleNotification?: () => void;
+  onToggleSidebar?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onToggleNotification }) => {
+export const Header: React.FC<HeaderProps> = ({ onToggleNotification, onToggleSidebar }) => {
   const { user, logout } = useAuth();
   const [currentDateString, setCurrentDateString] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -29,21 +30,31 @@ export const Header: React.FC<HeaderProps> = ({ onToggleNotification }) => {
 
   return (
     <header className="gov-top-header">
-      {/* Left: Government Emblem & System Title */}
-      <Link to="/dashboard" className="header-branding">
-        <img
-          src="/assets/branding/state-emblem-official.png"
-          alt="Government of India State Emblem"
-          className="gov-emblem-icon"
-          style={{ height: '42px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }}
-        />
-        <div className="branding-text">
-          <span className="branding-title">
-            National Land Acquisition &<br />Management System
-          </span>
-          <span className="branding-sub">Government of India</span>
-        </div>
-      </Link>
+      {/* Left: Hamburger menu toggle & Government Emblem & System Title */}
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <button
+          className="header-sidebar-toggle-btn"
+          onClick={onToggleSidebar}
+          title="Toggle Navigation Menu"
+        >
+          <Menu size={20} />
+        </button>
+
+        <Link to="/dashboard" className="header-branding">
+          <img
+            src="/assets/branding/state-emblem-official.png"
+            alt="Government of India State Emblem"
+            className="gov-emblem-icon"
+            style={{ height: '42px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }}
+          />
+          <div className="branding-text">
+            <span className="branding-title">
+              National Land Acquisition &<br />Management System
+            </span>
+            <span className="branding-sub">Government of India</span>
+          </div>
+        </Link>
+      </div>
 
       {/* Center: System Motto */}
       <div className="header-motto">

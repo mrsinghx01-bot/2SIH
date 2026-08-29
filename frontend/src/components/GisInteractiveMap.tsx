@@ -203,7 +203,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', height, borderRadius: '16px', overflow: 'hidden', border: '1px solid #CBD5E1', boxShadow: 'var(--shadow-card)' }}>
+    <div className="gis-map-container" style={{ position: 'relative', width: '100%', height, borderRadius: '16px', overflow: 'hidden', border: '1px solid #CBD5E1', boxShadow: 'var(--shadow-card)' }}>
       {/* Leaflet Map DOM Container */}
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
 
