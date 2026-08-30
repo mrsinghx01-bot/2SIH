@@ -8,6 +8,7 @@ import { StateDetailPage } from './features/states/StateDetailPage';
 import { DistrictDetailPage } from './features/districts/DistrictDetailPage';
 import { ProjectsList } from './features/projects/ProjectsList';
 import { ProjectDetailPage } from './features/projects/ProjectDetailPage';
+import { GazetteDocumentViewerPage } from './features/projects/GazetteDocumentViewerPage';
 import { AcquisitionCasesPage } from './features/cases/AcquisitionCasesPage';
 import { ParcelsPage } from './features/parcels/ParcelsPage';
 import { CompensationPage } from './features/compensation/CompensationPage';
@@ -36,6 +37,7 @@ const ProtectedLayout: React.FC = () => {
         <Route path="/districts/:districtId" element={<DistrictDetailPage />} />
         <Route path="/projects" element={<ProjectsList />} />
         <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
+        <Route path="/projects/:projectId/documents/:docId" element={<GazetteDocumentViewerPage />} />
         <Route path="/acquisition-cases" element={<AcquisitionCasesPage />} />
         <Route path="/parcels" element={<ParcelsPage />} />
         <Route path="/compensation" element={<CompensationPage />} />

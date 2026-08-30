@@ -16,7 +16,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Map as MapIcon,
-  Layers
+  Layers,
+  ExternalLink
 } from 'lucide-react';
 import { fetchProjectById, updateCaseStage, processApproval } from '../../services/api';
 import { StatusBadge } from '../../components/StatusBadge';
@@ -360,14 +361,25 @@ export const ProjectDetailPage: React.FC = () => {
                 {
                   header: 'Official Gazette Document',
                   render: (r: any) => (
-                    <a
-                      href={`/api/documents/${r.id}/pdf`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ background: '#ECFDF5', color: '#047857', border: '1px solid #A7F3D0', padding: '5px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
-                    >
-                      <Download size={12} /> Open Gazette PDF Document ↗
-                    </a>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <a
+                        href={`/projects/${project.id}/documents/${r.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ background: '#ECFDF5', color: '#047857', border: '1px solid #A7F3D0', padding: '5px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+                      >
+                        <FileText size={12} /> View Official Gazette PDF ↗
+                      </a>
+                      <a
+                        href="https://egazette.gov.in/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ background: '#F1F5F9', color: '#475569', border: '1px solid #CBD5E1', padding: '5px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                        title="Verify on eGazette Central Portal"
+                      >
+                        <ExternalLink size={11} /> eGazette ↗
+                      </a>
+                    </div>
                   )
                 }
               ]}

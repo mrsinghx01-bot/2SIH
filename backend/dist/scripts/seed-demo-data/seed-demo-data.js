@@ -1228,6 +1228,40 @@ function generateSeedData() {
         };
         allProjects.push(projectObj);
         const projectDomain = pt.type === 'HIGHWAY' ? 'morth.nic.in' : pt.type === 'AIRPORT' ? 'civilaviation.gov.in' : pt.type === 'RAILWAY' ? 'indianrailways.gov.in' : pt.type === 'IRRIGATION' ? 'jalshakti-dowr.gov.in' : pt.type === 'SOLAR_PARK' ? 'mnre.gov.in' : pt.type === 'PORT' ? 'shipmin.gov.in' : pt.type === 'DEFENCE' ? 'mod.gov.in' : 'egazette.gov.in';
+        const projectTypeMap = {
+            HIGHWAY: {
+                gazetteUrl: `https://morth.nic.in/sites/default/files/Circulars_Notifications/Gazette_3A_${pt.code}.pdf`,
+                dprUrl: `https://nhai.gov.in/nhai/sites/default/files/projects/${pt.code}_DPR_Alignment.pdf`
+            },
+            AIRPORT: {
+                gazetteUrl: `https://civilaviation.gov.in/sites/default/files/airports/${pt.code}_Land_Acquisition_Gazette.pdf`,
+                dprUrl: `https://aai.aero/sites/default/files/projects/${pt.code}_DPR_Master_Plan.pdf`
+            },
+            RAILWAY: {
+                gazetteUrl: `https://indianrailways.gov.in/railwayboard/uploads/gazette/${pt.code}_Railway_Land_Notification.pdf`,
+                dprUrl: `https://dfccil.gov.in/upload/${pt.code}_DPR_Alignment_Map.pdf`
+            },
+            IRRIGATION: {
+                gazetteUrl: `https://nwda.gov.in/upload/files/${pt.code}_Submergence_Gazette_Notification.pdf`,
+                dprUrl: `https://jalshakti-dowr.gov.in/sites/default/files/${pt.code}_DPR_Executive_Summary.pdf`
+            },
+            SOLAR_PARK: {
+                gazetteUrl: `https://mnre.gov.in/img/documents/uploads/${pt.code}_Solar_Park_Gazette.pdf`,
+                dprUrl: `https://seci.co.in/projects/${pt.code}_DPR_Solar_Park_Substation.pdf`
+            },
+            PORT: {
+                gazetteUrl: `https://shipmin.gov.in/sites/default/files/ports/${pt.code}_Gazette_Land_Notification.pdf`,
+                dprUrl: `https://sagarmala.gov.in/projects/${pt.code}_DPR_Deepwater_Terminal.pdf`
+            },
+            DEFENCE: {
+                gazetteUrl: `https://mod.gov.in/sites/default/files/defence/${pt.code}_Strategic_Corridor_Gazette.pdf`,
+                dprUrl: `https://bro.gov.in/WriteReadData/${pt.code}_Strategic_Tunnel_DPR.pdf`
+            },
+            URBAN_DEVELOPMENT: {
+                gazetteUrl: `https://mohua.gov.in/upload/gazette/${pt.code}_Capital_Corridor_Land_Pooling.pdf`,
+                dprUrl: `https://delhimetrorail.com/uploads/projects/${pt.code}_DPR_Alignment_Plan.pdf`
+            }
+        };
         // Project-District mapping
         projectDistricts.push({
             id: `pd-${pId}-1`,
@@ -1443,8 +1477,11 @@ function generateSeedData() {
                     updatedAt: new Date('2026-08-20T11:00:00Z')
                 });
             }
-            // Generate active, official Government portal URLs (100% 200 OK)
-            const projectDomain = pt.type === 'HIGHWAY' ? 'morth.nic.in' : pt.type === 'AIRPORT' ? 'civilaviation.gov.in' : pt.type === 'RAILWAY' ? 'indianrailways.gov.in' : pt.type === 'IRRIGATION' ? 'jalshakti-dowr.gov.in' : pt.type === 'SOLAR_PARK' ? 'mnre.gov.in' : pt.type === 'PORT' ? 'shipmin.gov.in' : pt.type === 'DEFENCE' ? 'mod.gov.in' : 'egazette.gov.in';
+            // Documents
+            const sectorUrls = projectTypeMap[pt.type] || {
+                gazetteUrl: `https://egazette.gov.in/WriteReadData/2024/Gazette_${pt.code}.pdf`,
+                dprUrl: `https://morth.nic.in/sites/default/files/DPR_${pt.code}.pdf`
+            };
             documents.push({
                 id: `doc-${caseId}-1`,
                 projectId: pId,
@@ -1453,7 +1490,7 @@ function generateSeedData() {
                 title: `Official Gazette Extraordinary Notification u/s 11 RFCTLARR - ${pt.name} (${assignedDist.name}, ${state.name})`,
                 fileName: `Gazette_Notification_${pt.code}_${assignedDist.name.replace(/\s+/g, '_')}_${caseObj.caseNumber}.pdf`,
                 filePath: `/storage/documents/${pt.code}_${caseObj.caseNumber}_3A.pdf`,
-                url: `https://egazette.gov.in/`,
+                url: sectorUrls.gazetteUrl,
                 fileSize: 2458000,
                 mimeType: 'application/pdf',
                 version: '1.0',
@@ -1469,7 +1506,7 @@ function generateSeedData() {
                 title: `Competent Land Acquisition Collectorate Valuation Award u/s 26 - ${pt.name} (${assignedDist.name})`,
                 fileName: `Valuation_Matrix_Award_${pt.code}_${assignedDist.name.replace(/\s+/g, '_')}.pdf`,
                 filePath: `/storage/documents/${pt.code}_${caseObj.caseNumber}_valuation.pdf`,
-                url: `https://legislative.gov.in/actsofparliamentfromtheyear/land-acquisition-rehabilitation-and-resettlement-act-2013`,
+                url: `https://legislative.gov.in/sites/default/files/A2013-30.pdf#page=${parseInt(pt.code.replace(/[^0-9]/g, '') || '1', 10)}`,
                 fileSize: 1845000,
                 mimeType: 'application/pdf',
                 version: '1.1',
@@ -1479,6 +1516,10 @@ function generateSeedData() {
             });
         }
         // Project-level documents: DPR Alignment Map & MoEFCC Environmental Clearance
+        const projectSectorUrls = projectTypeMap[pt.type] || {
+            gazetteUrl: `https://egazette.gov.in/WriteReadData/2024/Gazette_${pt.code}.pdf`,
+            dprUrl: `https://morth.nic.in/sites/default/files/DPR_${pt.code}.pdf`
+        };
         documents.push({
             id: `doc-proj-${pId}-dp`,
             projectId: pId,
@@ -1487,7 +1528,7 @@ function generateSeedData() {
             title: `Official Detailed Project Report (DPR), Cadastral Alignment Map & Village Land Schedule - ${pt.name}`,
             fileName: `DPR_Alignment_${pt.code}_${pt.agency.replace(/\s+/g, '_')}.pdf`,
             filePath: `/storage/documents/DPR_${pt.code}.pdf`,
-            url: `https://${projectDomain}/`,
+            url: projectSectorUrls.dprUrl,
             fileSize: 14200000,
             mimeType: 'application/pdf',
             version: '2.0',
@@ -1503,7 +1544,7 @@ function generateSeedData() {
             title: `MoEFCC Statutory Environment & Forest Clearance Certificate - ${pt.name} (${state.name})`,
             fileName: `MoEFCC_Environmental_Clearance_${pt.code}_${state.shortName}.pdf`,
             filePath: `/storage/documents/EC_${pt.code}.pdf`,
-            url: `https://parivesh.nic.in/`,
+            url: `https://parivesh.nic.in/clearance/${pt.code}/MoEFCC_Clearance_Certificate.pdf`,
             fileSize: 3120000,
             mimeType: 'application/pdf',
             version: '1.0',
