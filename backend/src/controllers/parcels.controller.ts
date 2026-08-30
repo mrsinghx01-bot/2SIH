@@ -1,19 +1,32 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { getDatabaseStore } from '../config/database';
+import { AuthRequest } from '../middleware/auth';
 
-export async function getAllParcels(req: Request, res: Response): Promise<void> {
+export async function getAllParcels(req: AuthRequest, res: Response): Promise<void> {
   const store = getDatabaseStore();
-  const districtId = req.query.districtId as string;
+  const user = req.user;
+  let districtId = req.query.districtId as string;
+  let stateId = req.query.stateId as string;
   const projectId = req.query.projectId as string;
   const caseId = req.query.caseId as string;
   const status = req.query.status as string;
   const landUse = req.query.landUse as string;
   const searchQuery = (req.query.search as string || '').toLowerCase().trim();
 
+  // Enforce role-based geographic scope
+  if (user && user.role !== 'CENTRAL_ADMIN' && user.role !== 'CENTRAL_OFFICER') {
+    if (user.districtId) districtId = user.districtId;
+    if (user.stateId) stateId = user.stateId;
+  }
+
   let results = store.parcels;
 
   if (districtId) {
     results = results.filter(p => p.districtId === districtId);
+  } else if (stateId) {
+    const matchingDistIds = new Set(store.districts.filter(d => d.stateId === stateId).map(d => d.id));
+    const matchingProjIds = new Set(store.projectDistricts.filter(pd => pd.stateId === stateId).map(pd => pd.projectId));
+    results = results.filter(p => matchingDistIds.has(p.districtId) || matchingProjIds.has(p.projectId));
   }
 
   if (projectId) {
@@ -58,34 +71,25 @@ export async function getAllParcels(req: Request, res: Response): Promise<void> 
   });
 }
 
-export async function getParcelById(req: Request, res: Response): Promise<void> {
+export async function getParcelById(req: AuthRequest, res: Response): Promise<void> {
   const { id } = req.params;
   const store = getDatabaseStore();
-
-  const parcel = store.parcels.find(p => p.id === id || p.parcelNumber === id);
+  const parcel = store.parcels.find(p => p.id === id);
 
   if (!parcel) {
-    res.status(404).json({
-      success: false,
-      data: null,
-      message: `Parcel ${id} not found.`
-    });
+    res.status(404).json({ success: false, data: null, message: 'Parcel not found.' });
     return;
   }
 
-  const district = store.districts.find(d => d.id === parcel.districtId);
-  const project = store.projects.find(p => p.id === parcel.projectId);
-  const acquisitionCase = store.acquisitionCases.find(c => c.id === parcel.caseId);
-  const compensation = store.compensationRecords.filter(c => c.parcelId === parcel.id);
+  const dist = store.districts.find(d => d.id === parcel.districtId);
+  const proj = store.projects.find(p => p.id === parcel.projectId);
 
   res.json({
     success: true,
     data: {
       ...parcel,
-      district,
-      project,
-      acquisitionCase,
-      compensation
+      districtName: dist ? dist.name : 'Unknown',
+      projectName: proj ? proj.name : 'Unassigned'
     },
     message: 'Parcel details retrieved.'
   });

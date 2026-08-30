@@ -4,14 +4,47 @@ exports.getAnalyticsReport = getAnalyticsReport;
 const database_1 = require("../config/database");
 async function getAnalyticsReport(req, res) {
     const store = (0, database_1.getDatabaseStore)();
+    const user = req.user;
+    let districtId = req.query.districtId;
+    let stateId = req.query.stateId;
+    // Enforce role-based geographic scope
+    if (user && user.role !== 'CENTRAL_ADMIN' && user.role !== 'CENTRAL_OFFICER') {
+        if (user.districtId)
+            districtId = user.districtId;
+        if (user.stateId)
+            stateId = user.stateId;
+    }
+    let scopedCases = store.acquisitionCases;
+    let scopedProjects = store.projects;
+    let scopedParcels = store.parcels;
+    let scopedComp = store.compensationRecords;
+    if (districtId) {
+        scopedCases = store.acquisitionCases.filter(c => c.districtId === districtId);
+        const distProjIds = new Set(store.projectDistricts.filter(pd => pd.districtId === districtId).map(pd => pd.projectId));
+        scopedProjects = store.projects.filter(p => distProjIds.has(p.id));
+        scopedParcels = store.parcels.filter(p => p.districtId === districtId);
+        const caseIds = new Set(scopedCases.map(c => c.id));
+        const parcelIds = new Set(scopedParcels.map(p => p.id));
+        scopedComp = store.compensationRecords.filter(c => caseIds.has(c.caseId) || parcelIds.has(c.parcelId));
+    }
+    else if (stateId) {
+        const matchingDistIds = new Set(store.districts.filter(d => d.stateId === stateId).map(d => d.id));
+        const stateProjIds = new Set(store.projectDistricts.filter(pd => pd.stateId === stateId).map(pd => pd.projectId));
+        scopedCases = store.acquisitionCases.filter(c => matchingDistIds.has(c.districtId) || stateProjIds.has(c.projectId));
+        scopedProjects = store.projects.filter(p => stateProjIds.has(p.id));
+        scopedParcels = store.parcels.filter(p => matchingDistIds.has(p.districtId) || stateProjIds.has(p.projectId));
+        const caseIds = new Set(scopedCases.map(c => c.id));
+        const parcelIds = new Set(scopedParcels.map(p => p.id));
+        scopedComp = store.compensationRecords.filter(c => caseIds.has(c.caseId) || parcelIds.has(c.parcelId));
+    }
     // Stage distribution
     const stageCounts = {};
-    store.acquisitionCases.forEach(c => {
+    scopedCases.forEach(c => {
         stageCounts[c.currentStatus] = (stageCounts[c.currentStatus] || 0) + 1;
     });
     // Sector breakdown
     const sectorCounts = {};
-    store.projects.forEach(p => {
+    scopedProjects.forEach(p => {
         if (!sectorCounts[p.projectType]) {
             sectorCounts[p.projectType] = { count: 0, landReq: 0, landAcq: 0 };
         }
@@ -20,7 +53,10 @@ async function getAnalyticsReport(req, res) {
         sectorCounts[p.projectType].landAcq += p.totalLandAcquired;
     });
     // State-wise top acquisition velocity
-    const stateSummary = store.states.slice(0, 10).map(s => {
+    const stateSummary = store.states
+        .filter(s => !stateId || s.id === stateId)
+        .slice(0, 10)
+        .map(s => {
         const pDists = store.projectDistricts.filter(pd => pd.stateId === s.id);
         const req = pDists.reduce((a, b) => a + (b.landRequired || 0), 0) || 1200;
         const acq = pDists.reduce((a, b) => a + (b.landAcquired || 0), 0) || 950;
@@ -39,10 +75,10 @@ async function getAnalyticsReport(req, res) {
             sectorBreakdown: sectorCounts,
             topStates: stateSummary,
             summary: {
-                totalProjects: store.projects.length,
-                totalCases: store.acquisitionCases.length,
-                totalParcels: store.parcels.length,
-                totalCompensationPaid: store.compensationRecords.reduce((a, b) => a + (b.paidAmount || 0), 0)
+                totalProjects: scopedProjects.length,
+                totalCases: scopedCases.length,
+                totalParcels: scopedParcels.length,
+                totalCompensationPaid: scopedComp.reduce((a, b) => a + (b.paidAmount || 0), 0)
             }
         },
         message: 'Analytics report generated.'

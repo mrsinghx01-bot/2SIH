@@ -4,10 +4,31 @@ exports.getAllCompensation = getAllCompensation;
 const database_1 = require("../config/database");
 async function getAllCompensation(req, res) {
     const store = (0, database_1.getDatabaseStore)();
+    const user = req.user;
+    let districtId = req.query.districtId;
+    let stateId = req.query.stateId;
     const caseId = req.query.caseId;
     const status = req.query.status;
     const searchQuery = (req.query.search || '').toLowerCase().trim();
+    // Enforce role-based geographic scope
+    if (user && user.role !== 'CENTRAL_ADMIN' && user.role !== 'CENTRAL_OFFICER') {
+        if (user.districtId)
+            districtId = user.districtId;
+        if (user.stateId)
+            stateId = user.stateId;
+    }
     let results = store.compensationRecords;
+    if (districtId) {
+        const matchingCaseIds = new Set(store.acquisitionCases.filter(c => c.districtId === districtId).map(c => c.id));
+        const matchingParcelIds = new Set(store.parcels.filter(p => p.districtId === districtId).map(p => p.id));
+        results = results.filter(c => matchingCaseIds.has(c.caseId) || matchingParcelIds.has(c.parcelId));
+    }
+    else if (stateId) {
+        const matchingDistIds = new Set(store.districts.filter(d => d.stateId === stateId).map(d => d.id));
+        const matchingCaseIds = new Set(store.acquisitionCases.filter(c => matchingDistIds.has(c.districtId)).map(c => c.id));
+        const matchingParcelIds = new Set(store.parcels.filter(p => matchingDistIds.has(p.districtId)).map(p => p.id));
+        results = results.filter(c => matchingCaseIds.has(c.caseId) || matchingParcelIds.has(c.parcelId));
+    }
     if (caseId) {
         results = results.filter(c => c.caseId === caseId);
     }

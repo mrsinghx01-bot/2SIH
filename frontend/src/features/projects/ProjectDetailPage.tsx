@@ -24,6 +24,7 @@ import { ProgressRing } from '../../components/ProgressRing';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import { DataTable } from '../../components/DataTable';
 import { GisInteractiveMap } from '../../components/GisInteractiveMap';
+import { generateOfficialGazettePdf } from '../../utils/gazettePdfGenerator';
 
 export const ProjectDetailPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -67,41 +68,20 @@ export const ProjectDetailPage: React.FC = () => {
     } catch (err) {}
   };
 
-  const handleDownloadDocument = (doc: any) => {
-    const fileContent = `National Land Acquisition & Management System (NLAMS)
-======================================================
-Government of India • Ministry of Rural Development
-
-DOCUMENT RECEIPT & TRANSCRIPT RECORD
-------------------------------------------------------
-Document Reference ID : ${doc.id}
-Document Title        : ${doc.title}
-Document Type         : ${doc.documentType}
-Version / Issue       : v${doc.version}
-File Format Identifier: ${doc.fileFormat || 'PDF/A'}
-System Filename       : ${doc.fileName}
-Uploaded / Signed By  : ${doc.uploadedBy}
-Record Timestamp      : ${new Date(doc.createdAt).toLocaleString('en-IN')}
-
-RFCTLARR ACT, 2013 CADASTRAL ALIGNMENT COMPLIANCE
-------------------------------------------------------
-This transcript confirms the digital sealing and registration of the 
-aforementioned statutory document on the NLAMS central repository.
-Any modifications without prior clearance from the Competent Authority 
-constitute a violation of Section 80(2) of the Act.
-
-Central Land Database Sealing Authority
-[SEALED SECURE DIGITAL TRANSCRIPT]`;
-
-    const blob = new Blob([fileContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = doc.fileName || `${doc.title.replace(/\s+/g, '_')}_v${doc.version}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  const handleDownloadDocument = (docItem: any) => {
+    generateOfficialGazettePdf({
+      projectCode: project?.projectCode || 'PRJ-GOI',
+      projectName: project?.name || 'National Infrastructure Project',
+      ministry: project?.ministry || 'Ministry of Road Transport & Highways',
+      agency: project?.implementingAgency || 'Competent Authority',
+      stateName: project?.states?.[0] || 'India',
+      districtName: project?.districts?.[0] || 'District Collectorate',
+      documentTitle: docItem.title || 'Gazette Notification',
+      documentType: docItem.documentType || 'NOTIFICATION_3A',
+      notificationNumber: `S.O. ${Math.floor(2000 + Math.random() * 3000)}(E)`,
+      dateStr: new Date(docItem.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+      villages: project?.districtBreakdown?.flatMap((d: any) => d.villages || []) || ['Ranhera', 'Rohi', 'Shahpur', 'Ulwe']
+    });
   };
 
   if (loading || !project) {

@@ -5,7 +5,25 @@ exports.markNotificationAsRead = markNotificationAsRead;
 const database_1 = require("../config/database");
 async function getAllNotifications(req, res) {
     const store = (0, database_1.getDatabaseStore)();
-    const results = store.notifications;
+    const user = req.user;
+    let districtId = req.query.districtId;
+    let stateId = req.query.stateId;
+    // Enforce role-based geographic scope
+    if (user && user.role !== 'CENTRAL_ADMIN' && user.role !== 'CENTRAL_OFFICER') {
+        if (user.districtId)
+            districtId = user.districtId;
+        if (user.stateId)
+            stateId = user.stateId;
+    }
+    let results = store.notifications;
+    if (districtId) {
+        const distProjIds = new Set(store.projectDistricts.filter(pd => pd.districtId === districtId).map(pd => pd.projectId));
+        results = results.filter(n => !n.entityId || distProjIds.has(n.entityId) || n.recipientRole === user?.role);
+    }
+    else if (stateId) {
+        const stateProjIds = new Set(store.projectDistricts.filter(pd => pd.stateId === stateId).map(pd => pd.projectId));
+        results = results.filter(n => !n.entityId || stateProjIds.has(n.entityId) || n.recipientRole === user?.role);
+    }
     const unreadCount = results.filter(n => !n.isRead).length;
     res.json({
         success: true,
