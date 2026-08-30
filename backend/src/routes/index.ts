@@ -14,6 +14,7 @@ import { getAllNotifications, markNotificationAsRead } from '../controllers/noti
 import { getAllAuditLogs } from '../controllers/audit.controller';
 import { getAnalyticsReport } from '../controllers/reports.controller';
 import { authenticateToken, authorizeRoles, checkGeographicScope } from '../middleware/auth';
+import { getFieldSurveys, submitFieldSurvey, reviewFieldSurvey, getPublicDistrictsByState } from '../controllers/field-surveys.controller';
 
 const router = Router();
 
@@ -22,6 +23,7 @@ router.post('/auth/login', login);
 router.get('/auth/me', authenticateToken, getCurrentUser);
 router.get('/auth/demo-roles', getDemoRoles);
 router.get('/states/public-master', getPublicStatesMaster); // Public master directory of all 36 States & UTs for login
+router.get('/districts/public-by-state/:stateId', getPublicDistrictsByState); // Public districts for login page (LAO selector)
 
 // All data routes below use authenticateToken so we can enforce geographic scope
 // Dashboard routes
@@ -72,5 +74,10 @@ router.get('/audit-logs', authenticateToken, getAllAuditLogs);
 
 // Reports routes
 router.get('/reports/analytics', authenticateToken, getAnalyticsReport);
+
+// Field Survey routes
+router.get('/field-surveys', authenticateToken, getFieldSurveys);
+router.post('/field-surveys', authenticateToken, submitFieldSurvey);
+router.patch('/field-surveys/:id/review', authenticateToken, reviewFieldSurvey);
 
 export default router;

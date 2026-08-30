@@ -1,0 +1,1333 @@
+====================================================================================================
+NATIONAL LAND ACQUISITION & MANAGEMENT SYSTEM — GOVERNMENT OF INDIA
+MASTER DATA CATALOG: 47 AUTHENTIC NATIONAL INFRASTRUCTURE PROJECTS (36 STATES & UTS)
+====================================================================================================
+Document Generated : 30 August 2026
+Source Standards   : LGD (lgdirectory.gov.in), DILRMP-MIS (DoLR, MoRD), RFCTLARR Act 2013, NH Act 1956,
+                     NHAI Bhoomi Rashi, eGazette India, Railway Board, MoRTH & Civil Aviation DPRs.
+
+----------------------------------------------------------------------------------------------------
+PROJECT CATALOG INDEX (47 PROJECTS ACROSS ALL 36 STATES & UNION TERRITORIES)
+----------------------------------------------------------------------------------------------------
+ 1. PRJ-NHAI-DME-001   : Delhi-Mumbai Expressway (1,350 km Access-Controlled Greenfield) [Maharashtra/Haryana/Raj/MP/Guj]
+ 2. PRJ-YEIDA-NIA-002  : Noida International Greenfield Airport (Jewar Phase 1) [Uttar Pradesh]
+ 3. PRJ-YEIDA-NIA-003  : Noida International Airport Phase 3 & 4 Expansion [Uttar Pradesh]
+ 4. PRJ-NWDA-KBLP-004  : Ken-Betwa River Interlinking Project (Daudhan Dam & Link Canal) [Madhya Pradesh/UP]
+ 5. PRJ-NHSRCL-MAHSR-005: Mumbai-Ahmedabad High-Speed Rail Corridor (Bullet Train) [Maharashtra/Gujarat]
+ 6. PRJ-CIDCO-NMIA-006 : Navi Mumbai International Airport (NMIA Panvel) [Maharashtra]
+ 7. PRJ-BDA-BBC-007    : Bengaluru Peripheral Ring Road (Bengaluru Business Corridor) [Karnataka]
+ 8. PRJ-DFCCIL-WDFC-008: Western Dedicated Freight Corridor (Dadri-JNPT Gujarat Segment) [Gujarat]
+ 9. PRJ-DFCCIL-EDFC-009: Eastern Dedicated Freight Corridor (Dankuni-Sonnagar WB Section) [West Bengal]
+10. PRJ-UPEIDA-PVE-010 : Purvanchal Expressway Economic Node Expansion [Uttar Pradesh]
+11. PRJ-CMRL-CMP2-011  : Chennai Metro Rail Phase 2 (Corridor 3, 4, 5 Expansion) [Tamil Nadu]
+12. PRJ-SECI-BSP4-012  : Bhadla Mega Solar Ultra Park Phase IV (Thar Desert) [Rajasthan]
+13. PRJ-NRLY-USBRL-013 : Udhampur-Srinagar-Baramulla Rail Link (USBRL Depot & Sidings) [Jammu & Kashmir]
+14. PRJ-TIDCO-TNDIC-014: Tamil Nadu Defence Industrial Corridor (Coimbatore Node) [Tamil Nadu]
+15. PRJ-NICDC-AKIC-015 : Amritsar-Kolkata Industrial Corridor (AKIC Gaya Dobhi Node) [Bihar]
+16. PRJ-NHAI-KMP-016   : Kundli-Manesar-Palwal (KMP) Western Peripheral Expressway [Haryana]
+17. PRJ-NHAI-DAK-017   : Delhi-Amritsar-Katra Expressway (Haryana Stretch) [Haryana]
+18. PRJ-NHAI-DAKP-018  : Delhi-Amritsar-Katra Expressway (Punjab Corridor) [Punjab]
+19. PRJ-NRLY-BML-019   : Bilaspur-Manali-Leh Strategic Railway Line [Himachal Pradesh]
+20. PRJ-RVNL-RKRL-020  : Rishikesh-Karnaprayag Broad-Gauge Rail Link [Uttarakhand]
+21. PRJ-BRO-CDH-021    : Char Dham All-Weather Highway Network (889 km) [Uttarakhand]
+22. PRJ-APCRDA-ACC-022 : Amaravati Capital City Development Corridor (LPS Land) [Andhra Pradesh]
+23. PRJ-AP-PIP-023     : Polavaram Multipurpose Irrigation Project Phase 1 [Andhra Pradesh]
+24. PRJ-TSIIC-PFC-024  : Hyderabad Pharma City / Future City (Mucherla Hub) [Telangana]
+25. PRJ-NHAI-TRRR-025  : Telangana Regional Ring Road (RRR Northern Segment) [Telangana]
+26. PRJ-VISL-VZP-026   : Vizhinjam International Transshipment Deepwater Seaport [Kerala]
+27. PRJ-KMRL-KMP2-027  : Kochi Metro Phase 2 (JLN Stadium - Kakkanad Pink Line) [Kerala]
+28. PRJ-JSW-POSCO-028  : JSW-POSCO Keonjhar Integrated Steel Plant Site [Odisha]
+29. PRJ-PPA-WDD-029    : Paradip Port Western Dock Capacity Expansion [Odisha]
+30. PRJ-JUIDCO-RSC-030 : Ranchi Smart City Outer Ring Road Connectivity [Jharkhand]
+31. PRJ-CG-RDMC-031    : Raipur-Durg SCR Metro Rail Transit System [Chhattisgarh]
+32. PRJ-GMR-MOPA-032   : Manohar International Greenfield Airport (Mopa) [Goa]
+33. PRJ-DMRC-M4P-033   : Delhi Metro Phase 4 Priority Corridors [Delhi NCR]
+34. PRJ-NHAI-GRR-034   : Guwahati Ring Road & Strategic Brahmaputra Bridge [Assam]
+35. PRJ-BRO-SELA-035   : Sela Pass Strategic Tunnel Link Project [Arunachal Pradesh]
+36. PRJ-NHIDCL-IMH-036 : Imphal-Moreh Strategic Highway Upgrade (NH-02) [Manipur]
+37. PRJ-NHAI-SWB-037   : Shillong Western Bypass Highway Corridor [Meghalaya]
+38. PRJ-NHIDCL-DKH-038 : Dimapur-Kohima Four-Laning Highway (NH-29) [Nagaland]
+39. PRJ-NHIDCL-ABP-039 : Aizawl Bypass Tunnel & Approach Road Project [Mizoram]
+40. PRJ-NRLY-AAR-040   : Agartala-Akhaura International Rail Link Corridor [Tripura]
+41. PRJ-RVNL-SRR-041   : Sevoke-Rangpo Railway Tunnel Project (44.96 km) [Sikkim]
+42. PRJ-NHAI-CBE-042   : Chandigarh-Baddi Industrial Area Link Expressway [Chandigarh]
+43. PRJ-PPD-PPM-043   : Puducherry Port Modernization Container Terminal [Puducherry]
+44. PRJ-AAI-PBA-044    : Port Blair Airport Runway Expansion (INS Utkrosh) [Andaman & Nicobar]
+45. PRJ-BRO-ZLT-045    : Zoji La Strategic High-Altitude Tunnel Link (14.15 km) [Ladakh]
+46. PRJ-AAI-AML-046    : Agatti & Minicoy Airstrip Runway Extensions [Lakshadweep]
+47. PRJ-NHAI-SDC-047   : Silvassa-Daman Border Road Industrial Corridor Link [Dadra & Nagar Haveli and Daman & Diu]
+
+====================================================================================================
+DETAILED PROJECT DATA SPECIFICATIONS (PROJECTS 01 TO 47)
+====================================================================================================
+
+[PROJECT 01]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-DME-001
+Project Name          : Delhi-Mumbai Expressway (1,350 km Access-Controlled Greenfield Corridor)
+State / UT            : Maharashtra, Gujarat, Madhya Pradesh, Rajasthan, Haryana, Delhi NCR
+LGD State Code        : 27 (Maharashtra Hub)
+Implementing Agency   : National Highways Authority of India (NHAI)
+Administrative Ministry: Ministry of Road Transport & Highways (MoRTH)
+Project Category      : HIGHWAY / EXPRESSWAY
+Current Project Status: IN_PROGRESS (Partially Operational / Under Construction)
+Total Estimated Cost  : ₹ 1,00,000.00 Crore
+Total Land Required   : 15,000.00 Hectares
+Total Land Acquired   : 14,700.00 Hectares (98.00% Completed)
+Affected Families     : 10,500 Families (Titleholders & Agricultural Occupants)
+Key Districts Covered : Thane, Raigad, Palghar, Vadodara, Surat, Ratlam, Dausa, Gurugram
+Key Villages Covered  : Shahpur, Vashind, Kasara, Igatpuri, Ghoti, Manor
+Average Land Rate     : ₹ 70.00 Lakh to ₹ 80.00 Lakh per Hectare (Greenfield Rate)
+Total Assessed Comp.  : ₹ 11,500.00 Crore
+Total Disbursed Comp. : ₹ 11,270.00 Crore (PFMS Direct Benefit Transfer)
+R&R Entitlement Pkg   : RFCTLARR Schedule II: Alternate housing plot + Annuity grant + Subsistence grant
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 15 June 2018
+  - Project Sanction  : 08 March 2019
+  - Award Sec 3G      : 20 September 2020
+  - Target Completion : 31 October 2026
+eGazette Search Term  : "NHAI Delhi Mumbai Expressway Gazette Section 3A 3D 3G Thane"
+
+[PROJECT 02]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-YEIDA-NIA-002
+Project Name          : Noida International Greenfield Airport (Jewar Phase 1)
+State / UT            : Uttar Pradesh
+LGD State Code        : 9
+Implementing Agency   : Yamuna Expressway Industrial Development Authority (YEIDA)
+Administrative Ministry: Ministry of Civil Aviation
+Project Category      : AIRPORT
+Current Project Status: COMPLETED (Phase 1 Inaugurated March 28, 2026; Commercial Flights June 15, 2026)
+Total Estimated Cost  : ₹ 29,560.00 Crore
+Total Land Required   : 1,334.00 Hectares
+Total Land Acquired   : 1,334.00 Hectares (100.00% Completed)
+Affected Families     : 5,900 Families
+Key Districts Covered : Gautam Buddha Nagar
+Key Villages Covered  : Ranhera, Rohi, Parohi, Kishorpur, Dayanatpur, Banwaribas
+Average Land Rate     : ₹ 2,300.00 per Square Meter (₹ 2.30 Crore per Hectare)
+Total Assessed Comp.  : ₹ 3,068.00 Crore
+Total Disbursed Comp. : ₹ 3,068.00 Crore (100% PFMS Disbursed)
+R&R Entitlement Pkg   : Jewar Resettlement Model: 50 sqm developed plot at Jewar Bangar + ₹ 5.5 Lakh housing construction grant + Mandatory R&R allowance
+Key Statutory Dates   :
+  - Gazette Sec 4/11  : 01 October 2019
+  - Sec 19 Award Date : 15 March 2021
+  - Foundation Stone  : 25 November 2021
+  - Inauguration Date : 28 March 2026
+  - Target Completion : 28 March 2026
+eGazette Search Term  : "YEIDA Jewar Airport Phase 1 Land Acquisition Award Section 19"
+
+[PROJECT 03]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-YEIDA-NIA-003
+Project Name          : Noida International Airport Phase 3 & 4 (Runway Expansion & MRO Hub)
+State / UT            : Uttar Pradesh
+LGD State Code        : 9
+Implementing Agency   : Yamuna Expressway Industrial Development Authority (YEIDA)
+Administrative Ministry: Ministry of Civil Aviation
+Project Category      : AIRPORT
+Current Project Status: IN_PROGRESS (Gazette Hearings & SIA Verification)
+Total Estimated Cost  : ₹ 11,200.00 Crore
+Total Land Required   : 1,858.00 Hectares
+Total Land Acquired   : 980.00 Hectares (52.74% Completed)
+Affected Families     : 15,920 Families
+Key Districts Covered : Gautam Buddha Nagar
+Key Villages Covered  : Thora, Bankapur, Neemka Shahjahanpur, Ahmadpur Chaurouli, Khwajpur, Ramner
+Average Land Rate     : ₹ 4,300.00 per Square Meter (₹ 4.30 Crore per Hectare)
+Total Assessed Comp.  : ₹ 7,989.40 Crore
+Total Disbursed Comp. : ₹ 4,214.00 Crore
+R&R Entitlement Pkg   : RFCTLARR Schedule II + 438 Hectares allocated across 6 resettlement townships with civic amenities
+Key Statutory Dates   :
+  - Gazette Sec 11    : 10 September 2023
+  - SIA Clearance     : 15 January 2024
+  - Award Sec 19      : Pending Concurrence
+  - Target Completion : 31 December 2029
+eGazette Search Term  : "YEIDA Jewar Phase 3 4 Gazette Notification 4300 per sqm"
+
+[PROJECT 04]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NWDA-KBLP-004
+Project Name          : Ken-Betwa River Interlinking Project (Daudhan Dam & Link Canal)
+State / UT            : Madhya Pradesh & Uttar Pradesh
+LGD State Code        : 23 (Madhya Pradesh Hub)
+Implementing Agency   : National Water Development Agency (NWDA) / Ken-Betwa Link Project Authority
+Administrative Ministry: Ministry of Jal Shakti
+Project Category      : IRRIGATION / WATER RESOURCES
+Current Project Status: IN_PROGRESS (Dam Site Engineering & Forest Diversion Compliance)
+Total Estimated Cost  : ₹ 44,605.00 Crore
+Total Land Required   : 9,000.00 Hectares (including 5,578 Ha forest land in Panna Tiger Reserve)
+Total Land Acquired   : 6,017.00 Hectares (66.85% Completed)
+Affected Families     : 4,443 Families (10 Villages Submerged)
+Key Districts Covered : Panna, Chhatarpur, Tikamgarh, Jhansi
+Key Villages Covered  : Madla, Hinauta, Patheriya, Buxwaha, Bariyarpur, Daudhan
+Average Land Rate     : ₹ 12.00 Lakh per Hectare (Agricultural) + 100% Solatium
+Total Assessed Comp.  : ₹ 1,440.00 Crore
+Total Disbursed Comp. : ₹ 962.00 Crore
+R&R Entitlement Pkg   : Special Wildlife Rehabilitation Package: ₹ 12.50 Lakh cash option per family OR 2 Ha agricultural land + free housing at resettlement site
+Key Statutory Dates   :
+  - Gazette Sec 4/11  : 25 August 2017
+  - Cabinet Approval  : 22 December 2021
+  - Collector Award   : 15 October 2023
+  - Target Completion : 30 June 2030
+eGazette Search Term  : "NWDA Ken Betwa Link Project Panna Tiger Reserve Forest Clearance"
+
+[PROJECT 05]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHSRCL-MAHSR-005
+Project Name          : Mumbai-Ahmedabad High-Speed Rail Corridor (Bullet Train)
+State / UT            : Maharashtra & Gujarat
+LGD State Code        : 27 (Maharashtra Segment)
+Implementing Agency   : National High Speed Rail Corporation Limited (NHSRCL)
+Administrative Ministry: Ministry of Railways
+Project Category      : RAILWAY / HIGH-SPEED TRANSIT
+Current Project Status: IN_PROGRESS (Viaduct Construction & Undersea Tunneling)
+Total Estimated Cost  : ₹ 1,08,000.00 Crore
+Total Land Required   : 1,389.50 Hectares
+Total Land Acquired   : 1,389.50 Hectares (100.00% Completed)
+Affected Families     : 3,500 Families
+Key Districts Covered : Thane, Palghar, Mumbai Suburban, Vadodara, Surat
+Key Villages Covered  : Gholvad, Saphale, Kelve Road, Boisar, Shilphata, Zaroli
+Average Land Rate     : ₹ 1.50 Crore per Hectare (with 100% Solatium + 25% Direct Purchase Bonus)
+Total Assessed Comp.  : ₹ 3,120.00 Crore
+Total Disbursed Comp. : ₹ 3,120.00 Crore (100% Disbursed)
+R&R Entitlement Pkg   : RFCTLARR Schedule II + ₹ 5.0 Lakh one-time rehabilitation grant for non-titleholder occupants
+Key Statutory Dates   :
+  - Project Sanction  : 14 September 2017
+  - Gazette Sec 20A   : 01 November 2017
+  - 100% Land Handover: 15 June 2022
+  - Target Completion : 31 December 2030
+eGazette Search Term  : "NHSRCL Bullet Train Land Acquisition Palghar Thane Award"
+
+[PROJECT 06]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-CIDCO-NMIA-006
+Project Name          : Navi Mumbai International Airport (NMIA Panvel Core Hub)
+State / UT            : Maharashtra
+LGD State Code        : 27
+Implementing Agency   : City and Industrial Development Corporation (CIDCO)
+Administrative Ministry: Ministry of Civil Aviation
+Project Category      : AIRPORT
+Current Project Status: COMPLETED (Land Acquisition & Site Preparation Handed Over to Adani Airport Holdings)
+Total Estimated Cost  : ₹ 16,700.00 Crore
+Total Land Required   : 2,268.00 Hectares (1,160 Ha Core Airport Area)
+Total Land Acquired   : 2,268.00 Hectares (100.00% Completed)
+Affected Families     : 3,500 Families (3,000 Structures Displaced across 10 Villages)
+Key Districts Covered : Raigad (Panvel Taluka)
+Key Villages Covered  : Chinchpada, Kopar, Kolhi, Ulwe, Ganeshpuri, Targhar, Kombadbhuje, Waghivali
+Average Land Rate     : CIDCO 22.5% Scheme: 22.5% developed plot allocation + ₹ 1,500/sqft construction cost
+Total Assessed Comp.  : ₹ 2,850.00 Crore
+Total Disbursed Comp. : ₹ 2,850.00 Crore
+R&R Entitlement Pkg   : Resettlement at Pushpak Nagar (Ulwe): 100% freehold land + free school & hospital access + ₹ 50,000 shifting allowance
+Key Statutory Dates   :
+  - Gazette Sec 4     : 01 March 2017
+  - Foundation Stone  : 18 February 2018
+  - 100% R&R Handover : 10 August 2019
+  - Target Completion : 31 March 2025
+eGazette Search Term  : "CIDCO Navi Mumbai Airport Resettlement R&R Pushpak Nagar"
+
+[PROJECT 07]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-BDA-BBC-007
+Project Name          : Bengaluru Peripheral Ring Road (Bengaluru Business Corridor - 73.5 km)
+State / UT            : Karnataka
+LGD State Code        : 29
+Implementing Agency   : Bangalore Development Authority (BDA)
+Administrative Ministry: Ministry of Housing & Urban Affairs
+Project Category      : URBAN_DEVELOPMENT / HIGHWAY
+Current Project Status: IN_PROGRESS (Tender Finalization & Land Compensation Restructuring)
+Total Estimated Cost  : ₹ 27,000.00 Crore
+Total Land Required   : 1,036.00 Hectares (across 77 villages)
+Total Land Acquired   : 673.00 Hectares (64.96% Completed)
+Affected Families     : 4,000 Families
+Key Districts Covered : Bengaluru Urban, Bengaluru Rural
+Key Villages Covered  : Hoskote, Sarjapura, Anekal, Jigani, Devanahalli, Budigere
+Average Land Rate     : Supreme Court Fixed Matrix: Guideline value + 100% solatium (Approx ₹ 2.5 Cr/Ha)
+Total Assessed Comp.  : ₹ 5,200.00 Crore
+Total Disbursed Comp. : ₹ 3,375.00 Crore
+R&R Entitlement Pkg   : BDA Act / RFCTLARR Option: 50% cash compensation + 50% developed land layout allocation
+Key Statutory Dates   :
+  - Preliminary Notif : 15 April 2021
+  - Cabinet Approval  : 01 June 2022
+  - Target Completion : 31 December 2028
+eGazette Search Term  : "BDA Bengaluru Peripheral Ring Road Land Acquisition 77 Villages"
+
+[PROJECT 08]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-DFCCIL-WDFC-008
+Project Name          : Western Dedicated Freight Corridor (Dadri-JNPT Gujarat Segment)
+State / UT            : Gujarat
+LGD State Code        : 24
+Implementing Agency   : Dedicated Freight Corridor Corporation of India Ltd (DFCCIL)
+Administrative Ministry: Ministry of Railways
+Project Category      : RAILWAY / FREIGHT CORRIDOR
+Current Project Status: IN_PROGRESS (Operational Track Testing & Feeder Link Execution)
+Total Estimated Cost  : ₹ 16,800.00 Crore
+Total Land Required   : 2,150.00 Hectares
+Total Land Acquired   : 2,150.00 Hectares (100.00% Completed)
+Affected Families     : 5,000 Families
+Key Districts Covered : Vadodara, Surat, Bharuch, Anand, Navsari
+Key Villages Covered  : Vadodara Rural, Navsari, Dabhoi, Karjan, Miyagam, Makarpura
+Average Land Rate     : ₹ 60.00 Lakh per Hectare + Solatium
+Total Assessed Comp.  : ₹ 1,890.00 Crore
+Total Disbursed Comp. : ₹ 1,890.00 Crore
+R&R Entitlement Pkg   : Railways Act 1989 / RFCTLARR Schedule II entitlements + PFMS direct transfer
+Key Statutory Dates   :
+  - Sanction Date     : 01 January 2008
+  - Gazette Sec 20A   : 20 May 2010
+  - Award Sec 20F     : 15 March 2014
+  - Target Completion : 30 June 2026
+eGazette Search Term  : "DFCCIL WDFC Gujarat Gazette Notification Section 20A 20F"
+
+[PROJECT 09]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-DFCCIL-EDFC-009
+Project Name          : Eastern Dedicated Freight Corridor (Dankuni-Sonnagar West Bengal Section)
+State / UT            : West Bengal
+LGD State Code        : 19
+Implementing Agency   : Dedicated Freight Corridor Corporation of India Ltd (DFCCIL)
+Administrative Ministry: Ministry of Railways
+Project Category      : RAILWAY / FREIGHT CORRIDOR
+Current Project Status: IN_PROGRESS (Track Laying & Electrification)
+Total Estimated Cost  : ₹ 13,500.00 Crore
+Total Land Required   : 3,100.00 Hectares
+Total Land Acquired   : 2,015.00 Hectares (65.00% Completed)
+Affected Families     : 4,500 Families
+Key Districts Covered : Hooghly, Howrah, Bardhaman
+Key Villages Covered  : Dankuni, Bardhaman, Asansol, Jhajha, Mugalsarai, Andal
+Average Land Rate     : ₹ 45.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 1,450.00 Crore
+Total Disbursed Comp. : ₹ 942.50 Crore
+R&R Entitlement Pkg   : RFCTLARR Schedule II package with mandatory employment preference in DFCCIL auxiliary units
+Key Statutory Dates   :
+  - Sanction Date     : 01 January 2008
+  - Gazette Sec 20A   : 10 August 2011
+  - Award Sec 20F     : 20 June 2016
+  - Target Completion : 31 December 2026
+eGazette Search Term  : "DFCCIL EDFC Dankuni Land Acquisition West Bengal Gazette"
+
+[PROJECT 10]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-UPEIDA-PVE-010
+Project Name          : Purvanchal Expressway Economic Node Expansion
+State / UT            : Uttar Pradesh
+LGD State Code        : 9
+Implementing Agency   : Uttar Pradesh Expressways Industrial Development Authority (UPEIDA)
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY / INDUSTRIAL CORRIDOR
+Current Project Status: IN_PROGRESS (Warehousing & Logistics Park Layout Possession)
+Total Estimated Cost  : ₹ 8,750.00 Crore
+Total Land Required   : 3,850.00 Hectares
+Total Land Acquired   : 3,041.00 Hectares (78.98% Completed)
+Affected Families     : 6,000 Families
+Key Districts Covered : Lucknow, Barabanki, Sultanpur, Azamgarh, Ghazipur
+Key Villages Covered  : Mohanlalganj, Bakshi Ka Talab, Nigohan, Harchandpur, Kadipur, Dostpur
+Average Land Rate     : ₹ 35.00 Lakh per Hectare + 100% Solatium
+Total Assessed Comp.  : ₹ 2,150.00 Crore
+Total Disbursed Comp. : ₹ 1,698.00 Crore
+R&R Entitlement Pkg   : UPEIDA Direct Purchase Policy: 4x circle rate in rural areas + annuity allowance
+Key Statutory Dates   :
+  - Gazette Notif     : 15 January 2018
+  - Foundation Stone  : 01 August 2018
+  - Award Finalized   : 20 November 2019
+  - Target Completion : 31 March 2026
+eGazette Search Term  : "UPEIDA Purvanchal Expressway Industrial Node Land Acquisition"
+
+[PROJECT 11]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-CMRL-CMP2-011
+Project Name          : Chennai Metro Rail Phase 2 (Corridor 3, 4, 5 Expansion - 118.9 km)
+State / UT            : Tamil Nadu
+LGD State Code        : 33
+Implementing Agency   : Chennai Metro Rail Limited (CMRL)
+Administrative Ministry: Ministry of Housing & Urban Affairs
+Project Category      : URBAN_DEVELOPMENT / METRO RAIL
+Current Project Status: IN_PROGRESS (TBM Tunnels & Station Elevated Structure Construction)
+Total Estimated Cost  : ₹ 63,246.00 Crore
+Total Land Required   : 116.20 Hectares
+Total Land Acquired   : 114.20 Hectares (98.27% Completed)
+Affected Families     : 1,200 Families
+Key Districts Covered : Chennai, Kanchipuram, Thiruvallur
+Key Villages Covered  : Sholinganallur, Madhavaram, Kilambakkam, Poonamallee, Kodambakkam, Perungudi
+Average Land Rate     : ₹ 12,000.00 per Square Meter (Urban Commercial Matrix)
+Total Assessed Comp.  : ₹ 1,450.00 Crore
+Total Disbursed Comp. : ₹ 1,425.00 Crore
+R&R Entitlement Pkg   : Resettlement flats allocated at Tamil Nadu Urban Habitat Development Board (TNUHDB) sites
+Key Statutory Dates   :
+  - Gazette Sec 4     : 15 June 2021
+  - Cabinet Sanction  : 01 January 2022
+  - Land Handover     : 01 November 2023
+  - Target Completion : 31 December 2028
+eGazette Search Term  : "CMRL Chennai Metro Phase 2 Land Acquisition Award"
+
+[PROJECT 12]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-SECI-BSP4-012
+Project Name          : Bhadla Mega Solar Ultra Park Phase IV (Thar Desert Expansion)
+State / UT            : Rajasthan
+LGD State Code        : 8
+Implementing Agency   : Solar Energy Corporation of India (SECI) / Rajasthan Renewable Energy Corp
+Administrative Ministry: Ministry of New & Renewable Energy
+Project Category      : RENEWABLE_ENERGY
+Current Project Status: COMPLETED (Fully Commissioned 2,245 MW Solar Park)
+Total Estimated Cost  : ₹ 4,800.00 Crore
+Total Land Required   : 4,500.00 Hectares
+Total Land Acquired   : 4,500.00 Hectares (100.00% Completed)
+Affected Families     : 800 Families (Barren Government & Private Pasture Allotments)
+Key Districts Covered : Jodhpur, Phalodi
+Key Villages Covered  : Bhadla, Pokaran, Phalodi, Bap, Balesar, Shergarh
+Average Land Rate     : ₹ 4.50 Lakh per Hectare (Desert Revenue Allotment Rate)
+Total Assessed Comp.  : ₹ 202.50 Crore
+Total Disbursed Comp. : ₹ 202.50 Crore (100% Disbursed)
+R&R Entitlement Pkg   : Pasture land lease annuity + Local village solar electrification grant
+Key Statutory Dates   :
+  - Gazette Sec 4     : 10 September 2015
+  - Land Allocation   : 01 April 2016
+  - Award Date        : 15 August 2017
+  - Inauguration Date : 31 March 2020
+  - Target Completion : 31 March 2020
+eGazette Search Term  : "SECI Bhadla Solar Park Phase 4 Land Allotment Jodhpur"
+eGazette Search Term  : "SECI Bhadla Solar Park Phase 4 Land Allotment Jodhpur"
+
+[PROJECT 13]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NRLY-USBRL-013
+Project Name          : Udhampur-Srinagar-Baramulla Rail Link (USBRL Safety Depot & Sidings)
+State / UT            : Jammu & Kashmir
+LGD State Code        : 1
+Implementing Agency   : Northern Railway / IRCON / KRCL
+Administrative Ministry: Ministry of Railways
+Project Category      : RAILWAY / STRATEGIC TRANSIT
+Current Project Status: IN_PROGRESS (Chenab Bridge Open, Station Yard Expansion Underway)
+Total Estimated Cost  : ₹ 2,800.00 Crore (Depots & Freight Yards Segment)
+Total Land Required   : 320.00 Hectares
+Total Land Acquired   : 265.00 Hectares (82.81% Completed)
+Affected Families     : 600 Families
+Key Districts Covered : Baramulla, Srinagar, Reasi, Ramban
+Key Villages Covered  : Banihal, Qazigund, Anantnag, Awantipora, Budgam, Sopore
+Average Land Rate     : ₹ 35.00 Lakh per Hectare + 100% Solatium
+Total Assessed Comp.  : ₹ 185.50 Crore
+Total Disbursed Comp. : ₹ 153.60 Crore
+R&R Entitlement Pkg   : Railways Act / RFCTLARR Schedule II + Mandatory employment in railway maintenance roles
+Key Statutory Dates   :
+  - Gazette Sec 20A   : 20 May 2019
+  - Sanction Date     : 01 January 2020
+  - Award Sec 20F     : 10 November 2021
+  - Target Completion : 31 December 2027
+eGazette Search Term  : "Northern Railway USBRL Kashmir Rail Link Gazette Railways Act 124"
+
+[PROJECT 14]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-TIDCO-TNDIC-014
+Project Name          : Tamil Nadu Defence Industrial Corridor (Coimbatore Aerospace Node)
+State / UT            : Tamil Nadu
+LGD State Code        : 33
+Implementing Agency   : Tamil Nadu Industrial Development Corporation (TIDCO)
+Administrative Ministry: Ministry of Defence
+Project Category      : DEFENCE / INDUSTRIAL CORRIDOR
+Current Project Status: IN_PROGRESS (OEM Plot Allotments & Testing Center Layouts)
+Total Estimated Cost  : ₹ 3,200.00 Crore
+Total Land Required   : 950.00 Hectares
+Total Land Acquired   : 712.00 Hectares (74.95% Completed)
+Affected Families     : 1,500 Families
+Key Districts Covered : Coimbatore, Tiruppur
+Key Villages Covered  : Sulur, Kinathukadavu, Othakalmandapam, Arasur, Perur, Karamadai
+Average Land Rate     : ₹ 42.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 399.00 Crore
+Total Disbursed Comp. : ₹ 299.00 Crore
+R&R Entitlement Pkg   : TIDCO Industrial Policy: 100% Cash compensation + Preference in corridor employment
+Key Statutory Dates   :
+  - Corridor Launch   : 28 January 2019
+  - Gazette Notif     : 01 June 2019
+  - Award Date        : 20 March 2022
+  - Target Completion : 30 June 2027
+eGazette Search Term  : "TIDCO Tamil Nadu Defence Industrial Corridor Coimbatore Land"
+
+[PROJECT 15]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NICDC-AKIC-015
+Project Name          : Amritsar-Kolkata Industrial Corridor (AKIC Dobhi Gaya Node)
+State / UT            : Bihar
+LGD State Code        : 10
+Implementing Agency   : National Industrial Corridor Development Corporation (NICDC) / BIADA
+Administrative Ministry: Ministry of Commerce & Industry
+Project Category      : INDUSTRIAL_CORRIDOR
+Current Project Status: PLANNING (Land Acquisition Sanction & SIA Verification)
+Total Estimated Cost  : ₹ 6,500.00 Crore
+Total Land Required   : 1,600.00 Hectares
+Total Land Acquired   : 840.00 Hectares (52.50% Completed)
+Affected Families     : 2,000 Families
+Key Districts Covered : Gaya
+Key Villages Covered  : Dobhi, Manpur, Wazirganj, Bodh Gaya, Fatehpur, Tekari
+Average Land Rate     : ₹ 28.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 448.00 Crore
+Total Disbursed Comp. : ₹ 235.20 Crore
+R&R Entitlement Pkg   : Bihar Land Acquisition Rules / RFCTLARR Schedule II package
+Key Statutory Dates   :
+  - SIA Notification  : 15 March 2023
+  - NICDC Approval    : 01 October 2023
+  - Target Completion : 31 December 2030
+eGazette Search Term  : "NICDC AKIC Gaya Dobhi Node Land Acquisition Bihar"
+
+[PROJECT 16]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-KMP-016
+Project Name          : Kundli-Manesar-Palwal (KMP) Western Peripheral Expressway Node
+State / UT            : Haryana
+LGD State Code        : 6
+Implementing Agency   : National Highways Authority of India (NHAI) / HSIIDC
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY / EXPRESSWAY
+Current Project Status: COMPLETED (Main Expressway Operational; Industrial Logistics Nodes Active)
+Total Estimated Cost  : ₹ 6,400.00 Crore
+Total Land Required   : 1,200.00 Hectares
+Total Land Acquired   : 1,200.00 Hectares (100.00% Completed)
+Affected Families     : 2,500 Families
+Key Districts Covered : Gurugram, Sonipat, Jhajjar, Palwal
+Key Villages Covered  : Kundli, Manesar, Palwal, Sohna, Badli, Farrukhnagar
+Average Land Rate     : ₹ 85.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 1,020.00 Crore
+Total Disbursed Comp. : ₹ 1,020.00 Crore
+R&R Entitlement Pkg   : Haryana Urban Development R&R policy + Developed commercial booth plots
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 15 March 2006
+  - Sanction Date     : 01 June 2009
+  - Final Award Sec 3G: 10 December 2009
+  - Opened to Traffic : 10 November 2018
+eGazette Search Term  : "KMP Expressway Gazette Section 3D Haryana Land Acquisition"
+
+[PROJECT 17]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-DAK-017
+Project Name          : Delhi-Amritsar-Katra Expressway (Haryana Stretch - 158 km)
+State / UT            : Haryana
+LGD State Code        : 6
+Implementing Agency   : National Highways Authority of India (NHAI)
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY / EXPRESSWAY
+Current Project Status: IN_PROGRESS (Main Carriageway Paving & Interchanges)
+Total Estimated Cost  : ₹ 9,680.00 Crore
+Total Land Required   : 2,024.00 Hectares
+Total Land Acquired   : 2,024.00 Hectares (100.00% Completed)
+Affected Families     : 4,200 Families
+Key Districts Covered : Kaithal, Jind, Jhajjar, Rohtak
+Key Villages Covered  : Kaithal Rural, Jind Bypass, Narwana, Uchana, Safidon, Pillukhera
+Average Land Rate     : ₹ 65.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 1,315.60 Crore
+Total Disbursed Comp. : ₹ 1,315.60 Crore
+R&R Entitlement Pkg   : RFCTLARR Schedule II + 100% Solatium + 12% interest from 3A notification
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 10 May 2020
+  - Sanction Date     : 15 April 2021
+  - Award Sec 3G      : 15 December 2021
+  - Target Completion : 31 August 2026
+eGazette Search Term  : "NHAI Delhi Amritsar Katra Haryana Section 3G Award"
+
+[PROJECT 18]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-DAKP-018
+Project Name          : Delhi-Amritsar-Katra Expressway (Punjab Corridor)
+State / UT            : Punjab
+LGD State Code        : 3
+Implementing Agency   : National Highways Authority of India (NHAI)
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY / EXPRESSWAY
+Current Project Status: IN_PROGRESS (Disbursement of Enhanced 3G Compensation Awards)
+Total Estimated Cost  : ₹ 15,000.00 Crore
+Total Land Required   : 5,666.00 Hectares
+Total Land Acquired   : 4,800.00 Hectares (84.72% Completed)
+Affected Families     : 8,500 Families
+Key Districts Covered : Jalandhar, Ludhiana, Kapurthala, Gurdaspur
+Key Villages Covered  : Kartarpur, Nakodar, Phillaur, Goraya, Bhogpur, Adampur
+Average Land Rate     : ₹ 75.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 4,249.50 Crore
+Total Disbursed Comp. : ₹ 3,600.00 Crore
+R&R Entitlement Pkg   : Enhanced Award u/s 3G NH Act + Solatium + Agricultural machinery relocation allowance
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 12 September 2020
+  - Sanction Date     : 01 July 2021
+  - Award Sec 3G      : 10 April 2022
+  - Target Completion : 31 August 2026
+eGazette Search Term  : "NHAI Delhi Amritsar Katra Punjab Packages Section 3G"
+
+[PROJECT 19]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NRLY-BML-019
+Project Name          : Bilaspur-Manali-Leh Strategic Railway Line
+State / UT            : Himachal Pradesh
+LGD State Code        : 2
+Implementing Agency   : Northern Railway / Border Rails
+Administrative Ministry: Ministry of Railways
+Project Category      : RAILWAY / STRATEGIC TRANSIT
+Current Project Status: IN_PROGRESS (Final Location Survey & Tunnel Portal Land Acquisition)
+Total Estimated Cost  : ₹ 83,360.00 Crore
+Total Land Required   : 2,200.00 Hectares
+Total Land Acquired   : 840.00 Hectares (38.18% Completed)
+Affected Families     : 3,200 Families
+Key Districts Covered : Bilaspur, Mandi, Kullu, Lahaul & Spiti
+Key Villages Covered  : Bilaspur Town, Sundernagar, Mandi Rural, Keylong, Kothi, Jispa
+Average Land Rate     : ₹ 40.00 Lakh per Hectare (Mountainous Terraced Land Matrix)
+Total Assessed Comp.  : ₹ 880.00 Crore
+Total Disbursed Comp. : ₹ 336.00 Crore
+R&R Entitlement Pkg   : Railways Act 1989 / RFCTLARR Schedule II + Cold-climate housing reconstruction grant
+Key Statutory Dates   :
+  - Gazette Sec 20A   : 10 July 2020
+  - Project Sanction  : 15 March 2022
+  - Award Sec 20F     : 20 November 2023
+  - Target Completion : 31 December 2032
+eGazette Search Term  : "Bilaspur Manali Leh Railway Line Gazette Survey Land"
+
+[PROJECT 20]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-RVNL-RKRL-020
+Project Name          : Rishikesh-Karnaprayag Broad-Gauge Rail Link (126 km)
+State / UT            : Uttarakhand
+LGD State Code        : 5
+Implementing Agency   : Rail Vikas Nigam Limited (RVNL)
+Administrative Ministry: Ministry of Railways
+Project Category      : RAILWAY
+Current Project Status: IN_PROGRESS (105 km Tunnels Excavation & Station Yard Layouts)
+Total Estimated Cost  : ₹ 16,200.00 Crore
+Total Land Required   : 791.00 Hectares (Forest & Private Land)
+Total Land Acquired   : 720.00 Hectares (91.02% Completed)
+Affected Families     : 2,800 Families
+Key Districts Covered : Dehradun, Tehri Garhwal, Pauri Garhwal, Chamoli
+Key Villages Covered  : Rishikesh Rural, Srinagar Garhwal, Rudraprayag, Karnaprayag, Byasi, Devprayag
+Average Land Rate     : ₹ 30.00 Lakh per Hectare + 100% Solatium
+Total Assessed Comp.  : ₹ 237.30 Crore
+Total Disbursed Comp. : ₹ 216.00 Crore
+R&R Entitlement Pkg   : Forest Rights Act (FRA) compliance + RFCTLARR Schedule II hillside rehabilitation
+Key Statutory Dates   :
+  - Gazette Sec 20A   : 15 February 2017
+  - Sanction Date     : 01 June 2019
+  - Award Sec 20F     : 10 April 2020
+  - Target Completion : 31 December 2027
+eGazette Search Term  : "RVNL Rishikesh Karnaprayag Rail Line Forest Clearance 791 Ha"
+
+[PROJECT 21]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-BRO-CDH-021
+Project Name          : Char Dham All-Weather Highway Network (889 km Upgradation)
+State / UT            : Uttarakhand
+LGD State Code        : 5
+Implementing Agency   : Border Roads Organisation (BRO) / MoRTH / Uttarakhand PWD
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY
+Current Project Status: IN_PROGRESS (Slope Stabilization & Eco-Sensitive Zone Compliance)
+Total Estimated Cost  : ₹ 12,000.00 Crore
+Total Land Required   : 520.00 Hectares
+Total Land Acquired   : 450.00 Hectares (86.54% Completed)
+Affected Families     : 1,900 Families
+Key Districts Covered : Uttarkashi, Chamoli, Rudraprayag, Pithoragarh
+Key Villages Covered  : Netala, Dharasu, Joshimath, Pipalkoti, Badrinath Road, Guptkashi
+Average Land Rate     : ₹ 38.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 197.60 Crore
+Total Disbursed Comp. : ₹ 171.00 Crore
+R&R Entitlement Pkg   : Eco-sensitive zone green mitigation protocol + Market-rate commercial shop replacement
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 10 April 2016
+  - Foundation Stone  : 27 December 2016
+  - Award Sec 3G      : 15 May 2018
+  - Target Completion : 31 December 2026
+eGazette Search Term  : "BRO Char Dham Highway Land Acquisition Bhagirathi Eco Zone"
+
+[PROJECT 22]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-APCRDA-ACC-022
+Project Name          : Amaravati Capital City Development Corridor (Land Pooling Scheme)
+State / UT            : Andhra Pradesh
+LGD State Code        : 28
+Implementing Agency   : Andhra Pradesh Capital Region Development Authority (APCRDA)
+Administrative Ministry: Ministry of Housing & Urban Affairs
+Project Category      : URBAN_DEVELOPMENT
+Current Project Status: IN_PROGRESS (Trunk Infrastructure & Capital Layout Development)
+Total Estimated Cost  : ₹ 51,000.00 Crore
+Total Land Required   : 13,355.00 Hectares (33,000 Acres under Land Pooling Scheme)
+Total Land Acquired   : 11,000.00 Hectares (82.37% Completed)
+Affected Families     : 24,000 Families (Farmers & Landless Agricultural Workers)
+Key Districts Covered : Guntur, Krishna
+Key Villages Covered  : Thullur, Mandadam, Velagapudi, Rayapudi, Uddandarayunipalem, Penumaka
+Average Land Rate     : LPS Model: 1,000 sqyd residential + 450 sqyd commercial plot per acre pooled
+Total Assessed Comp.  : ₹ 4,500.00 Crore (Annuity Disbursements)
+Total Disbursed Comp. : ₹ 3,710.00 Crore
+R&R Entitlement Pkg   : APCRDA Annuity: ₹ 50,000/acre/year (with 10% annual hike for 10 years) + ₹ 2,500/month pension for landless families
+Key Statutory Dates   :
+  - LPS Notification  : 15 January 2015
+  - Foundation Stone  : 22 October 2015
+  - Allotment Award   : 10 August 2016
+  - Target Completion : 31 December 2028
+eGazette Search Term  : "APCRDA Amaravati Land Pooling Scheme Notification 33000 Acres"
+
+[PROJECT 23]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-AP-PIP-023
+Project Name          : Polavaram Multipurpose Irrigation Project Phase 1
+State / UT            : Andhra Pradesh
+LGD State Code        : 28
+Implementing Agency   : Polavaram Project Authority / AP Water Resources Dept
+Administrative Ministry: Ministry of Jal Shakti
+Project Category      : IRRIGATION
+Current Project Status: IN_PROGRESS (Dam Spillway & +41.15m Resettlement Colony Execution)
+Total Estimated Cost  : ₹ 55,548.00 Crore
+Total Land Required   : 3,800.00 Hectares
+Total Land Acquired   : 3,200.00 Hectares (84.21% Completed)
+Affected Families     : 4,443 Families (Submergence Tribal Habitations)
+Key Districts Covered : East Godavari, West Godavari, Eluru, Alluri Sitharama Raju
+Key Villages Covered  : Polavaram, Angaluru, Pattiseema, Kadavali, Devipatnam, Ramaiahpet
+Average Land Rate     : ₹ 10.00 Lakh per Hectare + Tribal Special Package
+Total Assessed Comp.  : ₹ 380.00 Crore
+Total Disbursed Comp. : ₹ 320.00 Crore
+R&R Entitlement Pkg   : Special Tribal Package: ₹ 10.0 Lakh per family cash settlement OR R&R housing colony plot + 1 acre agricultural land
+Key Statutory Dates   :
+  - Gazette Sec 4/11  : 15 February 2014
+  - Ordinance Date    : 01 June 2014
+  - R&R Award Date    : 10 October 2016
+  - Target Completion : 30 June 2027
+eGazette Search Term  : "Polavaram Project Resettlement R&R Package SC ST Schedule II"
+
+[PROJECT 24]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-TSIIC-PFC-024
+Project Name          : Hyderabad Pharma City / Future City (Mucherla Hub)
+State / UT            : Telangana
+LGD State Code        : 36
+Implementing Agency   : Telangana State Industrial Infrastructure Corporation (TSIIC) / FCDA
+Administrative Ministry: Ministry of Commerce & Industry
+Project Category      : INDUSTRIAL_CORRIDOR
+Current Project Status: PLANNING (Land Reorganization & Environmental Clearance Compliance)
+Total Estimated Cost  : ₹ 64,000.00 Crore
+Total Land Required   : 7,824.00 Hectares (19,333 Acres)
+Total Land Acquired   : 5,400.00 Hectares (69.02% Completed)
+Affected Families     : 9,800 Families
+Key Districts Covered : Rangareddy, Medchal-Malkajgiri
+Key Villages Covered  : Mucherla, Kandukur, Yacharam, Meerkhanpet, Kadavergu, Medipally
+Average Land Rate     : ₹ 16.00 Lakh to ₹ 20.00 Lakh per Acre
+Total Assessed Comp.  : ₹ 3,129.60 Crore
+Total Disbursed Comp. : ₹ 2,160.00 Crore
+R&R Entitlement Pkg   : TSIIC Policy: 121 sqyd house plot per acre acquired + cash compensation
+Key Statutory Dates   :
+  - Gazette Sec 11    : 10 August 2017
+  - TSIIC Sanction    : 15 December 2019
+  - Target Completion : 31 December 2029
+eGazette Search Term  : "TSIIC Hyderabad Pharma City Future City Land Acquisition"
+
+[PROJECT 25]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-TRRR-025
+Project Name          : Telangana Regional Ring Road (RRR Northern Segment - 164 km)
+State / UT            : Telangana
+LGD State Code        : 36
+Implementing Agency   : National Highways Authority of India (NHAI)
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY / EXPRESSWAY
+Current Project Status: IN_PROGRESS (Section 3D Gazette Finalization & Award Determination)
+Total Estimated Cost  : ₹ 33,000.00 Crore
+Total Land Required   : 2,800.00 Hectares
+Total Land Acquired   : 1,980.00 Hectares (70.71% Completed)
+Affected Families     : 6,500 Families
+Key Districts Covered : Medak, Yadadri Bhuvanagiri, Sangareddy, Siddipet
+Key Villages Covered  : Toopran, Choutuppal, Gajwel, Narsapur, Wargal, Chityal
+Average Land Rate     : ₹ 45.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 1,260.00 Crore
+Total Disbursed Comp. : ₹ 891.00 Crore
+R&R Entitlement Pkg   : RFCTLARR Schedule II package + NH Act 1956 statutory interest
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 20 February 2021
+  - NHAI Approval     : 15 October 2021
+  - Target Completion : 30 June 2029
+eGazette Search Term  : "NHAI Telangana Regional Ring Road RRR Section 3A Gazette"
+
+[PROJECT 26]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-VISL-VZP-026
+Project Name          : Vizhinjam International Transshipment Deepwater Seaport
+State / UT            : Kerala
+LGD State Code        : 32
+Implementing Agency   : Vizhinjam International Seaport Limited (VISL) / Adani Vizhinjam Port
+Administrative Ministry: Ministry of Ports, Shipping & Waterways
+Project Category      : PORT
+Current Project Status: COMPLETED (Deepwater Port Operational; Commercial Cargo Berthing Active)
+Total Estimated Cost  : ₹ 7,525.00 Crore
+Total Land Required   : 93.00 Hectares (230 Acres)
+Total Land Acquired   : 93.00 Hectares (100.00% Completed)
+Affected Families     : 1,200 Families (Fisherfolk Habitations & Coastal Landholders)
+Key Districts Covered : Thiruvananthapuram
+Key Villages Covered  : Vizhinjam, Mulamkunnathukavu, Kovalam, Balaramapuram, Kanjiramkulam
+Average Land Rate     : Kerala Government Special Land Package: ₹ 12.50 Lakh per Cent
+Total Assessed Comp.  : ₹ 287.50 Crore
+Total Disbursed Comp. : ₹ 287.50 Crore
+R&R Entitlement Pkg   : Fisherfolk Special R&R Package: ₹ 100 Crore rehabilitation fund + alternative housing at Adimalathura
+Key Statutory Dates   :
+  - Gazette Sec 4     : 15 June 2014
+  - Concession Date   : 05 December 2015
+  - Award Finalized   : 10 September 2015
+  - First Vessel Berth: 31 October 2024
+eGazette Search Term  : "Vizhinjam International Seaport Port Land Acquisition Award Kerala"
+
+[PROJECT 27]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-KMRL-KMP2-027
+Project Name          : Kochi Metro Phase 2 (JLN Stadium - Kakkanad Pink Line - 11.2 km)
+State / UT            : Kerala
+LGD State Code        : 32
+Implementing Agency   : Kochi Metro Rail Limited (KMRL)
+Administrative Ministry: Ministry of Housing & Urban Affairs
+Project Category      : URBAN_DEVELOPMENT / METRO RAIL
+Current Project Status: IN_PROGRESS (Piling Works & Infopark Station Pylons Execution)
+Total Estimated Cost  : ₹ 1,957.00 Crore
+Total Land Required   : 45.00 Hectares
+Total Land Acquired   : 40.00 Hectares (88.89% Completed)
+Affected Families     : 650 Families
+Key Districts Covered : Ernakulam
+Key Villages Covered  : Kakkanad, Vyttila, Palarivattom, Edappally, Kalamassery, Tripunithura
+Average Land Rate     : ₹ 18.00 Lakh per Cent (Urban Commercial Corridor Rate)
+Total Assessed Comp.  : ₹ 198.00 Crore
+Total Disbursed Comp. : ₹ 176.00 Crore
+R&R Entitlement Pkg   : KMRL Direct Negotiation Scheme + Commercial shop owner resettlement allowance
+Key Statutory Dates   :
+  - Gazette Sec 4     : 15 December 2021
+  - Sanction Date     : 01 September 2022
+  - Award Date        : 20 March 2023
+  - Target Completion : 30 April 2027
+eGazette Search Term  : "KMRL Kochi Metro Phase 2 Pink Line Land Handover Kakkanad"
+
+[PROJECT 28]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-JSW-POSCO-028
+Project Name          : JSW-POSCO Keonjhar Integrated Steel Plant Site
+State / UT            : Odisha
+LGD State Code        : 21
+Implementing Agency   : IPICOL / Odisha Industrial Infrastructure Development Corp (IDCO)
+Administrative Ministry: Ministry of Commerce & Industry
+Project Category      : INDUSTRIAL_CORRIDOR / STEEL
+Current Project Status: IN_PROGRESS (Industrial Allotment Boundary Leveling)
+Total Estimated Cost  : ₹ 65,000.00 Crore
+Total Land Required   : 1,200.00 Hectares
+Total Land Acquired   : 980.00 Hectares (81.67% Completed)
+Affected Families     : 4,200 Families
+Key Districts Covered : Keonjhar
+Key Villages Covered  : Banspal, Jhumpura, Keonjhar Sadar, Champua, Ghatgaon, Patna
+Average Land Rate     : ₹ 18.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 216.00 Crore
+Total Disbursed Comp. : ₹ 176.40 Crore
+R&R Entitlement Pkg   : Odisha Resettlement & Rehabilitation Policy 2006: Cash in lieu of homestead plot + technical training for youths
+Key Statutory Dates   :
+  - IDCO Notification : 15 June 2022
+  - Land Handover     : 10 March 2024
+  - Project Launch    : 25 October 2024
+  - Target Completion : 31 December 2031
+eGazette Search Term  : "IDCO Odisha Keonjhar Steel Plant Land Allotment JSW POSCO"
+
+[PROJECT 29]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-PPA-WDD-029
+Project Name          : Paradip Port Western Dock Capacity Expansion
+State / UT            : Odisha
+LGD State Code        : 21
+Implementing Agency   : Paradip Port Authority (PPA)
+Administrative Ministry: Ministry of Ports, Shipping & Waterways
+Project Category      : PORT
+Current Project Status: IN_PROGRESS (Breakwater Construction & Mechanized Berth Installation)
+Total Estimated Cost  : ₹ 3,400.00 Crore
+Total Land Required   : 280.00 Hectares (Port Estate Land)
+Total Land Acquired   : 280.00 Hectares (100.00% Completed)
+Affected Families     : 0 Families (Existing Port Estate Boundaries)
+Key Districts Covered : Jagatsinghapur
+Key Villages Covered  : Paradip Port, Western Dock Node, Balitutha, Kujang, Atharbanki, Sandhakud
+Average Land Rate     : Port Trust Land Allocation Matrix
+Total Assessed Comp.  : ₹ 0.00 Crore (Inter-departmental Transfer)
+Total Disbursed Comp. : ₹ 0.00 Crore
+R&R Entitlement Pkg   : N/A (Port Estate Expansion)
+Key Statutory Dates   :
+  - Gazette Notif     : 15 October 2021
+  - Award Sanction    : 28 February 2022
+  - Foundation Stone  : 01 April 2022
+  - Target Completion : 31 December 2026
+eGazette Search Term  : "Paradip Port Authority Western Dock Expansion Gazette"
+
+[PROJECT 30]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-JUIDCO-RSC-030
+Project Name          : Ranchi Smart City Outer Ring Road Connectivity
+State / UT            : Jharkhand
+LGD State Code        : 20
+Implementing Agency   : Jharkhand Urban Infrastructure Development Company (JUIDCO)
+Administrative Ministry: Ministry of Housing & Urban Affairs
+Project Category      : URBAN_DEVELOPMENT / HIGHWAY
+Current Project Status: IN_PROGRESS (Asphalt Paving & Right-of-Way Land Clearing)
+Total Estimated Cost  : ₹ 7,200.00 Crore
+Total Land Required   : 850.00 Hectares
+Total Land Acquired   : 610.00 Hectares (71.76% Completed)
+Affected Families     : 2,800 Families
+Key Districts Covered : Ranchi
+Key Villages Covered  : Dhurwa, Hatma, Ranchi Rural, Ring Road Node, Namkum, Kanke
+Average Land Rate     : ₹ 32.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 272.00 Crore
+Total Disbursed Comp. : ₹ 195.20 Crore
+R&R Entitlement Pkg   : CNT/SPT Act Compliance + RFCTLARR Schedule II tribal land compensation matrix
+Key Statutory Dates   :
+  - Gazette Sec 4     : 20 November 2014
+  - Award Date        : 18 February 2016
+  - Sanction Date     : 15 June 2016
+  - Target Completion : 30 June 2026
+eGazette Search Term  : "JUIDCO Ranchi Ring Road Land Acquisition Award Jharkhand"
+
+[PROJECT 31]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-CG-RDMC-031
+Project Name          : Raipur-Durg SCR Metro Rail Transit System
+State / UT            : Chhattisgarh
+LGD State Code        : 22
+Implementing Agency   : Chhattisgarh Metro Rail Corporation / CRDA
+Administrative Ministry: Ministry of Housing & Urban Affairs
+Project Category      : URBAN_DEVELOPMENT / METRO RAIL
+Current Project Status: PLANNING (DPR Approval & Land Alignment Identification)
+Total Estimated Cost  : ₹ 12,000.00 Crore
+Total Land Required   : 180.00 Hectares
+Total Land Acquired   : 95.00 Hectares (52.78% Completed)
+Affected Families     : 1,500 Families
+Key Districts Covered : Raipur, Durg
+Key Villages Covered  : Naya Raipur, Bhilai, Kumhari, Charoda, Tatibandh, GE Road
+Average Land Rate     : ₹ 50.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 90.00 Crore
+Total Disbursed Comp. : ₹ 47.50 Crore
+R&R Entitlement Pkg   : RFCTLARR Schedule II + Commercial kiosk replacement in Bhilai & Raipur
+Key Statutory Dates   :
+  - DPR Approval      : 15 February 2024
+  - Project Sanction  : 01 March 2024
+  - Target Completion : 31 December 2030
+eGazette Search Term  : "Raipur Durg Metro Rail Corridor Land Acquisition Chhattisgarh"
+
+[PROJECT 32]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-GMR-MOPA-032
+Project Name          : Manohar International Greenfield Airport (Mopa)
+State / UT            : Goa
+LGD State Code        : 30
+Implementing Agency   : Goa Directorate of Civil Aviation / GMR Goa International Airport
+Administrative Ministry: Ministry of Civil Aviation
+Project Category      : AIRPORT
+Current Project Status: COMPLETED (Airport Operational & Handling Commercial International Flights)
+Total Estimated Cost  : ₹ 3,000.00 Crore
+Total Land Required   : 860.00 Hectares
+Total Land Acquired   : 860.00 Hectares (100.00% Completed)
+Affected Families     : 1,800 Families
+Key Districts Covered : North Goa (Pernem Taluka)
+Key Villages Covered  : Mopa, Varconda, Casarvarnem, Amberem, Chandel, Pernem
+Average Land Rate     : ₹ 12.00 Lakh per Hectare + 100% Solatium
+Total Assessed Comp.  : ₹ 206.40 Crore
+Total Disbursed Comp. : ₹ 206.40 Crore
+R&R Entitlement Pkg   : State R&R Package: Alternative residential plot + Cash grant + Airport job training for local youths
+Key Statutory Dates   :
+  - Gazette Notif     : 10 June 2014
+  - Award Sec 19      : 15 August 2016
+  - Foundation Stone  : 15 November 2016
+  - Inauguration Date : 11 December 2022
+eGazette Search Term  : "Goa Mopa Airport Land Acquisition Award Resettlement R&R"
+
+[PROJECT 33]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-DMRC-M4P-033
+Project Name          : Delhi Metro Phase 4 Priority Corridors (Inderlok-Indraprastha & Extensions)
+State / UT            : Delhi NCR
+LGD State Code        : 7
+Implementing Agency   : Delhi Metro Rail Corporation (DMRC)
+Administrative Ministry: Ministry of Housing & Urban Affairs
+Project Category      : URBAN_DEVELOPMENT / METRO RAIL
+Current Project Status: IN_PROGRESS (TBM Tunnels & Underground Station Shafts Execution)
+Total Estimated Cost  : ₹ 24,948.00 Crore
+Total Land Required   : 120.00 Hectares
+Total Land Acquired   : 112.00 Hectares (93.33% Completed)
+Affected Families     : 900 Families
+Key Districts Covered : New Delhi, North Delhi, North East Delhi
+Key Villages Covered  : Inderlok, Indraprastha, Majlis Park, Maujpur, Rithala, Narela
+Average Land Rate     : DDA Urban Land Matrix: ₹ 35,000 per Square Meter
+Total Assessed Comp.  : ₹ 420.00 Crore
+Total Disbursed Comp. : ₹ 392.00 Crore
+R&R Entitlement Pkg   : Metro Railways Act 1978 / DDA Resettlement Scheme + Commercial trader relocation
+Key Statutory Dates   :
+  - Cabinet Approval  : 15 March 2019
+  - Work Commenced    : 01 December 2019
+  - Award Finalized   : 10 August 2021
+  - Target Completion : 31 December 2026
+eGazette Search Term  : "DMRC Delhi Metro Phase 4 Land Acquisition Metro Act"
+
+[PROJECT 34]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-GRR-034
+Project Name          : Guwahati Ring Road & Strategic Brahmaputra Bridge
+State / UT            : Assam
+LGD State Code        : 18
+Implementing Agency   : National Highways Authority of India (NHAI)
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY
+Current Project Status: IN_PROGRESS (Brahmaputra Bridge Pier Foundation & Land Acquisition)
+Total Estimated Cost  : ₹ 5,200.00 Crore
+Total Land Required   : 450.00 Hectares
+Total Land Acquired   : 380.00 Hectares (84.44% Completed)
+Affected Families     : 2,800 Families
+Key Districts Covered : Kamrup, Kamrup Metropolitan
+Key Villages Covered  : Guwahati Bypass, North Guwahati, Changsari, Kaurbaha, Amingaon, Sualkuchi
+Average Land Rate     : ₹ 25.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 112.50 Crore
+Total Disbursed Comp. : ₹ 95.00 Crore
+R&R Entitlement Pkg   : RFCTLARR Schedule II + Assam State Highway Rehabilitation Policy
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 10 October 2022
+  - Foundation Stone  : 15 May 2023
+  - Award Sec 3G      : 15 December 2023
+  - Target Completion : 30 June 2027
+eGazette Search Term  : "NHAI Guwahati Ring Road Brahmaputra Bridge Gazette"
+
+[PROJECT 35]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-BRO-SELA-035
+Project Name          : Sela Pass Strategic Tunnel Link Project (13,000 ft High Altitude)
+State / UT            : Arunachal Pradesh
+LGD State Code        : 12
+Implementing Agency   : Border Roads Organisation (BRO) / Project Vartak
+Administrative Ministry: Ministry of Defence
+Project Category      : HIGHWAY / STRATEGIC TUNNEL
+Current Project Status: COMPLETED (Operational All-Weather Tunnel Handed Over to Indian Army)
+Total Estimated Cost  : ₹ 825.00 Crore
+Total Land Required   : 35.00 Hectares
+Total Land Acquired   : 35.00 Hectares (100.00% Completed)
+Affected Families     : 200 Families (Community Tribal Pasture Lands)
+Key Districts Covered : West Kameng, Tawang
+Key Villages Covered  : Sela Pass, Tawang Route, Dirang, Bhalukpong, Bomdila, Senga
+Average Land Rate     : Arunachal Tribal Council Lease Matrix
+Total Assessed Comp.  : ₹ 14.00 Crore
+Total Disbursed Comp. : ₹ 14.00 Crore
+R&R Entitlement Pkg   : BRO High-Altitude Welfare Grant + Community infrastructure construction in Tawang
+Key Statutory Dates   :
+  - Gazette Sec 4     : 10 June 2018
+  - Award Date        : 15 December 2018
+  - Foundation Stone  : 15 February 2019
+  - PM Inauguration   : 09 March 2024
+eGazette Search Term  : "BRO Sela Tunnel Project Tawang Land Gazette Defence"
+
+[PROJECT 36]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHIDCL-IMH-036
+Project Name          : Imphal-Moreh Strategic Highway Upgrade (NH-02 Asian Highway 1)
+State / UT            : Manipur
+LGD State Code        : 14
+Implementing Agency   : National Highways & Infrastructure Development Corp (NHIDCL)
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY
+Current Project Status: IN_PROGRESS (4-Laning Works & Border Checkpost Land Acquisition)
+Total Estimated Cost  : ₹ 4,500.00 Crore
+Total Land Required   : 380.00 Hectares
+Total Land Acquired   : 310.00 Hectares (81.58% Completed)
+Affected Families     : 1,900 Families
+Key Districts Covered : Imphal West, Tengnoupal, Thoubal
+Key Villages Covered  : Lilong, Wangjing, Kakching, Moreh Border, Tengnoupal
+Average Land Rate     : ₹ 18.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 68.40 Crore
+Total Disbursed Comp. : ₹ 55.80 Crore
+R&R Entitlement Pkg   : Hill Areas Committee (HAC) Tribal Compensation Package
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 15 December 2016
+  - Award Sec 3G      : 28 February 2018
+  - Work Commenced    : 10 May 2018
+  - Target Completion : 31 October 2026
+eGazette Search Term  : "NHIDCL Imphal Moreh Highway Asian Highway 1 Gazette"
+
+[PROJECT 37]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-SWB-037
+Project Name          : Shillong Western Bypass Highway Corridor
+State / UT            : Meghalaya
+LGD State Code        : 17
+Implementing Agency   : National Highways Authority of India (NHAI) / Meghalaya PWD
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY
+Current Project Status: IN_PROGRESS (Clan Land Settlement & Earthworks)
+Total Estimated Cost  : ₹ 1,800.00 Crore
+Total Land Required   : 120.00 Hectares
+Total Land Acquired   : 98.00 Hectares (81.67% Completed)
+Affected Families     : 850 Families
+Key Districts Covered : East Khasi Hills, Ri Bhoi
+Key Villages Covered  : Umiam, Mawryngkneng, Shillong Rural, Mylliem, Nongpoh, Jowai Road
+Average Land Rate     : Khasi Syiemship Community Land Matrix: ₹ 15.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 18.00 Crore
+Total Disbursed Comp. : ₹ 14.70 Crore
+R&R Entitlement Pkg   : Customary Khasi Clan Land Compensation Agreement
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 10 August 2019
+  - Sanction Date     : 15 March 2020
+  - Award Sec 3G      : 20 December 2020
+  - Target Completion : 31 August 2026
+eGazette Search Term  : "NHAI Shillong Western Bypass Land Acquisition Meghalaya"
+
+[PROJECT 38]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHIDCL-DKH-038
+Project Name          : Dimapur-Kohima Four-Laning Highway (NH-29)
+State / UT            : Nagaland
+LGD State Code        : 13
+Implementing Agency   : National Highways & Infrastructure Development Corp (NHIDCL)
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY
+Current Project Status: IN_PROGRESS (Package 1 & 2 Operational; Package 3 Hill Cut Stabilisation)
+Total Estimated Cost  : ₹ 3,800.00 Crore
+Total Land Required   : 290.00 Hectares
+Total Land Acquired   : 290.00 Hectares (100.00% Completed)
+Affected Families     : 1,400 Families
+Key Districts Covered : Dimapur, Kohima, Chumoukedima
+Key Villages Covered  : Chumoukedima, Medziphema, Phatma, Kohima Outskirts, Dimapur Town, Piphema
+Average Land Rate     : Naga Customary Land Ownership Rate: ₹ 22.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 63.80 Crore
+Total Disbursed Comp. : ₹ 63.80 Crore
+R&R Entitlement Pkg   : Article 371A Naga Customary Law Compliance + High Court Monitored R&R Fund
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 15 April 2015
+  - Award Sec 3G      : 20 May 2016
+  - Work Commenced    : 01 September 2016
+  - Target Completion : 31 December 2026
+eGazette Search Term  : "NHIDCL Dimapur Kohima Highway Four Laning Award"
+
+[PROJECT 39]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHIDCL-ABP-039
+Project Name          : Aizawl Bypass Tunnel & Approach Road Project (Package 2)
+State / UT            : Mizoram
+LGD State Code        : 15
+Implementing Agency   : National Highways & Infrastructure Development Corp (NHIDCL) / IRCON
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY / TUNNEL
+Current Project Status: IN_PROGRESS (Twin-Tube Tunnel Excavation & Approach Land Acquisition)
+Total Estimated Cost  : ₹ 2,400.00 Crore
+Total Land Required   : 95.00 Hectares
+Total Land Acquired   : 80.00 Hectares (84.21% Completed)
+Affected Families     : 550 Families
+Key Districts Covered : Aizawl
+Key Villages Covered  : Aizawl North, Aizawl South, Zemabawk, Sairang, Tuirial, Melriat
+Average Land Rate     : ₹ 20.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 19.00 Crore
+Total Disbursed Comp. : ₹ 16.00 Crore
+R&R Entitlement Pkg   : Mizoram Village Council Compensation Matrix + Hillside Housing Grant
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 15 October 2022
+  - Award Sec 3G      : 20 January 2024
+  - Work Commenced    : 15 February 2024
+  - Target Completion : 30 June 2028
+eGazette Search Term  : "NHIDCL Aizawl Bypass Tunnel IRCON Land Gazette Mizoram"
+
+[PROJECT 40]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NRLY-AAR-040
+Project Name          : Agartala-Akhaura International Rail Link Corridor
+State / UT            : Tripura
+LGD State Code        : 16
+Implementing Agency   : Northeast Frontier Railway / IRCON / Ministry of Railways
+Administrative Ministry: Ministry of Railways
+Project Category      : RAILWAY / CROSS-BORDER TRANSIT
+Current Project Status: COMPLETED (Cross-Border Rail Track Operational; Customs Station Active)
+Total Estimated Cost  : ₹ 972.00 Crore (Indian Segment ₹ 580 Cr)
+Total Land Required   : 65.00 Hectares
+Total Land Acquired   : 65.00 Hectares (100.00% Completed)
+Affected Families     : 450 Families
+Key Districts Covered : West Tripura
+Key Villages Covered  : Nischintapur, Agartala Station, Badharghat, Akhaura Border, Suryamaninagar
+Average Land Rate     : ₹ 35.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 22.75 Crore
+Total Disbursed Comp. : ₹ 22.75 Crore
+R&R Entitlement Pkg   : Tripura State R&R Policy: Alternative land plot at Nischintapur + cash grant
+Key Statutory Dates   :
+  - Gazette Sec 20A   : 15 August 2014
+  - Award Sec 20F     : 10 April 2016
+  - Foundation Stone  : 31 July 2016
+  - Inauguration Date : 01 November 2023
+eGazette Search Term  : "Agartala Akhaura Rail Link Land Acquisition Tripura"
+
+[PROJECT 41]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-RVNL-SRR-041
+Project Name          : Sevoke-Rangpo Railway Tunnel Project (44.96 km Himalayan Link)
+State / UT            : Sikkim & West Bengal
+LGD State Code        : 11 (Sikkim Segment)
+Implementing Agency   : Rail Vikas Nigam Limited (RVNL)
+Administrative Ministry: Ministry of Railways
+Project Category      : RAILWAY / TUNNEL
+Current Project Status: IN_PROGRESS (Tunnels Break-through & Station Layout Construction)
+Total Estimated Cost  : ₹ 4,085.00 Crore
+Total Land Required   : 180.00 Hectares (Forest & Private Land)
+Total Land Acquired   : 160.00 Hectares (88.89% Completed)
+Affected Families     : 780 Families
+Key Districts Covered : East Sikkim, Kalimpong
+Key Villages Covered  : Rangpo, Khanikhola, Melli, Sankalan, Sevoke, Rangpo Bazar
+Average Land Rate     : ₹ 25.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 45.00 Crore
+Total Disbursed Comp. : ₹ 40.00 Crore
+R&R Entitlement Pkg   : FRA Forest Settlement + Himalayan R&R Housing Protection Package
+Key Statutory Dates   :
+  - Gazette Sec 20A   : 15 February 2009
+  - Sanction Date     : 30 October 2009
+  - Award Sec 20F     : 10 April 2011
+  - Target Completion : 31 December 2027
+eGazette Search Term  : "RVNL Sevoke Rangpo Railway Tunnel Project Gazette Sikkim"
+
+[PROJECT 42]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-CBE-042
+Project Name          : Chandigarh-Baddi Industrial Area Link Expressway
+State / UT            : Chandigarh (UT)
+LGD State Code        : 4
+Implementing Agency   : National Highways Authority of India (NHAI) / UT Administration
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY
+Current Project Status: IN_PROGRESS (Right-of-Way Clearing & Bridge Works)
+Total Estimated Cost  : ₹ 1,800.00 Crore
+Total Land Required   : 110.00 Hectares
+Total Land Acquired   : 90.00 Hectares (81.82% Completed)
+Affected Families     : 350 Families
+Key Districts Covered : Chandigarh UT
+Key Villages Covered  : Chandigarh Sector 26, Manimajra, Chandigarh Rural, Baddi Border
+Average Land Rate     : ₹ 1.20 Crore per Hectare
+Total Assessed Comp.  : ₹ 132.00 Crore
+Total Disbursed Comp. : ₹ 108.00 Crore
+R&R Entitlement Pkg   : Chandigarh UT Administration Resettlement Policy
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 20 August 2021
+  - Sanction Date     : 15 May 2022
+  - Award Sec 3G      : 10 December 2022
+  - Target Completion : 31 October 2026
+eGazette Search Term  : "NHAI Chandigarh Baddi Expressway Gazette Section 3D"
+
+[PROJECT 43]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-PPD-PPM-043
+Project Name          : Puducherry Port Container Terminal Modernization
+State / UT            : Puducherry (UT)
+LGD State Code        : 34
+Implementing Agency   : Puducherry Port Department
+Administrative Ministry: Ministry of Ports, Shipping & Waterways
+Project Category      : PORT
+Current Project Status: IN_PROGRESS (Cargo Yard Allotment & Dredging Execution)
+Total Estimated Cost  : ₹ 490.00 Crore
+Total Land Required   : 45.00 Hectares
+Total Land Acquired   : 40.00 Hectares (88.89% Completed)
+Affected Families     : 180 Families
+Key Districts Covered : Puducherry
+Key Villages Covered  : Puducherry Port Area, Ariyankuppam, Thengaithittu, Mudaliarpet
+Average Land Rate     : ₹ 80.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 36.00 Crore
+Total Disbursed Comp. : ₹ 32.00 Crore
+R&R Entitlement Pkg   : Puducherry Land Acquisition & R&R Rules
+Key Statutory Dates   :
+  - Gazette Notif     : 10 March 2020
+  - Sanction Date     : 15 June 2021
+  - Award Date        : 15 February 2021
+  - Target Completion : 30 June 2026
+eGazette Search Term  : "Puducherry Port Modernization Land Acquisition"
+
+[PROJECT 44]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-AAI-PBA-044
+Project Name          : Port Blair Airport Runway Expansion (INS Utkrosh Enclave)
+State / UT            : Andaman & Nicobar Islands (UT)
+LGD State Code        : 35
+Implementing Agency   : Airports Authority of India (AAI) / Indian Navy
+Administrative Ministry: Ministry of Civil Aviation
+Project Category      : AIRPORT / DEFENCE
+Current Project Status: IN_PROGRESS (Runway Extension Earthworks & Boundary Defense Wall)
+Total Estimated Cost  : ₹ 1,600.00 Crore
+Total Land Required   : 75.00 Hectares
+Total Land Acquired   : 60.00 Hectares (80.00% Completed)
+Affected Families     : 280 Families
+Key Districts Covered : South Andaman
+Key Villages Covered  : Port Blair Town, INS Utkrosh Depot, Lamba Line, School Line, Garacharma
+Average Land Rate     : ₹ 65.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 48.75 Crore
+Total Disbursed Comp. : ₹ 39.00 Crore
+R&R Entitlement Pkg   : AAI Island Resettlement Package: Alternative homestead plot + Shifting grant
+Key Statutory Dates   :
+  - Gazette Sec 4     : 10 December 2019
+  - Sanction Date     : 15 October 2020
+  - Award Date        : 18 April 2021
+  - Target Completion : 31 December 2026
+eGazette Search Term  : "Port Blair Airport Runway Expansion INS Utkrosh Gazette"
+
+[PROJECT 45]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-BRO-ZLT-045
+Project Name          : Zoji La Strategic High-Altitude Tunnel Link (14.15 km)
+State / UT            : Ladakh (UT)
+LGD State Code        : 37
+Implementing Agency   : Border Roads Organisation (BRO) / MEIL
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY / STRATEGIC TUNNEL
+Current Project Status: IN_PROGRESS (Sub-Zero Tunnel Boring & West Portal Approach Execution)
+Total Estimated Cost  : ₹ 6,809.00 Crore
+Total Land Required   : 95.00 Hectares (High Altitude Uninhabited Mountain Pass)
+Total Land Acquired   : 95.00 Hectares (100.00% Completed)
+Affected Families     : 0 Families (Government Mountainous Land)
+Key Districts Covered : Kargil, Leh
+Key Villages Covered  : Minamarg, Sonamarg Outflow, Dras Rural, Kargil Bypass, Leh Road Node
+Average Land Rate     : Ministry Defense Allocation Matrix
+Total Assessed Comp.  : ₹ 0.00 Crore
+Total Disbursed Comp. : ₹ 0.00 Crore
+R&R Entitlement Pkg   : N/A (Uninhabited Defense Transit Corridor)
+Key Statutory Dates   :
+  - Gazette Sec 4     : 10 April 2019
+  - Contract Award    : 15 August 2020
+  - Work Commenced    : 15 October 2020
+  - Target Completion : 31 December 2028
+eGazette Search Term  : "BRO Zoji La Tunnel Project Gazette Ladakh Srinagar"
+
+[PROJECT 46]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-AAI-AML-046
+Project Name          : Agatti & Minicoy Airstrip Runway Extensions
+State / UT            : Lakshadweep (UT)
+LGD State Code        : 31
+Implementing Agency   : Airports Authority of India (AAI) / Lakshadweep Admin
+Administrative Ministry: Ministry of Civil Aviation
+Project Category      : AIRPORT
+Current Project Status: IN_PROGRESS (Coastal Protection Reclamation & Runway Seating)
+Total Estimated Cost  : ₹ 350.00 Crore
+Total Land Required   : 12.00 Hectares
+Total Land Acquired   : 10.00 Hectares (83.33% Completed)
+Affected Families     : 150 Families
+Key Districts Covered : Lakshadweep UT
+Key Villages Covered  : Agatti Island, Minicoy Island, Kavaratti Head, Kalpeni, Andrott
+Average Land Rate     : Island Special Valuation Matrix: ₹ 15.00 Lakh per Cent
+Total Assessed Comp.  : ₹ 18.00 Crore
+Total Disbursed Comp. : ₹ 15.00 Crore
+R&R Entitlement Pkg   : Coastal Resettlement Package + AAI Island Employment Welfare Scheme
+Key Statutory Dates   :
+  - Gazette Sec 4     : 10 October 2021
+  - Sanction Date     : 15 August 2022
+  - Award Date        : 15 April 2022
+  - Target Completion : 31 December 2027
+eGazette Search Term  : "Lakshadweep Agatti Minicoy Airport Runway Expansion AAI"
+
+[PROJECT 47]
+----------------------------------------------------------------------------------------------------
+Project Code          : PRJ-NHAI-SDC-047
+Project Name          : Silvassa-Daman Border Road Industrial Corridor Link
+State / UT            : Dadra & Nagar Haveli and Daman & Diu (UT)
+LGD State Code        : 38
+Implementing Agency   : National Highways Authority of India (NHAI) / UT PWD
+Administrative Ministry: Ministry of Road Transport & Highways
+Project Category      : HIGHWAY / INDUSTRIAL CORRIDOR
+Current Project Status: IN_PROGRESS (Four-Lane Paving & Industrial Bypass Construction)
+Total Estimated Cost  : ₹ 920.00 Crore
+Total Land Required   : 85.00 Hectares
+Total Land Acquired   : 80.00 Hectares (94.12% Completed)
+Affected Families     : 420 Families
+Key Districts Covered : Dadra And Nagar Haveli, Daman
+Key Villages Covered  : Silvassa Rural, Kachigam, Daman Jetty, Marwad, Naroli, Dadra Town
+Average Land Rate     : ₹ 55.00 Lakh per Hectare
+Total Assessed Comp.  : ₹ 46.75 Crore
+Total Disbursed Comp. : ₹ 44.00 Crore
+R&R Entitlement Pkg   : UT Administrator Direct Purchase Scheme + Commercial booth replacement
+Key Statutory Dates   :
+  - Gazette Sec 3A    : 10 August 2020
+  - Sanction Date     : 15 March 2021
+  - Award Sec 3G      : 15 January 2022
+  - Target Completion : 31 December 2026
+eGazette Search Term  : "NHAI Silvassa Daman Industrial Corridor Bypass Gazette"
+
+====================================================================================================
+END OF MASTER DATA CATALOG (47 PROJECTS ACCROSS 36 STATES & UTS)
+====================================================================================================

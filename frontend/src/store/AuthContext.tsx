@@ -6,8 +6,8 @@ interface AuthContextType {
   user: UserData | null;
   isAuthenticated: boolean;
   token: string | null;
-  login: (employeeId: string, password?: string, roleOverride?: string, stateId?: string) => Promise<void>;
-  switchRole: (role: string, stateId?: string) => Promise<void>;
+  login: (employeeId: string, password?: string, roleOverride?: string, stateId?: string, districtId?: string) => Promise<void>;
+  switchRole: (role: string, stateId?: string, districtId?: string) => Promise<void>;
   logout: () => void;
   availableRoles: any[];
 }
@@ -48,8 +48,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .catch(() => {});
   }, []);
 
-  const login = async (employeeId: string, password?: string, roleOverride?: string, stateId?: string) => {
-    const res = await loginUser(employeeId, password, roleOverride, stateId);
+  const login = async (employeeId: string, password?: string, roleOverride?: string, stateId?: string, districtId?: string) => {
+    const res = await loginUser(employeeId, password, roleOverride, stateId, districtId);
     if (res.success) {
       setUser(res.data.user);
       setToken(res.data.token);
@@ -58,8 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const switchRole = async (role: string, stateId?: string) => {
-    await login('GOI-DEMO', undefined, role, stateId);
+  const switchRole = async (role: string, stateId?: string, districtId?: string) => {
+    await login('GOI-DEMO', undefined, role, stateId, districtId);
   };
 
   const logout = () => {

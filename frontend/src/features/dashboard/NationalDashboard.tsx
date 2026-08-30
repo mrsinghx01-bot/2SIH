@@ -18,7 +18,7 @@ export const NationalDashboard: React.FC = () => {
   const [states, setStates] = useState<StateData[]>([]);
   const [summaryData, setSummaryData] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [territoryTab, setTerritoryTab] = useState<'ALL' | 'FEATURED' | 'STATES' | 'UTS'>('FEATURED');
+  const [territoryTab, setTerritoryTab] = useState<'ALL' | 'STATES' | 'UTS'>('ALL');
 
   const isCentral = !user || user.role === 'CENTRAL_ADMIN' || user.role === 'CENTRAL_OFFICER';
 
@@ -72,7 +72,6 @@ export const NationalDashboard: React.FC = () => {
   const displayedStates = (() => {
     if (!isCentral) return allStateCards; // State Admin only gets their own state
     if (searchQuery) return allStateCards;
-    if (territoryTab === 'FEATURED') return allStateCards.slice(0, 8);
     if (territoryTab === 'ALL' || territoryTab === 'STATES') return allStateCards;
     return [];
   })();
@@ -80,7 +79,6 @@ export const NationalDashboard: React.FC = () => {
   const displayedUTs = (() => {
     if (!isCentral) return allUTCards;
     if (searchQuery) return allUTCards;
-    if (territoryTab === 'FEATURED') return allUTCards.slice(0, 4);
     if (territoryTab === 'ALL' || territoryTab === 'UTS') return allUTCards;
     return [];
   })();
@@ -146,44 +144,48 @@ export const NationalDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* 1. Top 5 Colorful Pastel KPI Cards (Dynamic Scoped Values) */}
+      {/* 1. Top 5 KPI Cards — Values computed from actual project records */}
       <section className="kpi-cards-grid">
         <KpiCard
           type="projects"
           title="Total Projects"
-          value={kpis?.totalProjects?.displayValue || (isCentral ? '1,248' : '48')}
-          trend={kpis?.totalProjects?.trend || '12%'}
-          comparisonText={kpis?.totalProjects?.comparisonText || 'vs last month'}
+          value={kpis?.totalProjects?.displayValue || '—'}
+          trend=""
+          comparisonText={kpis?.totalProjects?.comparisonText || ''}
         />
         <KpiCard
           type="proposed"
           title="Land Proposed"
-          value={kpis?.landProposed?.displayValue || (isCentral ? '8.42 Lakh Ha' : '45,200 Ha')}
-          trend={kpis?.landProposed?.trend || '14%'}
-          comparisonText={kpis?.landProposed?.comparisonText || 'vs last month'}
+          value={kpis?.landProposed?.displayValue || '—'}
+          trend=""
+          comparisonText={kpis?.landProposed?.comparisonText || ''}
         />
         <KpiCard
           type="acquired"
           title="Land Acquired"
-          value={kpis?.landAcquired?.displayValue || (isCentral ? '6.71 Lakh Ha' : '34,500 Ha')}
-          trend={kpis?.landAcquired?.trend || '18%'}
-          comparisonText={kpis?.landAcquired?.comparisonText || 'vs last month'}
+          value={kpis?.landAcquired?.displayValue || '—'}
+          trend=""
+          comparisonText={kpis?.landAcquired?.comparisonText || ''}
         />
         <KpiCard
           type="compensation"
           title="Compensation Paid"
-          value={kpis?.compensationPaid?.displayValue || (isCentral ? '₹ 1,26,540 Cr' : '₹ 425.8 Cr')}
-          trend={kpis?.compensationPaid?.trend || '22%'}
-          comparisonText={kpis?.compensationPaid?.comparisonText || 'vs last month'}
+          value={kpis?.compensationPaid?.displayValue || '—'}
+          trend=""
+          comparisonText={kpis?.compensationPaid?.comparisonText || ''}
         />
         <KpiCard
           type="families"
           title="Affected Families"
-          value={kpis?.affectedFamilies?.displayValue || (isCentral ? '4.82 Lakh' : '1,850 Families')}
-          trend={kpis?.affectedFamilies?.trend || '16%'}
-          comparisonText={kpis?.affectedFamilies?.comparisonText || 'vs last month'}
+          value={kpis?.affectedFamilies?.displayValue || '—'}
+          trend=""
+          comparisonText={kpis?.affectedFamilies?.comparisonText || ''}
         />
       </section>
+      {/* Data Source Attribution */}
+      <div style={{ fontSize: '10.5px', color: '#94A3B8', textAlign: 'right', marginTop: '-10px', marginBottom: '14px', paddingRight: '4px' }}>
+        {summaryData?.environment?.disclaimer || 'Data Sources: NHAI, MoRTH, NHSRCL, NWDA public records • LGD (lgdirectory.gov.in) • DILRMP-MIS (DoLR, MoRD) • Census of India 2011'}
+      </div>
 
       {/* 2. States & Union Territories Header & Search Box */}
       <div className="section-header-bar">
@@ -212,21 +214,6 @@ export const NationalDashboard: React.FC = () => {
           {isCentral ? (
             /* Scope Filter Tabs for Central Admin */
             <div style={{ display: 'flex', background: '#F1F5F9', padding: '3px', borderRadius: '9999px', border: '1px solid #CBD5E1' }}>
-              <button
-                onClick={() => setTerritoryTab('FEATURED')}
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: '9999px',
-                  border: 'none',
-                  fontSize: '11.5px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  background: territoryTab === 'FEATURED' ? '#2563EB' : 'transparent',
-                  color: territoryTab === 'FEATURED' ? '#FFFFFF' : '#475569'
-                }}
-              >
-                Featured (12)
-              </button>
               <button
                 onClick={() => setTerritoryTab('ALL')}
                 style={{

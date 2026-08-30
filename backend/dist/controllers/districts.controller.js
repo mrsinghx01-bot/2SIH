@@ -72,8 +72,8 @@ async function getDistrictById(req, res) {
         .filter(Boolean);
     const districtCases = store.acquisitionCases.filter(c => c.districtId === district.id);
     const districtParcels = store.parcels.filter(p => p.districtId === district.id);
-    const landRequired = districtCases.reduce((acc, c) => acc + (c.landRequired || 0), 0) || 1250.0;
-    const landAcquired = districtCases.reduce((acc, c) => acc + (c.landAcquired || 0), 0) || 890.0;
+    const landRequired = districtCases.reduce((acc, c) => acc + (c.landRequired || 0), 0);
+    const landAcquired = districtCases.reduce((acc, c) => acc + (c.landAcquired || 0), 0);
     res.json({
         success: true,
         data: {

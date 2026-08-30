@@ -232,11 +232,11 @@ export async function fetchAnalytics() {
   return res.json();
 }
 
-export async function loginUser(employeeId: string, password?: string, roleOverride?: string, stateId?: string) {
+export async function loginUser(employeeId: string, password?: string, roleOverride?: string, stateId?: string, districtId?: string) {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ employeeId, password, roleOverride, stateId })
+    body: JSON.stringify({ employeeId, password, roleOverride, stateId, districtId })
   });
   if (!res.ok) throw new Error('Login failed');
   return res.json();
@@ -247,5 +247,49 @@ export async function fetchDemoRoles() {
     headers: getHeaders()
   });
   if (!res.ok) throw new Error('Failed to fetch demo roles');
+  return res.json();
+}
+
+// Public: fetch districts by state for login page (no auth required)
+export async function fetchPublicDistrictsByState(stateId: string) {
+  const res = await fetch(`${API_BASE_URL}/districts/public-by-state/${stateId}`);
+  if (!res.ok) throw new Error('Failed to fetch districts');
+  return res.json();
+}
+
+// Field Survey APIs
+export async function fetchFieldSurveys(filters?: { status?: string; stateId?: string; districtId?: string; projectId?: string }) {
+  const params = new URLSearchParams();
+  if (filters?.status) params.append('status', filters.status);
+  if (filters?.stateId) params.append('stateId', filters.stateId);
+  if (filters?.districtId) params.append('districtId', filters.districtId);
+  if (filters?.projectId) params.append('projectId', filters.projectId);
+  const res = await fetch(`${API_BASE_URL}/field-surveys?${params.toString()}`, {
+    headers: getHeaders()
+  });
+  if (!res.ok) throw new Error('Failed to fetch field surveys');
+  return res.json();
+}
+
+export async function submitFieldSurvey(data: Record<string, any>) {
+  const res = await fetch(`${API_BASE_URL}/field-surveys`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: 'Submission failed' }));
+    throw new Error(err.message || 'Submission failed');
+  }
+  return res.json();
+}
+
+export async function reviewFieldSurvey(id: string, action: 'APPROVE' | 'REJECT' | 'RETURN_FOR_REVISION', reviewRemarks?: string) {
+  const res = await fetch(`${API_BASE_URL}/field-surveys/${id}/review`, {
+    method: 'PATCH',
+    headers: getHeaders(),
+    body: JSON.stringify({ action, reviewRemarks })
+  });
+  if (!res.ok) throw new Error('Failed to review survey');
   return res.json();
 }

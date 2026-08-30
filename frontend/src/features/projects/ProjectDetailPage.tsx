@@ -67,6 +67,43 @@ export const ProjectDetailPage: React.FC = () => {
     } catch (err) {}
   };
 
+  const handleDownloadDocument = (doc: any) => {
+    const fileContent = `National Land Acquisition & Management System (NLAMS)
+======================================================
+Government of India • Ministry of Rural Development
+
+DOCUMENT RECEIPT & TRANSCRIPT RECORD
+------------------------------------------------------
+Document Reference ID : ${doc.id}
+Document Title        : ${doc.title}
+Document Type         : ${doc.documentType}
+Version / Issue       : v${doc.version}
+File Format Identifier: ${doc.fileFormat || 'PDF/A'}
+System Filename       : ${doc.fileName}
+Uploaded / Signed By  : ${doc.uploadedBy}
+Record Timestamp      : ${new Date(doc.createdAt).toLocaleString('en-IN')}
+
+RFCTLARR ACT, 2013 CADASTRAL ALIGNMENT COMPLIANCE
+------------------------------------------------------
+This transcript confirms the digital sealing and registration of the 
+aforementioned statutory document on the NLAMS central repository.
+Any modifications without prior clearance from the Competent Authority 
+constitute a violation of Section 80(2) of the Act.
+
+Central Land Database Sealing Authority
+[SEALED SECURE DIGITAL TRANSCRIPT]`;
+
+    const blob = new Blob([fileContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = doc.fileName || `${doc.title.replace(/\s+/g, '_')}_v${doc.version}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   if (loading || !project) {
     return (
       <div style={{ padding: '24px' }}>
@@ -143,7 +180,7 @@ export const ProjectDetailPage: React.FC = () => {
             </div>
           </div>
           <ProgressRing
-            percentage={project.progressPercentage || 79}
+            percentage={project.progressPercentage || 0}
             size={58}
             strokeWidth={5.5}
             color="#2563EB"
@@ -191,13 +228,13 @@ export const ProjectDetailPage: React.FC = () => {
               <div style={{ background: '#F8FAFC', padding: '14px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
                 <span style={{ fontSize: '11px', color: '#64748B' }}>Cadastral Land Parcels</span>
                 <div style={{ fontSize: '15px', fontWeight: 700, color: '#0F172A', marginTop: '2px' }}>
-                  {project.parcels?.length || 6} Surveyed Khasras
+                  {project.parcels?.length || 0} Surveyed Parcels
                 </div>
               </div>
               <div style={{ background: '#F8FAFC', padding: '14px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
                 <span style={{ fontSize: '11px', color: '#64748B' }}>Affected Landowners</span>
                 <div style={{ fontSize: '15px', fontWeight: 700, color: '#059669', marginTop: '2px' }}>
-                  {project.affectedFamilies?.length || 18} Beneficiaries
+                  {project.affectedFamilies?.length || 0} Beneficiaries
                 </div>
               </div>
             </div>
@@ -316,7 +353,7 @@ export const ProjectDetailPage: React.FC = () => {
             <div style={{ marginBottom: '24px' }}>
               <GisInteractiveMap
                 center={mapCenter}
-                zoom={13}
+                zoom={project.gisMap?.zoom || 10}
                 alignmentPolyline={project.gisMap?.alignmentPolyline}
                 parcels={project.gisMap?.parcels || project.parcels}
                 height="500px"
@@ -324,20 +361,25 @@ export const ProjectDetailPage: React.FC = () => {
             </div>
 
             {/* Cadastral Parcels Table */}
-            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', marginBottom: '10px' }}>Cadastral Khasras & Ownership Ledger</h4>
-            <DataTable
-              columns={[
-                { header: 'Parcel / Khasra', accessor: 'parcelNumber', render: (r: any) => <strong style={{ color: '#2563EB' }}>{r.khasraNumber || r.parcelNumber}</strong> },
-                { header: 'Village', accessor: 'village' },
-                { header: 'Area (Ha)', accessor: 'areaHectares', render: (r: any) => `${r.areaHectares} Ha` },
-                { header: 'Land Use', accessor: 'landUse' },
-                { header: 'Owner / Titleholder', render: (r: any) => r.ownerName || 'Shri Ram & Sons' },
-                { header: 'Valuation (₹)', render: (r: any) => `₹ ${r.valuationCr || '3.5'} Cr` },
-                { header: 'Status', render: (r: any) => <StatusBadge status={r.acquisitionStatus} /> }
-              ]}
-              data={project.parcels || []}
-              keyExtractor={(r: any) => r.id}
-            />
+            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', marginBottom: '10px' }}>Cadastral Parcels — Revenue Record Ledger</h4>
+            {(project.parcels || []).length === 0 ? (
+              <div style={{ padding: '24px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0', textAlign: 'center', color: '#64748B', fontSize: '13px' }}>
+                <strong style={{ display: 'block', marginBottom: '6px' }}>No cadastral parcel records available</strong>
+                Parcel-level data (Khasra, owner, valuation) must be submitted by Field Officers via the Field Survey App or integrated directly from the State Revenue / BhuNaksha portal.
+              </div>
+            ) : (
+              <DataTable
+                columns={[
+                  { header: 'Parcel No.', accessor: 'parcelNumber', render: (r: any) => <strong style={{ color: '#2563EB' }}>{r.parcelNumber}</strong> },
+                  { header: 'Village', accessor: 'village' },
+                  { header: 'Area (Ha)', accessor: 'areaHectares', render: (r: any) => `${r.areaHectares} Ha` },
+                  { header: 'Land Use', accessor: 'landUse' },
+                  { header: 'Status', render: (r: any) => <StatusBadge status={r.acquisitionStatus} /> }
+                ]}
+                data={project.parcels || []}
+                keyExtractor={(r: any) => r.id}
+              />
+            )}
           </div>
         )}
 
@@ -356,7 +398,7 @@ export const ProjectDetailPage: React.FC = () => {
                   header: 'Action',
                   render: (r: any) => (
                     <button
-                      onClick={() => alert(`Downloading ${r.fileName}`)}
+                      onClick={() => handleDownloadDocument(r)}
                       style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
                     >
                       <Download size={12} /> Download
@@ -374,18 +416,25 @@ export const ProjectDetailPage: React.FC = () => {
         {activeTab === 6 && (
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>Compensation Ledger & Direct Benefit Transfer</h3>
-            <DataTable
-              columns={[
-                { header: 'Beneficiary Ref', accessor: 'beneficiaryReference' },
-                { header: 'Beneficiary Name', accessor: 'beneficiaryName' },
-                { header: 'Assessed Amount', render: (r: any) => `₹ ${Number(r.assessedAmount).toLocaleString('en-IN')}` },
-                { header: 'Approved Amount', render: (r: any) => `₹ ${Number(r.approvedAmount).toLocaleString('en-IN')}` },
-                { header: 'Paid Amount', render: (r: any) => `₹ ${Number(r.paidAmount).toLocaleString('en-IN')}` },
-                { header: 'Status', render: (r: any) => <StatusBadge status={r.paymentStatus} /> }
-              ]}
-              data={project.compensationRecords || []}
-              keyExtractor={(r: any) => r.id}
-            />
+            {(project.compensationRecords || []).length === 0 ? (
+              <div style={{ padding: '24px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0', textAlign: 'center', color: '#64748B', fontSize: '13px' }}>
+                <strong style={{ display: 'block', marginBottom: '6px' }}>No compensation records available</strong>
+                Compensation awards are recorded after Section 11 hearing and Collector award under RFCTLARR Act. Records appear here once created by the LAO/Collector.
+              </div>
+            ) : (
+              <DataTable
+                columns={[
+                  { header: 'Beneficiary Ref', accessor: 'beneficiaryReference' },
+                  { header: 'Beneficiary', accessor: 'beneficiaryName' },
+                  { header: 'Assessed Amount', render: (r: any) => `₹ ${Number(r.assessedAmount).toLocaleString('en-IN')}` },
+                  { header: 'Approved Amount', render: (r: any) => `₹ ${Number(r.approvedAmount).toLocaleString('en-IN')}` },
+                  { header: 'Paid Amount', render: (r: any) => `₹ ${Number(r.paidAmount).toLocaleString('en-IN')}` },
+                  { header: 'Status', render: (r: any) => <StatusBadge status={r.paymentStatus} /> }
+                ]}
+                data={project.compensationRecords || []}
+                keyExtractor={(r: any) => r.id}
+              />
+            )}
           </div>
         )}
 
@@ -393,18 +442,25 @@ export const ProjectDetailPage: React.FC = () => {
         {activeTab === 7 && (
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>Rehabilitation & Resettlement of Affected Families</h3>
-            <DataTable
-              columns={[
-                { header: 'Family Ref', accessor: 'familyReference' },
-                { header: 'Head of Family', accessor: 'headOfFamily' },
-                { header: 'Members', accessor: 'membersCount' },
-                { header: 'Category', accessor: 'vulnerabilityCategory' },
-                { header: 'Eligibility', accessor: 'eligibilityStatus' },
-                { header: 'R&R Status', render: (r: any) => <StatusBadge status={r.rrStatus} /> }
-              ]}
-              data={project.affectedFamilies || []}
-              keyExtractor={(r: any) => r.id}
-            />
+            {(project.affectedFamilies || []).length === 0 ? (
+              <div style={{ padding: '24px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0', textAlign: 'center', color: '#64748B', fontSize: '13px' }}>
+                <strong style={{ display: 'block', marginBottom: '6px' }}>No R&R records available</strong>
+                Affected family data is recorded during the social impact assessment and updated progressively through the acquisition lifecycle.
+              </div>
+            ) : (
+              <DataTable
+                columns={[
+                  { header: 'Family Ref', accessor: 'familyReference' },
+                  { header: 'Head of Family / Group', accessor: 'headOfFamily' },
+                  { header: 'Members', accessor: 'membersCount' },
+                  { header: 'Category', accessor: 'vulnerabilityCategory' },
+                  { header: 'Eligibility', accessor: 'eligibilityStatus' },
+                  { header: 'R&R Status', render: (r: any) => <StatusBadge status={r.rrStatus} /> }
+                ]}
+                data={project.affectedFamilies || []}
+                keyExtractor={(r: any) => r.id}
+              />
+            )}
           </div>
         )}
 
@@ -439,11 +495,48 @@ export const ProjectDetailPage: React.FC = () => {
         {/* Tab 9: Timeline */}
         {activeTab === 9 && (
           <div>
-            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A', marginBottom: '18px' }}>Chronological Project Timeline</h3>
+            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>Chronological Project Timeline</h3>
+
+            {/* Official Completion / Tentative Schedule Milestone Banner */}
+            <div style={{
+              padding: '14px 18px',
+              background: project.status === 'COMPLETED' ? '#ECFDF5' : '#EFF6FF',
+              border: `1px solid ${project.status === 'COMPLETED' ? '#A7F3D0' : '#BFDBFE'}`,
+              borderRadius: '12px',
+              marginBottom: '20px',
+              display: 'flex',
+              justify: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '12px'
+            }}>
+              <div>
+                <strong style={{ color: project.status === 'COMPLETED' ? '#065F46' : '#1E40AF', fontSize: '14px', display: 'block' }}>
+                  {project.status === 'COMPLETED' ? '🎉 Project Fully Completed & Inaugurated' : '🗓️ Project Execution Active'}
+                </strong>
+                <p style={{ fontSize: '12.5px', color: project.status === 'COMPLETED' ? '#047857' : '#1D4ED8', marginTop: '2px', margin: 0 }}>
+                  {project.status === 'COMPLETED'
+                    ? `Official Commercial Inauguration Date: ${(project.targetCompletionDate || project.targetCompletion) ? new Date(project.targetCompletionDate || project.targetCompletion).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Completed'}`
+                    : `Tentative Target Completion Date: ${(project.targetCompletionDate || project.targetCompletion) ? new Date(project.targetCompletionDate || project.targetCompletion).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'As per DPR milestones'}`}
+                </p>
+              </div>
+              <span style={{
+                padding: '4px 12px',
+                background: project.status === 'COMPLETED' ? '#10B981' : '#2563EB',
+                color: '#FFFFFF',
+                borderRadius: '9999px',
+                fontSize: '11px',
+                fontWeight: 800,
+                letterSpacing: '0.5px'
+              }}>
+                {project.status === 'COMPLETED' ? 'COMPLETED' : 'IN PROGRESS'}
+              </span>
+            </div>
+
             <div className="timeline-list">
               {project.timelineEvents?.map((evt: any, i: number) => (
                 <div key={i} className="timeline-item">
-                  <div className="timeline-dot" />
+                  <div className="timeline-dot" style={{ background: evt.status === 'SCHEDULED' ? '#F59E0B' : undefined }} />
                   <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>{new Date(evt.date).toLocaleDateString('en-IN')}</div>
                   <div style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', marginTop: '2px' }}>{evt.title}</div>
                   <div style={{ fontSize: '12.5px', color: '#475569', marginTop: '2px' }}>{evt.description}</div>

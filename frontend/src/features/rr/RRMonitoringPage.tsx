@@ -47,6 +47,11 @@ export const RRMonitoringPage: React.FC = () => {
 
       {loading ? (
         <LoadingSkeleton rows={6} />
+      ) : filtered.length === 0 ? (
+        <div style={{ padding: '36px', background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0', textAlign: 'center', color: '#64748B', fontSize: '13.5px' }}>
+          <strong style={{ display: 'block', fontSize: '15px', color: '#0F172A', marginBottom: '8px' }}>No R&R Records Found</strong>
+          Rehabilitation & Resettlement (R&R) entitlements for affected families are recorded during the Social Impact Assessment (SIA) phase under RFCTLARR Section 4-9. Records will populate as field surveys and SIA reports are finalized.
+        </div>
       ) : (
         <DataTable
           columns={[

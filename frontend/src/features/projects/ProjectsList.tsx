@@ -110,7 +110,7 @@ export const ProjectsList: React.FC = () => {
             },
             {
               header: 'Progress',
-              render: (r: any) => <ProgressRing percentage={r.progressPercentage || 75} size={34} />
+              render: (r: any) => <ProgressRing percentage={r.progressPercentage || 0} size={34} />
             },
             {
               header: 'Status',

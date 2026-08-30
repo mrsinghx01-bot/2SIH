@@ -6,7 +6,7 @@ import { Layers, MapPin, CheckCircle2, Maximize2, Eye } from 'lucide-react';
 export interface MapParcel {
   id: string;
   parcelNumber: string;
-  khasraNumber: string;
+  khasraNumber?: string;
   village: string;
   areaHectares: number;
   landUse: string;
@@ -129,7 +129,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
         }).addTo(map);
 
         poly.bindTooltip(
-          `<strong>Khasra: ${p.khasraNumber}</strong><br/>Village: ${p.village}<br/>Area: ${p.areaHectares} Ha<br/>Status: <span style="color:${color};font-weight:bold">${p.acquisitionStatus}</span>`,
+          `<strong>Parcel: ${p.parcelNumber}</strong><br/>Village: ${p.village}<br/>Area: ${p.areaHectares} Ha<br/>Land Use: ${p.landUse}<br/>Status: <span style="color:${color};font-weight:bold">${p.acquisitionStatus}</span>`,
           { sticky: true }
         );
 
@@ -146,7 +146,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
           fillOpacity: 0.8
         }).addTo(map);
 
-        marker.bindTooltip(`Khasra ${p.khasraNumber} (${p.village})`);
+        marker.bindTooltip(`${p.parcelNumber} (${p.village})`);
         marker.on('click', () => {
           setSelectedParcel(p);
           if (onParcelSelect) onParcelSelect(p);
@@ -154,21 +154,36 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       }
     });
 
-    // 3. Draw District Markers & Bubbles (if on state view)
+    // 3. Draw District Markers (if on state view)
     districts.forEach((d) => {
       if (d.latitude && d.longitude) {
+        // Scale radius based on land data to avoid uniform appearance
+        const baseRadius = 6;
+        const dataRadius = d.landProposed ? Math.min(14, baseRadius + Math.sqrt(d.landProposed) * 0.3) : baseRadius;
+        const pct = d.acquisitionPercentage || 0;
+        const fillColor = pct >= 75 ? '#10B981' : pct >= 40 ? '#F59E0B' : '#3B82F6';
+
         const distMarker = L.circleMarker([d.latitude, d.longitude], {
-          radius: 10,
-          fillColor: d.acquisitionPercentage >= 75 ? '#10B981' : '#2563EB',
+          radius: dataRadius,
+          fillColor,
           color: '#FFFFFF',
-          weight: 2.5,
-          fillOpacity: 0.85
+          weight: 2,
+          fillOpacity: 0.8
         }).addTo(map);
 
         distMarker.bindTooltip(
-          `<strong>${d.name} District</strong><br/>LGD: ${d.lgdCode}<br/>Required: ${d.landProposed} Ha<br/>Acquired: ${d.landAcquired} Ha (${d.acquisitionPercentage}%)`,
+          `<strong>${d.name} District</strong><br/>LGD Code: ${d.lgdCode}<br/>Land Required: ${d.landProposed || 0} Ha<br/>Land Acquired: ${d.landAcquired || 0} Ha (${pct}%)`,
           { sticky: true }
         );
+
+        // Add district name label
+        L.marker([d.latitude, d.longitude], {
+          icon: L.divIcon({
+            className: '',
+            html: `<div style="font-size:9px;font-weight:700;color:#1E293B;text-shadow:0 0 3px #FFF,0 0 3px #FFF;white-space:nowrap;transform:translate(-50%,8px);text-align:center">${d.name}</div>`,
+            iconSize: [0, 0]
+          })
+        }).addTo(map);
 
         distMarker.on('click', () => {
           if (onDistrictSelect) onDistrictSelect(d);
@@ -276,7 +291,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
             <div>
               <span style={{ fontSize: '10px', fontWeight: 800, background: '#EFF6FF', color: '#1D4ED8', padding: '2px 6px', borderRadius: '4px' }}>
-                Khasra: {selectedParcel.khasraNumber}
+                {selectedParcel.parcelNumber}
               </span>
               <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', marginTop: '2px' }}>{selectedParcel.village}</h4>
             </div>
@@ -292,8 +307,6 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
             <div>Area: <strong>{selectedParcel.areaHectares} Ha</strong></div>
             <div>Land Use: <strong>{selectedParcel.landUse}</strong></div>
             <div>Status: <strong style={{ color: getStatusColor(selectedParcel.acquisitionStatus) }}>{selectedParcel.acquisitionStatus}</strong></div>
-            <div>Owner / Beneficiary: <strong>{selectedParcel.ownerName || 'Verified Titleholder'}</strong></div>
-            <div>Solatium Valuation: <strong>₹ {selectedParcel.valuationCr || '4.5'} Cr</strong></div>
           </div>
         </div>
       )}

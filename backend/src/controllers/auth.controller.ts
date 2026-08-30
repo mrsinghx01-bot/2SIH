@@ -7,7 +7,7 @@ import { AuthRequest } from '../middleware/auth';
 const JWT_SECRET = process.env.JWT_SECRET || 'government_of_india_national_land_management_secret_key_2026';
 
 export async function login(req: Request, res: Response): Promise<void> {
-  const { employeeId, password, roleOverride, stateId } = req.body;
+  const { employeeId, password, roleOverride, stateId, districtId } = req.body;
   const store = getDatabaseStore();
 
   let user: any = null;
@@ -39,6 +39,40 @@ export async function login(req: Request, res: Response): Promise<void> {
         };
         store.users.push(user);
       }
+    }
+  }
+
+  // 1b. If districtId selected for LAND_ACQUISITION_OFFICER
+  if (!user && roleOverride === 'LAND_ACQUISITION_OFFICER' && (districtId || stateId)) {
+    const targetState = stateId ? store.states.find(s =>
+      s.id === stateId || s.shortName?.toLowerCase() === stateId.toLowerCase()
+    ) : null;
+    const targetDistrict = districtId ? store.districts.find(d =>
+      d.id === districtId
+    ) : null;
+
+    const resolvedState = targetState || (targetDistrict ? store.states.find(s => s.id === (targetDistrict as any).stateId) : null);
+    const resolvedDistrict = targetDistrict;
+
+    // Find existing LAO user for this district, or auto-create one
+    user = store.users.find(u => u.role === 'LAND_ACQUISITION_OFFICER' && u.districtId === (resolvedDistrict?.id || null));
+    if (!user) {
+      const shortName = resolvedState?.shortName || 'GOI';
+      const distName = resolvedDistrict?.name || 'District';
+      user = {
+        id: `user-lao-${(resolvedDistrict?.id || districtId || 'gen').replace(/[^a-z0-9]/gi, '-')}`,
+        employeeId: `LAO-${shortName.toUpperCase()}-${distName.replace(/[^A-Z]/gi, '').substring(0,3).toUpperCase()}-301`,
+        name: `LAO / Competent Authority (${distName})`,
+        email: `lao.${distName.toLowerCase().replace(/[^a-z0-9]/g, '')}@${shortName.toLowerCase()}.gov.in`,
+        passwordHash: store.users[0]?.passwordHash || '',
+        role: 'LAND_ACQUISITION_OFFICER',
+        designation: 'Land Acquisition Officer (Competent Authority)',
+        ministry: `Collectorate, ${distName}`,
+        stateId: resolvedState?.id || stateId || null,
+        districtId: resolvedDistrict?.id || districtId || null,
+        isActive: true
+      };
+      store.users.push(user);
     }
   }
 

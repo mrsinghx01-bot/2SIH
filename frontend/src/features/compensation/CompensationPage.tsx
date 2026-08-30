@@ -54,19 +54,19 @@ export const CompensationPage: React.FC = () => {
         <div style={{ background: '#F5F3FF', border: '1px solid #DDD6FE', padding: '16px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#6D28D9', fontWeight: 600 }}>Total Assessed Compensation</div>
           <div style={{ fontSize: '22px', fontWeight: 800, color: '#4C1D95', marginTop: '2px' }}>
-            ₹ {summary ? (summary.totalAssessed / 10000000).toFixed(1) : '148.5'} Cr
+            ₹ {summary ? (summary.totalAssessed / 10000000).toFixed(1) : '0'} Cr
           </div>
         </div>
         <div style={{ background: '#ECFDF5', border: '1px solid #BBF7D0', padding: '16px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#047857', fontWeight: 600 }}>Disbursed (Paid via PFMS)</div>
           <div style={{ fontSize: '22px', fontWeight: 800, color: '#064E3B', marginTop: '2px' }}>
-            ₹ {summary ? (summary.totalPaid / 10000000).toFixed(1) : '112.4'} Cr
+            ₹ {summary ? (summary.totalPaid / 10000000).toFixed(1) : '0'} Cr
           </div>
         </div>
         <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', padding: '16px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#B45309', fontWeight: 600 }}>Pending Disbursement</div>
           <div style={{ fontSize: '22px', fontWeight: 800, color: '#78350F', marginTop: '2px' }}>
-            ₹ {summary ? (summary.totalPending / 10000000).toFixed(1) : '36.1'} Cr
+            ₹ {summary ? (summary.totalPending / 10000000).toFixed(1) : '0'} Cr
           </div>
         </div>
         <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '16px', borderRadius: '12px' }}>
@@ -79,6 +79,11 @@ export const CompensationPage: React.FC = () => {
 
       {loading ? (
         <LoadingSkeleton rows={6} />
+      ) : filtered.length === 0 ? (
+        <div style={{ padding: '36px', background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0', textAlign: 'center', color: '#64748B', fontSize: '13.5px' }}>
+          <strong style={{ display: 'block', fontSize: '15px', color: '#0F172A', marginBottom: '8px' }}>No Compensation Records Found</strong>
+          Compensation awards are created by the Land Acquisition Officer (LAO) after statutory valuation under RFCTLARR Section 26-30. New disbursements will appear here when posted to PFMS.
+        </div>
       ) : (
         <DataTable
           columns={[

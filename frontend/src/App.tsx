@@ -17,6 +17,7 @@ import { AlertsPage } from './features/alerts/AlertsPage';
 import { AuditLogPage } from './features/audit/AuditLogPage';
 import { SettingsPage } from './features/settings/SettingsPage';
 import { FieldOfficerPage } from './features/field-officer/FieldOfficerPage';
+import { SurveyReviewPage } from './features/field-officer/SurveyReviewPage';
 
 const ProtectedLayout: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -44,6 +45,7 @@ const ProtectedLayout: React.FC = () => {
         <Route path="/audit-log" element={<AuditLogPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/field-officer" element={<FieldOfficerPage />} />
+        <Route path="/survey-review" element={<SurveyReviewPage />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </AppShell>

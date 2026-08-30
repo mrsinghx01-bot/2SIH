@@ -15,5 +15,6 @@ export interface SeedDataset {
     notifications: any[];
     auditLogs: any[];
     users: any[];
+    fieldSurveys: any[];
 }
 export declare function generateSeedData(): SeedDataset;

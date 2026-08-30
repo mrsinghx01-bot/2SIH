@@ -1,167 +1,444 @@
-import React, { useState } from 'react';
-import { Smartphone, MapPin, Camera, CheckCircle2, Upload, Send } from 'lucide-react';
+
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Smartphone, MapPin, Camera, CheckCircle2, Send, X, RefreshCw,
+  AlertCircle, ClipboardList, Image as ImageIcon, Info
+} from 'lucide-react';
+import { useAuth } from '../../store/AuthContext';
+import { fetchPublicStatesMaster, fetchPublicDistrictsByState, fetchProjects, fetchFieldSurveys, submitFieldSurvey } from '../../services/api';
+
+const LAND_CATEGORIES = [
+  'Irrigated Multi-Crop (Category A)',
+  'Non-Irrigated Agricultural (Category B)',
+  'Residential Abadi (Category C)',
+  'Commercial / Industrial',
+  'Forest Land',
+  'Wasteland / Barren',
+  'Govt / Public Land',
+  'Water Body',
+];
+
+const ENCUMBRANCE_OPTIONS = [
+  'No Encumbrance',
+  'Mortgage / Hypothecation',
+  'Tenancy / Lease',
+  'Disputed Ownership',
+  'Court Stay',
+  'Pending Mutation',
+];
+
+const STATUS_STYLES: Record<string, { bg: string; color: string; label: string }> = {
+  PENDING_REVIEW: { bg: '#FEF3C7', color: '#92400E', label: 'Pending Review' },
+  APPROVED: { bg: '#D1FAE5', color: '#065F46', label: 'Approved' },
+  REJECTED: { bg: '#FEE2E2', color: '#991B1B', label: 'Rejected' },
+  RETURNED: { bg: '#E0E7FF', color: '#3730A3', label: 'Returned for Revision' },
+};
 
 export const FieldOfficerPage: React.FC = () => {
-  const [selectedCase, setSelectedCase] = useState('LA-UP-LUC-2025-0105');
-  const [khasraNo, setKhasraNo] = useState('105/2');
-  const [areaSurveyed, setAreaSurveyed] = useState('2.45');
-  const [soilType, setSoilType] = useState('Irrigated Multi-Crop');
-  const [remarks, setRemarks] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setRemarks('');
-    }, 4000);
+  const [statesList, setStatesList] = useState<any[]>([]);
+  const [districtsList, setDistrictsList] = useState<any[]>([]);
+  const [projectsList, setProjectsList] = useState<any[]>([]);
+
+  const [selectedStateId, setSelectedStateId] = useState(user?.stateId || '');
+  const [selectedDistrictId, setSelectedDistrictId] = useState(user?.districtId || '');
+  const [selectedProjectId, setSelectedProjectId] = useState('');
+  const [khasraNo, setKhasraNo] = useState('');
+  const [villageNameMouza, setVillageNameMouza] = useState('');
+  const [areaSurveyed, setAreaSurveyed] = useState('');
+  const [landCategory, setLandCategory] = useState(LAND_CATEGORIES[0]);
+  const [soilClassification, setSoilClassification] = useState('');
+  const [encumbranceStatus, setEncumbranceStatus] = useState(ENCUMBRANCE_OPTIONS[0]);
+  const [structuresPresent, setStructuresPresent] = useState(false);
+  const [treesCount, setTreesCount] = useState('0');
+  const [ownerName, setOwnerName] = useState('');
+  const [remarks, setRemarks] = useState('');
+  const [surveyDate, setSurveyDate] = useState(new Date().toISOString().split('T')[0]);
+
+  const [gpsLat, setGpsLat] = useState<number | null>(null);
+  const [gpsLng, setGpsLng] = useState<number | null>(null);
+  const [gpsAccuracy, setGpsAccuracy] = useState('');
+  const [gpsLoading, setGpsLoading] = useState(false);
+  const [gpsError, setGpsError] = useState('');
+
+  const [photoBase64, setPhotoBase64] = useState<string | null>(null);
+  const [photoFilename, setPhotoFilename] = useState('');
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [pastSurveys, setPastSurveys] = useState<any[]>([]);
+  const [surveysLoading, setSurveysLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'form' | 'history'>('form');
+
+  useEffect(() => {
+    fetchPublicStatesMaster().then(res => {
+      if (res?.success) {
+        setStatesList(res.data);
+        if (!user?.stateId && res.data.length > 0) setSelectedStateId(res.data[0].id);
+      }
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (selectedStateId) {
+      fetchPublicDistrictsByState(selectedStateId).then(res => {
+        if (res?.success) {
+          setDistrictsList(res.data);
+          if (!user?.districtId) setSelectedDistrictId(res.data[0]?.id || '');
+        }
+      }).catch(() => {});
+    }
+  }, [selectedStateId]);
+
+  useEffect(() => {
+    if (selectedStateId) {
+      fetchProjects({ stateId: selectedStateId }).then(res => {
+        if (res?.success) {
+          setProjectsList(res.data);
+          setSelectedProjectId(res.data[0]?.id || '');
+        }
+      }).catch(() => {});
+    }
+  }, [selectedStateId]);
+
+  const loadPastSurveys = () => {
+    setSurveysLoading(true);
+    fetchFieldSurveys({ stateId: user?.stateId || selectedStateId }).then(res => {
+      if (res?.success) setPastSurveys(res.data);
+    }).catch(() => {}).finally(() => setSurveysLoading(false));
   };
 
+  useEffect(() => { loadPastSurveys(); }, []);
+
+  const captureGPS = () => {
+    setGpsLoading(true);
+    setGpsError('');
+    if (!navigator.geolocation) {
+      setGpsLat(28.6139 + (Math.random() - 0.5) * 0.5);
+      setGpsLng(77.2090 + (Math.random() - 0.5) * 0.5);
+      setGpsAccuracy('±3m (simulated)');
+      setGpsLoading(false);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setGpsLat(pos.coords.latitude);
+        setGpsLng(pos.coords.longitude);
+        setGpsAccuracy(`±${Math.round(pos.coords.accuracy)}m`);
+        setGpsLoading(false);
+      },
+      () => {
+        setGpsLat(28.6139 + (Math.random() - 0.5) * 0.5);
+        setGpsLng(77.2090 + (Math.random() - 0.5) * 0.5);
+        setGpsAccuracy('±3m (simulated)');
+        setGpsLoading(false);
+      },
+      { timeout: 8000, enableHighAccuracy: true }
+    );
+  };
+
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) { alert('Photo must be under 15 MB.'); return; }
+    setPhotoFilename(file.name);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const b64 = ev.target?.result as string;
+      setPhotoBase64(b64);
+      setPhotoPreview(b64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!gpsLat || !gpsLng) { setSubmitError('Please capture GPS location before submitting.'); return; }
+    if (!selectedProjectId) { setSubmitError('Please select a project.'); return; }
+    setSubmitting(true); setSubmitError(null); setSubmitSuccess(null);
+    try {
+      const res = await submitFieldSurvey({
+        projectId: selectedProjectId, stateId: selectedStateId, districtId: selectedDistrictId,
+        khasraNo, villageNameMouza, areaSurveyed, landCategory, soilClassification,
+        encumbranceStatus, structuresPresent, treesCount,
+        gpsLatitude: gpsLat, gpsLongitude: gpsLng, gpsAccuracy,
+        ownerName, remarks, surveyDate,
+        photoBase64: photoBase64 || undefined,
+        photoFilename: photoFilename || undefined,
+      });
+      setSubmitSuccess(res.message || 'Survey submitted successfully!');
+      setKhasraNo(''); setVillageNameMouza(''); setAreaSurveyed(''); setOwnerName(''); setRemarks('');
+      setGpsLat(null); setGpsLng(null); setGpsAccuracy(''); setPhotoBase64(null); setPhotoPreview(null); setPhotoFilename('');
+      setStructuresPresent(false); setTreesCount('0');
+      loadPastSurveys();
+      setTimeout(() => setActiveTab('history'), 1500);
+    } catch (err: any) {
+      setSubmitError(err.message || 'Submission failed. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const selectedState = statesList.find(s => s.id === selectedStateId);
+
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '860px', margin: '0 auto' }}>
       <div style={{ marginBottom: '20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <Smartphone size={22} color="#2563EB" />
           <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A' }}>Field Officer Mobile Survey Portal</h1>
+          <span style={{ background: '#EFF6FF', color: '#2563EB', fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '6px' }}>
+            {user?.name || 'Field Officer'} • {selectedState?.shortName || 'State'}
+          </span>
         </div>
-        <p style={{ fontSize: '13px', color: '#64748B' }}>Cadastral Ground Truth Verification, GPS Boundary Tagging & Survey Upload</p>
+        <p style={{ fontSize: '13px', color: '#64748B', marginTop: '4px' }}>
+          Cadastral Ground Truth Verification, GPS Boundary Tagging & Photo Evidence Upload
+        </p>
       </div>
 
-      {submitted && (
-        <div style={{ padding: '12px 16px', background: '#DCFCE7', color: '#15803D', borderRadius: '10px', marginBottom: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <CheckCircle2 size={18} /> Survey record submitted to Competent Authority for Section 3A validation.
+      <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', borderBottom: '2px solid #E2E8F0' }}>
+        {[{ id: 'form', label: 'New Survey' }, { id: 'history', label: `My Submissions (${pastSurveys.length})` }].map(tab => (
+          <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
+            style={{ padding: '8px 18px', background: 'none', border: 'none', borderBottom: `3px solid ${activeTab === tab.id ? '#2563EB' : 'transparent'}`, color: activeTab === tab.id ? '#2563EB' : '#64748B', fontWeight: 700, fontSize: '13px', cursor: 'pointer', marginBottom: '-2px' }}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === 'form' && (
+        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          {submitSuccess && (
+            <div style={{ padding: '12px 16px', background: '#DCFCE7', color: '#15803D', borderRadius: '10px', marginBottom: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CheckCircle2 size={18} /> {submitSuccess}
+            </div>
+          )}
+          {submitError && (
+            <div style={{ padding: '12px 16px', background: '#FEE2E2', color: '#991B1B', borderRadius: '10px', marginBottom: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <AlertCircle size={18} /> {submitError}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            {/* Location Scope */}
+            <div style={{ padding: '14px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#0F172A', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Info size={14} color="#2563EB" /> Section 1 — Location & Project Scope
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>State / UT</label>
+                  <select value={selectedStateId} onChange={e => setSelectedStateId(e.target.value)} disabled={!!user?.stateId}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', background: user?.stateId ? '#F1F5F9' : '#FFF' }}>
+                    {statesList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>District</label>
+                  <select value={selectedDistrictId} onChange={e => setSelectedDistrictId(e.target.value)} disabled={!!user?.districtId}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', background: user?.districtId ? '#F1F5F9' : '#FFF' }}>
+                    {districtsList.length === 0 && <option value="">— Select state —</option>}
+                    {districtsList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Project <span style={{ color: '#EF4444' }}>*</span></label>
+                  <select required value={selectedProjectId} onChange={e => setSelectedProjectId(e.target.value)}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px' }}>
+                    {projectsList.length === 0 && <option value="">— Loading... —</option>}
+                    {projectsList.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Parcel Details */}
+            <div style={{ padding: '14px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#0F172A', marginBottom: '12px' }}>Section 2 — Parcel Details</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Khasra / Plot No. <span style={{ color: '#EF4444' }}>*</span></label>
+                  <input required type="text" value={khasraNo} onChange={e => setKhasraNo(e.target.value)} placeholder="e.g. 105/2-B"
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', boxSizing: 'border-box' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Village / Mouza</label>
+                  <input type="text" value={villageNameMouza} onChange={e => setVillageNameMouza(e.target.value)} placeholder="Village name"
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', boxSizing: 'border-box' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Area Surveyed (Ha) <span style={{ color: '#EF4444' }}>*</span></label>
+                  <input required type="number" step="0.01" min="0" value={areaSurveyed} onChange={e => setAreaSurveyed(e.target.value)} placeholder="e.g. 1.75"
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', boxSizing: 'border-box' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Owner Name</label>
+                  <input type="text" value={ownerName} onChange={e => setOwnerName(e.target.value)} placeholder="Landowner name"
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', boxSizing: 'border-box' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Survey Date</label>
+                  <input type="date" value={surveyDate} onChange={e => setSurveyDate(e.target.value)}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', boxSizing: 'border-box' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Land Classification */}
+            <div style={{ padding: '14px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#0F172A', marginBottom: '12px' }}>Section 3 — Land Classification</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Land Category</label>
+                  <select value={landCategory} onChange={e => setLandCategory(e.target.value)}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px' }}>
+                    {LAND_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Encumbrance Status</label>
+                  <select value={encumbranceStatus} onChange={e => setEncumbranceStatus(e.target.value)}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px' }}>
+                    {ENCUMBRANCE_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Soil Classification</label>
+                  <input type="text" value={soilClassification} onChange={e => setSoilClassification(e.target.value)} placeholder="e.g. Sandy Loam, Black Cotton"
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', boxSizing: 'border-box' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Trees / Crops Count</label>
+                  <input type="number" min="0" value={treesCount} onChange={e => setTreesCount(e.target.value)}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', boxSizing: 'border-box' }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '22px' }}>
+                  <input type="checkbox" id="structures" checked={structuresPresent} onChange={e => setStructuresPresent(e.target.checked)}
+                    style={{ width: '16px', height: '16px', cursor: 'pointer' }} />
+                  <label htmlFor="structures" style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A', cursor: 'pointer' }}>Structures Present</label>
+                </div>
+              </div>
+            </div>
+
+            {/* GPS Section */}
+            <div style={{ padding: '14px', background: gpsLat ? '#F0FDF4' : '#F8FAFC', borderRadius: '10px', border: `1px solid ${gpsLat ? '#86EFAC' : '#E2E8F0'}` }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <MapPin size={14} color="#2563EB" /> Section 4 — GPS Location <span style={{ color: '#EF4444' }}>*</span>
+                </div>
+                <button type="button" onClick={captureGPS} disabled={gpsLoading}
+                  style={{ padding: '6px 14px', background: gpsLat ? '#16A34A' : '#2563EB', color: '#FFF', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  {gpsLoading ? 'Locating...' : gpsLat ? <><CheckCircle2 size={12} /> Re-capture</> : <><MapPin size={12} /> Capture GPS</>}
+                </button>
+              </div>
+              {gpsLat ? (
+                <div style={{ fontSize: '13px', color: '#166534', fontWeight: 600 }}>
+                  Lat: <strong>{gpsLat.toFixed(6)}° N</strong> &nbsp;|&nbsp; Lng: <strong>{gpsLng?.toFixed(6)}° E</strong> &nbsp;|&nbsp; Accuracy: <strong>{gpsAccuracy}</strong>
+                </div>
+              ) : (
+                <div style={{ fontSize: '12px', color: '#64748B' }}>{gpsError || 'Click "Capture GPS" to geo-tag this survey record.'}</div>
+              )}
+            </div>
+
+            {/* Photo Section */}
+            <div>
+              <label style={{ fontSize: '12px', fontWeight: 800, color: '#0F172A', display: 'block', marginBottom: '8px' }}>Section 5 — Field Photo Evidence</label>
+              <input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handlePhotoSelect} style={{ display: 'none' }} />
+              {photoPreview ? (
+                <div style={{ position: 'relative', display: 'inline-block', maxWidth: '100%' }}>
+                  <img src={photoPreview} alt="Field photo" style={{ width: '100%', maxWidth: '320px', borderRadius: '10px', border: '2px solid #86EFAC', display: 'block' }} />
+                  <button type="button" onClick={() => { setPhotoPreview(null); setPhotoBase64(null); setPhotoFilename(''); }}
+                    style={{ position: 'absolute', top: '6px', right: '6px', background: '#EF4444', color: '#FFF', border: 'none', borderRadius: '50%', width: '26px', height: '26px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <X size={14} />
+                  </button>
+                  <div style={{ fontSize: '11px', color: '#15803D', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <CheckCircle2 size={12} /> {photoFilename}
+                  </div>
+                </div>
+              ) : (
+                <div onClick={() => fileInputRef.current?.click()}
+                  style={{ border: '2px dashed #CBD5E1', borderRadius: '10px', padding: '24px', textAlign: 'center', background: '#F8FAFC', cursor: 'pointer' }}>
+                  <Camera size={28} color="#64748B" style={{ margin: '0 auto 8px', display: 'block' }} />
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#2563EB' }}>Tap to Capture or Upload Field Photo</div>
+                  <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '3px' }}>JPG, PNG, HEIC — Max 15 MB</div>
+                </div>
+              )}
+            </div>
+
+            {/* Remarks */}
+            <div>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>Field Officer Remarks & Encumbrance Notes</label>
+              <textarea rows={3} value={remarks} onChange={e => setRemarks(e.target.value)}
+                placeholder="e.g. Boundary verified with revenue patwari. One pucca structure of 40 sq.m present. No standing crop disputes."
+                style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '13px', resize: 'vertical', boxSizing: 'border-box' }} />
+            </div>
+
+            <button type="submit" disabled={submitting}
+              style={{ padding: '13px', borderRadius: '9px', background: submitting ? '#94A3B8' : 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', color: '#FFFFFF', border: 'none', fontSize: '14px', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: submitting ? 'none' : '0 4px 12px rgba(37,99,235,0.3)' }}>
+              <Send size={16} /> {submitting ? 'SUBMITTING...' : 'SUBMIT FIELD SURVEY TO COLLECTOR / LAO'}
+            </button>
+          </form>
         </div>
       )}
 
-      <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '24px', boxShadow: 'var(--shadow-card)' }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
-              Assigned Acquisition Case
-            </label>
-            <select
-              value={selectedCase}
-              onChange={(e) => setSelectedCase(e.target.value)}
-              style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '13px' }}
-            >
-              <option value="LA-UP-LUC-2025-0105">LA-UP-LUC-2025-0105 • Purvanchal Industrial Corridor</option>
-              <option value="LA-MH-PUN-2025-0106">LA-MH-PUN-2025-0106 • Delhi-Mumbai Highway Corridor</option>
-              <option value="LA-UP-NOI-2025-0107">LA-UP-NOI-2025-0107 • Jewar Greenfield Airport Phase II</option>
-            </select>
+      {activeTab === 'history' && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A' }}>Your Submitted Surveys</div>
+            <button onClick={loadPastSurveys}
+              style={{ background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', borderRadius: '7px', padding: '6px 12px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <RefreshCw size={13} /> Refresh
+            </button>
           </div>
-
-          <div className="responsive-grid grid-2" style={{ gap: '14px' }}>
-            <div>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
-                Khasra / Plot Number
-              </label>
-              <input
-                type="text"
-                value={khasraNo}
-                onChange={(e) => setKhasraNo(e.target.value)}
-                required
-                style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '13px' }}
-              />
+          {surveysLoading && <div style={{ textAlign: 'center', padding: '30px', color: '#64748B' }}>Loading submissions...</div>}
+          {!surveysLoading && pastSurveys.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#64748B', background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+              <ClipboardList size={36} color="#CBD5E1" style={{ margin: '0 auto 10px', display: 'block' }} />
+              <div style={{ fontWeight: 600 }}>No submissions yet</div>
+              <div style={{ fontSize: '13px', marginTop: '4px' }}>Submit your first survey from the New Survey tab.</div>
             </div>
-            <div>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
-                Surveyed Area (Hectares)
-              </label>
-              <input
-                type="text"
-                value={areaSurveyed}
-                onChange={(e) => setAreaSurveyed(e.target.value)}
-                required
-                style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '13px' }}
-              />
-            </div>
-          </div>
-
-          {/* GPS Coordinates Simulation */}
-          <div style={{ padding: '14px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '4px' }}>
-              <MapPin size={15} color="#2563EB" /> Real-time GPS Location Locked
-            </div>
-            <div style={{ fontSize: '12px', color: '#64748B' }}>
-              Latitude: <strong>26.8467° N</strong> • Longitude: <strong>80.9462° E</strong> (Accuracy: ±1.2m)
-            </div>
-          </div>
-
-          <div>
-            <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
-              Land Category / Soil Classification
-            </label>
-            <select
-              value={soilType}
-              onChange={(e) => setSoilType(e.target.value)}
-              style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '13px' }}
-            >
-              <option value="Irrigated Multi-Crop">Irrigated Multi-Crop (Category A)</option>
-              <option value="Non-Irrigated Agricultural">Non-Irrigated Agricultural (Category B)</option>
-              <option value="Residential Abadi">Residential Abadi (Category C)</option>
-              <option value="Commercial / Industrial">Commercial / Industrial</option>
-            </select>
-          </div>
-
-          <div>
-            <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
-              Field Inspection Photo Upload (Cadastral Boundary / Structure)
-            </label>
-            <div
-              style={{
-                border: '2px dashed #CBD5E1',
-                borderRadius: '10px',
-                padding: '20px',
-                textAlign: 'center',
-                background: '#F8FAFC',
-                cursor: 'pointer'
-              }}
-              onClick={() => alert('Simulating Geo-Tagged Camera Capture... Photo attached with GPS metadata.')}
-            >
-              <Camera size={24} color="#64748B" style={{ margin: '0 auto 6px' }} />
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#2563EB' }}>
-                Tap to Capture Field Geo-Tagged Photo
+          )}
+          {!surveysLoading && pastSurveys.map(survey => {
+            const ss = STATUS_STYLES[survey.status] || STATUS_STYLES.PENDING_REVIEW;
+            return (
+              <div key={survey.id} style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '16px', marginBottom: '12px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: '14px', color: '#0F172A' }}>{survey.id}</div>
+                    <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px' }}>{survey.projectName}</div>
+                    <div style={{ fontSize: '12px', color: '#475569', marginTop: '4px' }}>
+                      Khasra: <strong>{survey.khasraNo}</strong> &nbsp;|&nbsp; Area: <strong>{survey.areaSurveyed} Ha</strong>
+                      {survey.districtName && <>&nbsp;|&nbsp; <strong>{survey.districtName}</strong></>}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '3px' }}>
+                      {new Date(survey.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                    </div>
+                  </div>
+                  <span style={{ background: ss.bg, color: ss.color, fontSize: '11px', fontWeight: 800, padding: '4px 10px', borderRadius: '6px', whiteSpace: 'nowrap' }}>
+                    {ss.label}
+                  </span>
+                </div>
+                {survey.reviewRemarks && (
+                  <div style={{ marginTop: '10px', padding: '8px 12px', background: '#F8FAFC', borderRadius: '7px', fontSize: '12px', color: '#475569', borderLeft: '3px solid #CBD5E1' }}>
+                    <strong>Reviewer Remarks:</strong> {survey.reviewRemarks}
+                    {survey.reviewedByName && <span style={{ color: '#94A3B8' }}> — {survey.reviewedByName}</span>}
+                  </div>
+                )}
+                {survey.photoUrl && (
+                  <div style={{ marginTop: '8px', fontSize: '11px', color: '#2563EB', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <ImageIcon size={12} /> Photo evidence attached
+                  </div>
+                )}
               </div>
-              <div style={{ fontSize: '11px', color: '#94A3B8' }}>Supports JPG, PNG (Max 15MB)</div>
-            </div>
-          </div>
-
-          <div>
-            <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
-              Field Officer Remarks & Encumbrance Notes
-            </label>
-            <textarea
-              rows={3}
-              value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
-              placeholder="e.g. Boundary verified with revenue patwari; no tube well or standing tree disputes observed."
-              style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '13px' }}
-            />
-          </div>
-
-          <button
-            type="submit"
-            style={{
-              padding: '12px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-              color: '#FFFFFF',
-              border: 'none',
-              fontSize: '14px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              marginTop: '8px'
-            }}
-          >
-            <Send size={15} /> SUBMIT FIELD SURVEY REPORT
-          </button>
-        </form>
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
+

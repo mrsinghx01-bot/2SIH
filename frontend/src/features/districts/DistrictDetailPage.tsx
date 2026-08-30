@@ -70,7 +70,7 @@ export const DistrictDetailPage: React.FC = () => {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#F8FAFC', padding: '12px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
           <ProgressRing
-            percentage={district.kpis?.acquisitionPercentage || 72}
+            percentage={district.kpis?.acquisitionPercentage || 0}
             size={50}
             color="#2563EB"
           />
@@ -87,15 +87,15 @@ export const DistrictDetailPage: React.FC = () => {
       <div className="responsive-grid grid-3" style={{ gap: '16px', marginBottom: '24px' }}>
         <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '14px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#1D4ED8', fontWeight: 600 }}>Active Projects</div>
-          <div style={{ fontSize: '20px', fontWeight: 800, color: '#1E3A8A' }}>{district.kpis?.projectsCount || 2}</div>
+          <div style={{ fontSize: '20px', fontWeight: 800, color: '#1E3A8A' }}>{district.kpis?.projectsCount || 0}</div>
         </div>
         <div style={{ background: '#ECFDF5', border: '1px solid #BBF7D0', padding: '14px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#047857', fontWeight: 600 }}>Acquisition Cases</div>
-          <div style={{ fontSize: '20px', fontWeight: 800, color: '#064E3B' }}>{district.kpis?.casesCount || 4}</div>
+          <div style={{ fontSize: '20px', fontWeight: 800, color: '#064E3B' }}>{district.kpis?.casesCount || 0}</div>
         </div>
         <div style={{ background: '#F5F3FF', border: '1px solid #DDD6FE', padding: '14px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#6D28D9', fontWeight: 600 }}>Parcels / Khasras</div>
-          <div style={{ fontSize: '20px', fontWeight: 800, color: '#4C1D95' }}>{district.kpis?.parcelsCount || 12}</div>
+          <div style={{ fontSize: '20px', fontWeight: 800, color: '#4C1D95' }}>{district.kpis?.parcelsCount || 0}</div>
         </div>
       </div>
 

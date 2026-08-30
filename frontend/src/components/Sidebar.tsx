@@ -11,7 +11,8 @@ import {
   BellRing,
   History,
   Settings,
-  Smartphone
+  Smartphone,
+  ClipboardCheck
 } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
 
@@ -22,6 +23,8 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
+  const isFieldOfficer = user?.role === 'FIELD_OFFICER';
+  const canReviewSurveys = ['LAND_ACQUISITION_OFFICER', 'DISTRICT_ADMIN', 'STATE_ADMIN', 'CENTRAL_ADMIN', 'CENTRAL_OFFICER'].includes(user?.role || '');
 
   const menuItems = [
     { name: 'National Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -55,18 +58,35 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         );
       })}
 
-      {/* Field Officer Quick Mode Shortcut */}
-      <NavLink
-        to="/field-officer"
-        className={({ isActive }) =>
-          `sidebar-nav-item ${isActive ? 'active' : ''}`
-        }
-        onClick={onClose}
-        style={{ marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px' }}
-      >
-        <Smartphone className="nav-icon" color="#60A5FA" />
-        <span>Field Survey App</span>
-      </NavLink>
+      {/* Field Survey App — only visible to FIELD_OFFICER */}
+      {isFieldOfficer && (
+        <NavLink
+          to="/field-officer"
+          className={({ isActive }) =>
+            `sidebar-nav-item ${isActive ? 'active' : ''}`
+          }
+          onClick={onClose}
+          style={{ marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px' }}
+        >
+          <Smartphone className="nav-icon" color="#60A5FA" />
+          <span>Field Survey App</span>
+        </NavLink>
+      )}
+
+      {/* Survey Review Queue — only for LAO, District Admin, State Admin, Central */}
+      {canReviewSurveys && (
+        <NavLink
+          to="/survey-review"
+          className={({ isActive }) =>
+            `sidebar-nav-item ${isActive ? 'active' : ''}`
+          }
+          onClick={onClose}
+          style={{ marginTop: isFieldOfficer ? '0' : '12px', borderTop: isFieldOfficer ? 'none' : '1px solid rgba(255,255,255,0.08)', paddingTop: isFieldOfficer ? '0' : '12px' }}
+        >
+          <ClipboardCheck className="nav-icon" color="#34D399" />
+          <span>Survey Review Queue</span>
+        </NavLink>
+      )}
 
       {/* Role & Access Info at Bottom */}
       <div className="sidebar-bottom-badge">

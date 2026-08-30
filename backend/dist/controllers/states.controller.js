@@ -44,9 +44,9 @@ async function getAllStates(req, res) {
         const projectIds = new Set(stateProjectDistricts.map(pd => pd.projectId));
         const stateProjects = store.projects.filter(p => projectIds.has(p.id));
         const stateCases = store.acquisitionCases.filter(ac => ac.stateId === state.id);
-        const totalLandProposed = stateProjectDistricts.reduce((acc, pd) => acc + (pd.landRequired || 0), 0) || (state.type === 'UNION_TERRITORY' ? 3200 : 45000);
-        const totalLandAcquired = stateProjectDistricts.reduce((acc, pd) => acc + (pd.landAcquired || 0), 0) || (state.type === 'UNION_TERRITORY' ? 2450 : 34500);
-        const acquisitionPercentage = Math.min(100, Math.round((totalLandAcquired / (totalLandProposed || 1)) * 100)) || 76;
+        const totalLandProposed = stateProjectDistricts.reduce((acc, pd) => acc + (pd.landRequired || 0), 0);
+        const totalLandAcquired = stateProjectDistricts.reduce((acc, pd) => acc + (pd.landAcquired || 0), 0);
+        const acquisitionPercentage = totalLandProposed > 0 ? Math.min(100, Math.round((totalLandAcquired / totalLandProposed) * 100)) : 0;
         return {
             ...state,
             // Official Government Statistics (Census 2011, RBI, DoLR DILRMP)
@@ -57,12 +57,12 @@ async function getAllStates(req, res) {
             dilrmp: realGov?.dilrmp || { rorComputerizedPct: 95, cadastralMapDigitizedPct: 75, ulpinImplemented: true, sroComputerizedPct: 90 },
             landUseKm2: realGov?.landUseKm2 || null,
             // Acquisition System Operational KPIs
-            projectsCount: stateProjects.length > 0 ? stateProjects.length : (state.type === 'UNION_TERRITORY' ? 14 : 48),
+            projectsCount: stateProjects.length,
             landProposed: Math.round(totalLandProposed),
             landAcquired: Math.round(totalLandAcquired),
             acquisitionPercentage,
             districtsCount: stateDistricts.length || (realGov?.districtCount ?? 10),
-            casesCount: stateCases.length > 0 ? stateCases.length : 24
+            casesCount: stateCases.length
         };
     });
     res.json({
@@ -126,13 +126,12 @@ async function getStateById(req, res) {
     const stateCases = store.acquisitionCases.filter(ac => ac.stateId === state.id);
     // State center coordinates
     const stateGeo = STATE_COORDINATES[state.shortName] || { lat: 22.5937, lng: 78.9629, zoom: 7 };
-    // Enrich all districts with realistic land stats & coordinates
     const enrichedDistricts = rawDistricts.map((d, index) => {
         const pdMatch = stateProjectDistricts.filter(pd => pd.districtId === d.id);
         const dCases = stateCases.filter(c => c.districtId === d.id);
-        const landReq = pdMatch.reduce((acc, p) => acc + (p.landRequired || 0), 0) || Math.round(450 + (index * 73) % 1200);
-        const landAcq = pdMatch.reduce((acc, p) => acc + (p.landAcquired || 0), 0) || Math.round(landReq * 0.76);
-        const acqPct = Math.min(100, Math.round((landAcq / (landReq || 1)) * 100));
+        const landReq = pdMatch.reduce((acc, p) => acc + (p.landRequired || 0), 0);
+        const landAcq = pdMatch.reduce((acc, p) => acc + (p.landAcquired || 0), 0);
+        const acqPct = landReq > 0 ? Math.min(100, Math.round((landAcq / landReq) * 100)) : 0;
         // Generate accurate local coordinates around the state center
         const angle = (index / Math.max(1, rawDistricts.length)) * 2 * Math.PI;
         const distOffset = 0.3 + ((index % 5) * 0.25);
@@ -143,8 +142,8 @@ async function getStateById(req, res) {
             landProposed: landReq,
             landAcquired: landAcq,
             acquisitionPercentage: acqPct,
-            projectsCount: pdMatch.length || (index % 3 === 0 ? 2 : 1),
-            casesCount: dCases.length || Math.round(landReq / 150) + 1,
+            projectsCount: pdMatch.length,
+            casesCount: dCases.length,
             latitude: lat,
             longitude: lng,
             geometryMatchStatus: d.geometryMatchStatus || (index % 6 === 0 ? 'REVIEW_REQUIRED' : 'AUTO_MATCHED')
@@ -152,7 +151,7 @@ async function getStateById(req, res) {
     });
     const totalLandProposed = enrichedDistricts.reduce((acc, d) => acc + d.landProposed, 0);
     const totalLandAcquired = enrichedDistricts.reduce((acc, d) => acc + d.landAcquired, 0);
-    const acquisitionPercentage = Math.round((totalLandAcquired / (totalLandProposed || 1)) * 100);
+    const acquisitionPercentage = totalLandProposed > 0 ? Math.round((totalLandAcquired / totalLandProposed) * 100) : 0;
     // Enrich projects with alignment coordinates and affected area footprints
     const enrichedProjects = stateProjects.map((p, pIdx) => {
         const pDists = stateProjectDistricts.filter(pd => pd.projectId === p.id);
@@ -168,10 +167,10 @@ async function getStateById(req, res) {
         return {
             ...p,
             districts: dNames.length > 0 ? dNames : [enrichedDistricts[0]?.name || 'District 1', enrichedDistricts[1]?.name || 'District 2'],
-            progressPercentage: Math.min(100, Math.round((p.totalLandAcquired / (p.totalLandRequired || 1)) * 100)) || 75,
+            progressPercentage: p.totalLandRequired > 0 ? Math.min(100, Math.round((p.totalLandAcquired / p.totalLandRequired) * 100)) : 0,
             alignmentCoordinates: alignmentCoords,
             affectedVillagesCount: 14 + (pIdx * 6),
-            casesCount: store.acquisitionCases.filter(c => c.projectId === p.id).length || 3
+            casesCount: store.acquisitionCases.filter(c => c.projectId === p.id).length
         };
     });
     const realGov = (0, govDataService_1.getStateData)(state.id);

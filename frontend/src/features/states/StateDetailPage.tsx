@@ -185,7 +185,7 @@ export const StateDetailPage: React.FC = () => {
         {/* State Acquisition Progress Ring */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#F8FAFC', padding: '12px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
           <ProgressRing
-            percentage={stateData.kpis?.acquisitionPercentage || 79}
+            percentage={stateData.kpis?.acquisitionPercentage || 0}
             size={56}
             strokeWidth={5}
             color="#10B981"
@@ -211,11 +211,11 @@ export const StateDetailPage: React.FC = () => {
         </div>
         <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', padding: '14px 18px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#B45309', fontWeight: 600 }}>Acquisition Cases</div>
-          <div style={{ fontSize: '22px', fontWeight: 800, color: '#78350F', marginTop: '2px' }}>{stateData.kpis?.casesCount || 84}</div>
+          <div style={{ fontSize: '22px', fontWeight: 800, color: '#78350F', marginTop: '2px' }}>{stateData.kpis?.casesCount || 0}</div>
         </div>
         <div style={{ background: '#F5F3FF', border: '1px solid #DDD6FE', padding: '14px 18px', borderRadius: '12px' }}>
           <div style={{ fontSize: '12px', color: '#6D28D9', fontWeight: 600 }}>Compensation Paid</div>
-          <div style={{ fontSize: '22px', fontWeight: 800, color: '#4C1D95', marginTop: '2px' }}>₹ {stateData.kpis?.compensationPaidCr || '425.8'} Cr</div>
+          <div style={{ fontSize: '22px', fontWeight: 800, color: '#4C1D95', marginTop: '2px' }}>₹ {stateData.kpis?.compensationPaidCr || '0'} Cr</div>
         </div>
       </div>
 
@@ -255,9 +255,13 @@ export const StateDetailPage: React.FC = () => {
               </span>
             </div>
             <GisInteractiveMap
-              center={stateCenter}
-              zoom={stateData.coordinates?.zoom || 7}
-              alignmentPolyline={selectedMapProject?.alignmentCoordinates}
+              center={
+                selectedMapProject && selectedMapProject.centerCoord
+                  ? [selectedMapProject.centerCoord[1], selectedMapProject.centerCoord[0]]
+                  : stateCenter
+              }
+              zoom={selectedMapProject ? (selectedMapProject.gisMap?.zoom || 8) : (stateData.coordinates?.zoom || 7)}
+              alignmentPolyline={selectedMapProject?.gisMap?.alignmentPolyline || selectedMapProject?.alignmentCoordinates}
               districts={districts}
               height="540px"
               onDistrictSelect={(d) => navigate(`/districts/${d.id}`)}
@@ -300,8 +304,8 @@ export const StateDetailPage: React.FC = () => {
                   <div>Agency: <strong>{selectedMapProject.implementingAgency}</strong></div>
                   <div>Ministry: <strong>{selectedMapProject.ministry}</strong></div>
                   <div>Estimated Cost: <strong>₹ {selectedMapProject.estimatedCost?.toLocaleString('en-IN')} Cr</strong></div>
-                  <div>Affected Villages: <strong>{selectedMapProject.affectedVillagesCount || 18} Villages</strong></div>
-                  <div>Progress: <strong>{selectedMapProject.progressPercentage || 75}%</strong></div>
+                  <div>Affected Villages: <strong>{selectedMapProject.affectedVillagesCount || '—'}</strong></div>
+                  <div>Progress: <strong>{selectedMapProject.progressPercentage || 0}%</strong></div>
                 </div>
 
                 <button
@@ -389,7 +393,7 @@ export const StateDetailPage: React.FC = () => {
                     <span style={{ fontSize: '11px', color: '#64748B' }}>LGD Code: {d.lgdCode}</span>
                   </div>
                   <ProgressRing
-                    percentage={d.acquisitionPercentage || 74}
+                    percentage={d.acquisitionPercentage || 0}
                     size={38}
                     strokeWidth={4}
                     color="#10B981"
@@ -492,7 +496,7 @@ export const StateDetailPage: React.FC = () => {
                     </div>
                   </div>
                   <ProgressRing
-                    percentage={p.progressPercentage || 75}
+                    percentage={p.progressPercentage || 0}
                     size={46}
                     color="#2563EB"
                   />

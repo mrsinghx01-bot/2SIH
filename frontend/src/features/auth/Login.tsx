@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Lock, UserCheck, ArrowRight, Building, MapPin, CheckCircle2, ChevronDown } from 'lucide-react';
+import { Shield, Lock, UserCheck, ArrowRight, Building, MapPin, CheckCircle2, ChevronDown, Briefcase } from 'lucide-react';
 import { useAuth } from '../../store/AuthContext';
-import { fetchPublicStatesMaster } from '../../services/api';
+import { fetchPublicStatesMaster, fetchPublicDistrictsByState } from '../../services/api';
 
 // Complete Master List of All 28 States and 8 Union Territories of India
 const MASTER_INDIAN_STATES_UTS = [
@@ -54,12 +54,14 @@ export const Login: React.FC = () => {
   const [password, setPassword] = useState('Admin@123');
   const [selectedRole, setSelectedRole] = useState('CENTRAL_ADMIN');
   const [selectedStateId, setSelectedStateId] = useState('state-9'); // Default UP
+  const [selectedDistrictId, setSelectedDistrictId] = useState('');
   const [statesList, setStatesList] = useState<any[]>(MASTER_INDIAN_STATES_UTS);
+  const [districtsList, setDistrictsList] = useState<any[]>([]);
+  const [districtsLoading, setDistrictsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Fetch live public master directory of all 36 states and UTs
     fetchPublicStatesMaster()
       .then(res => {
         if (res?.success && res.data?.length > 0) {
@@ -70,17 +72,39 @@ export const Login: React.FC = () => {
       .catch(() => {});
   }, []);
 
+  // Fetch districts when state changes for LAO role
+  useEffect(() => {
+    if ((selectedRole === 'LAND_ACQUISITION_OFFICER' || selectedRole === 'FIELD_OFFICER') && selectedStateId) {
+      setDistrictsLoading(true);
+      setSelectedDistrictId('');
+      fetchPublicDistrictsByState(selectedStateId)
+        .then(res => {
+          if (res?.success && res.data?.length > 0) {
+            setDistrictsList(res.data);
+            setSelectedDistrictId(res.data[0]?.id || '');
+          } else {
+            setDistrictsList([]);
+          }
+        })
+        .catch(() => setDistrictsList([]))
+        .finally(() => setDistrictsLoading(false));
+    }
+  }, [selectedRole, selectedStateId]);
+
   const handleRoleChange = (role: string) => {
     setSelectedRole(role);
+    setSelectedDistrictId('');
     if (role === 'CENTRAL_ADMIN') {
       setEmployeeId('GOI-CAD-001');
     } else if (role === 'STATE_ADMIN') {
       const st = statesList.find(s => s.id === selectedStateId) || statesList[0];
       setEmployeeId(`${st?.shortName || 'UP'}-SAD-101`);
     } else if (role === 'LAND_ACQUISITION_OFFICER') {
-      setEmployeeId('LAO-GOI-301');
+      const st = statesList.find(s => s.id === selectedStateId) || statesList[0];
+      setEmployeeId(`LAO-${st?.shortName || 'GOI'}-301`);
     } else if (role === 'FIELD_OFFICER') {
-      setEmployeeId('FO-UP-501');
+      const st = statesList.find(s => s.id === selectedStateId) || statesList[0];
+      setEmployeeId(`FO-${st?.shortName || 'UP'}-501`);
     }
   };
 
@@ -89,6 +113,10 @@ export const Login: React.FC = () => {
     const st = statesList.find(s => s.id === stId);
     if (st && selectedRole === 'STATE_ADMIN') {
       setEmployeeId(`${st.shortName}-SAD-101`);
+    } else if (st && selectedRole === 'LAND_ACQUISITION_OFFICER') {
+      setEmployeeId(`LAO-${st.shortName}-301`);
+    } else if (st && selectedRole === 'FIELD_OFFICER') {
+      setEmployeeId(`FO-${st.shortName}-501`);
     }
   };
 
@@ -98,11 +126,15 @@ export const Login: React.FC = () => {
     setError('');
 
     try {
+      const needsState = ['STATE_ADMIN', 'LAND_ACQUISITION_OFFICER', 'FIELD_OFFICER'].includes(selectedRole);
+      const needsDistrict = selectedRole === 'LAND_ACQUISITION_OFFICER';
+
       await login(
         employeeId,
         password,
         selectedRole,
-        selectedRole === 'STATE_ADMIN' ? selectedStateId : undefined
+        needsState ? selectedStateId : undefined,
+        needsDistrict && selectedDistrictId ? selectedDistrictId : undefined
       );
 
       navigate('/dashboard');
@@ -287,12 +319,12 @@ export const Login: React.FC = () => {
               </div>
             </div>
 
-            {/* 2. State / Union Territory Dropdown Selector (Active for State Admin) */}
-            {selectedRole === 'STATE_ADMIN' && (
+            {/* 2a. State selector — for State Admin, LAO, and Field Officer */}
+            {(selectedRole === 'STATE_ADMIN' || selectedRole === 'LAND_ACQUISITION_OFFICER' || selectedRole === 'FIELD_OFFICER') && (
               <div
                 style={{
-                  background: '#F0FDF4',
-                  border: '1.5px solid #86EFAC',
+                  background: selectedRole === 'STATE_ADMIN' ? '#F0FDF4' : selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#FFFBEB' : '#EFF6FF',
+                  border: `1.5px solid ${selectedRole === 'STATE_ADMIN' ? '#86EFAC' : selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#FCD34D' : '#93C5FD'}`,
                   borderRadius: '12px',
                   padding: '14px',
                   display: 'flex',
@@ -301,10 +333,13 @@ export const Login: React.FC = () => {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 800, color: '#166534', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Building size={14} /> Select State / Union Territory Jurisdiction
+                  <label style={{ fontSize: '12px', fontWeight: 800, color: selectedRole === 'STATE_ADMIN' ? '#166534' : selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#92400E' : '#1D4ED8', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Building size={14} />
+                    {selectedRole === 'STATE_ADMIN' ? 'Select State / Union Territory Jurisdiction' :
+                     selectedRole === 'LAND_ACQUISITION_OFFICER' ? 'Select State (Step 1 of 2)' :
+                     'Select Your Assigned State'}
                   </label>
-                  <span style={{ fontSize: '10.5px', background: '#DCFCE7', color: '#15803D', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                  <span style={{ fontSize: '10.5px', background: selectedRole === 'STATE_ADMIN' ? '#DCFCE7' : selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#FEF3C7' : '#DBEAFE', color: selectedRole === 'STATE_ADMIN' ? '#15803D' : selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#B45309' : '#1D4ED8', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
                     {statesList.length} Available
                   </span>
                 </div>
@@ -317,7 +352,7 @@ export const Login: React.FC = () => {
                       width: '100%',
                       padding: '10px 14px',
                       borderRadius: '8px',
-                      border: '1px solid #86EFAC',
+                      border: `1px solid ${selectedRole === 'STATE_ADMIN' ? '#86EFAC' : selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#FCD34D' : '#93C5FD'}`,
                       fontSize: '13px',
                       fontWeight: 700,
                       color: '#0F172A',
@@ -344,17 +379,87 @@ export const Login: React.FC = () => {
                   </select>
                   <ChevronDown
                     size={16}
-                    color="#166534"
+                    color={selectedRole === 'STATE_ADMIN' ? '#166534' : selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#92400E' : '#1D4ED8'}
                     style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
                   />
                 </div>
 
                 {selectedStateObj && (
-                  <div style={{ fontSize: '11px', color: '#15803D', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                  <div style={{ fontSize: '11px', color: selectedRole === 'STATE_ADMIN' ? '#15803D' : selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#92400E' : '#1D4ED8', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
                     <CheckCircle2 size={12} />
                     <span>
-                      Jurisdiction: <strong>Department of Revenue, Government of {selectedStateObj.name}</strong>
+                      {selectedRole === 'STATE_ADMIN'
+                        ? <>Jurisdiction: <strong>Department of Revenue, Government of {selectedStateObj.name}</strong></>
+                        : selectedRole === 'LAND_ACQUISITION_OFFICER'
+                        ? <>State: <strong>{selectedStateObj.name}</strong> — Now select your district below</>
+                        : <>Assigned State: <strong>{selectedStateObj.name}</strong></>}
                     </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 2b. District selector — only for LAO (Step 2 of 2) */}
+            {selectedRole === 'LAND_ACQUISITION_OFFICER' && (
+              <div
+                style={{
+                  background: '#FFFBEB',
+                  border: '1.5px solid #F59E0B',
+                  borderRadius: '12px',
+                  padding: '14px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label style={{ fontSize: '12px', fontWeight: 800, color: '#92400E', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <MapPin size={14} /> Select District Jurisdiction (Step 2 of 2)
+                  </label>
+                  {districtsLoading && <span style={{ fontSize: '10px', color: '#B45309' }}>Loading...</span>}
+                  {!districtsLoading && districtsList.length > 0 && (
+                    <span style={{ fontSize: '10.5px', background: '#FEF3C7', color: '#B45309', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                      {districtsList.length} Districts
+                    </span>
+                  )}
+                </div>
+
+                <div style={{ position: 'relative' }}>
+                  <select
+                    value={selectedDistrictId}
+                    onChange={(e) => setSelectedDistrictId(e.target.value)}
+                    disabled={districtsLoading || districtsList.length === 0}
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      border: '1px solid #F59E0B',
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: '#0F172A',
+                      background: '#FFFFFF',
+                      outline: 'none',
+                      cursor: 'pointer',
+                      appearance: 'none',
+                      opacity: districtsList.length === 0 ? 0.5 : 1
+                    }}
+                  >
+                    {districtsList.length === 0 && <option value="">— Select a state first —</option>}
+                    {districtsList.map(d => (
+                      <option key={d.id} value={d.id}>{d.name}</option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    color="#92400E"
+                    style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                  />
+                </div>
+
+                {selectedDistrictId && districtsList.find(d => d.id === selectedDistrictId) && (
+                  <div style={{ fontSize: '11px', color: '#92400E', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                    <CheckCircle2 size={12} />
+                    <span>District Jurisdiction: <strong>Collectorate, {districtsList.find(d => d.id === selectedDistrictId)?.name}</strong></span>
                   </div>
                 )}
               </div>
@@ -426,7 +531,11 @@ export const Login: React.FC = () => {
             >
               {loading ? 'Authenticating...' : (
                 selectedRole === 'STATE_ADMIN'
-                  ? `LOGIN AS STATE ADMIN (${selectedStateObj?.name?.toUpperCase() || 'STATE'})`
+                  ? `LOGIN AS STATE ADMIN (${selectedStateObj?.shortName?.toUpperCase() || 'STATE'})`
+                  : selectedRole === 'LAND_ACQUISITION_OFFICER'
+                  ? `LOGIN AS LAO — ${districtsList.find(d => d.id === selectedDistrictId)?.name?.toUpperCase() || 'DISTRICT'}`
+                  : selectedRole === 'FIELD_OFFICER'
+                  ? `LOGIN AS FIELD OFFICER (${selectedStateObj?.shortName?.toUpperCase() || 'STATE'})`
                   : 'LOGIN TO NATIONAL PORTAL'
               )} <ArrowRight size={16} />
             </button>
