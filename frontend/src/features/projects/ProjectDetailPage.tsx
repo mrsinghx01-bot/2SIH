@@ -24,7 +24,6 @@ import { ProgressRing } from '../../components/ProgressRing';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import { DataTable } from '../../components/DataTable';
 import { GisInteractiveMap } from '../../components/GisInteractiveMap';
-import { generateOfficialGazettePdf } from '../../utils/gazettePdfGenerator';
 
 export const ProjectDetailPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -66,22 +65,6 @@ export const ProjectDetailPage: React.FC = () => {
       setTimeout(() => setActionSuccess(''), 4000);
       loadData();
     } catch (err) {}
-  };
-
-  const handleDownloadDocument = (docItem: any) => {
-    generateOfficialGazettePdf({
-      projectCode: project?.projectCode || 'PRJ-GOI',
-      projectName: project?.name || 'National Infrastructure Project',
-      ministry: project?.ministry || 'Ministry of Road Transport & Highways',
-      agency: project?.implementingAgency || 'Competent Authority',
-      stateName: project?.states?.[0] || 'India',
-      districtName: project?.districts?.[0] || 'District Collectorate',
-      documentTitle: docItem.title || 'Gazette Notification',
-      documentType: docItem.documentType || 'NOTIFICATION_3A',
-      notificationNumber: `S.O. ${Math.floor(2000 + Math.random() * 3000)}(E)`,
-      dateStr: new Date(docItem.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-      villages: project?.districtBreakdown?.flatMap((d: any) => d.villages || []) || ['Ranhera', 'Rohi', 'Shahpur', 'Ulwe']
-    });
   };
 
   if (loading || !project) {
@@ -366,7 +349,7 @@ export const ProjectDetailPage: React.FC = () => {
         {/* Tab 5: Documents */}
         {activeTab === 5 && (
           <div>
-            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>Statutory Notifications & Documents</h3>
+            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>Statutory Notifications & Official Government Gazette Publications</h3>
             <DataTable
               columns={[
                 { header: 'Document Type', accessor: 'documentType' },
@@ -375,14 +358,18 @@ export const ProjectDetailPage: React.FC = () => {
                 { header: 'Uploaded By', accessor: 'uploadedBy' },
                 { header: 'Date', render: (r: any) => new Date(r.createdAt).toLocaleDateString('en-IN') },
                 {
-                  header: 'Action',
-                  render: (r: any) => (
-                    <button
-                      onClick={() => handleDownloadDocument(r)}
-                      style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  header: 'Official Govt Document',
+                  render: (r: any) => (r.url || r.fileUrl) ? (
+                    <a
+                      href={r.url || r.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ background: '#ECFDF5', color: '#047857', border: '1px solid #A7F3D0', padding: '5px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                     >
-                      <Download size={12} /> Download
-                    </button>
+                      <Download size={12} /> Open Official Gazette PDF ↗
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: '11px', color: '#94A3B8' }}>Archival Record</span>
                   )
                 }
               ]}
