@@ -8,7 +8,7 @@ import { getAllCases, getCaseById, updateCaseStage } from '../controllers/cases.
 import { getAllParcels, getParcelById } from '../controllers/parcels.controller';
 import { getAllCompensation } from '../controllers/compensation.controller';
 import { getAllRR } from '../controllers/rr.controller';
-import { getAllDocuments, uploadDocument } from '../controllers/documents.controller';
+import { getAllDocuments, uploadDocument, streamDocumentPdf } from '../controllers/documents.controller';
 import { getAllApprovals, processApproval } from '../controllers/approvals.controller';
 import { getAllNotifications, markNotificationAsRead } from '../controllers/notifications.controller';
 import { getAllAuditLogs } from '../controllers/audit.controller';
@@ -59,6 +59,8 @@ router.get('/rr', authenticateToken, getAllRR);
 
 // Documents routes
 router.get('/documents', authenticateToken, getAllDocuments);
+router.get('/documents/:id/pdf', streamDocumentPdf);
+router.get('/documents/:id/download', streamDocumentPdf);
 router.post('/documents', authenticateToken, uploadDocument);
 
 // Approvals routes

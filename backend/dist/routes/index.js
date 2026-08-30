@@ -50,6 +50,8 @@ router.get('/compensation', auth_1.authenticateToken, compensation_controller_1.
 router.get('/rr', auth_1.authenticateToken, rr_controller_1.getAllRR);
 // Documents routes
 router.get('/documents', auth_1.authenticateToken, documents_controller_1.getAllDocuments);
+router.get('/documents/:id/pdf', documents_controller_1.streamDocumentPdf);
+router.get('/documents/:id/download', documents_controller_1.streamDocumentPdf);
 router.post('/documents', auth_1.authenticateToken, documents_controller_1.uploadDocument);
 // Approvals routes
 router.get('/approvals', auth_1.authenticateToken, approvals_controller_1.getAllApprovals);

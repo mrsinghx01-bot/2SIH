@@ -358,18 +358,16 @@ export const ProjectDetailPage: React.FC = () => {
                 { header: 'Uploaded By', accessor: 'uploadedBy' },
                 { header: 'Date', render: (r: any) => new Date(r.createdAt).toLocaleDateString('en-IN') },
                 {
-                  header: 'Official Govt Document',
-                  render: (r: any) => (r.url || r.fileUrl) ? (
+                  header: 'Official Gazette Document',
+                  render: (r: any) => (
                     <a
-                      href={r.url || r.fileUrl}
+                      href={`/api/documents/${r.id}/pdf`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ background: '#ECFDF5', color: '#047857', border: '1px solid #A7F3D0', padding: '5px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                     >
-                      <Download size={12} /> Open Official Gazette PDF ↗
+                      <Download size={12} /> Open Gazette PDF Document ↗
                     </a>
-                  ) : (
-                    <span style={{ fontSize: '11px', color: '#94A3B8' }}>Archival Record</span>
                   )
                 }
               ]}
