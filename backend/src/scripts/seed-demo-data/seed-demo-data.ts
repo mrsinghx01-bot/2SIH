@@ -1547,16 +1547,18 @@ export function generateSeedData(): SeedDataset {
         });
       }
 
-      // Documents
+      // Generate project-specific official Government portal URLs
+      const projectDomain = pt.type === 'HIGHWAY' ? 'bhoomirani.gov.in' : pt.type === 'AIRPORT' ? 'civilaviation.gov.in' : pt.type === 'RAILWAY' ? 'indianrailways.gov.in' : pt.type === 'IRRIGATION' ? 'nwda.gov.in' : pt.type === 'SOLAR_PARK' ? 'mnre.gov.in' : pt.type === 'PORT' ? 'sagarmala.gov.in' : pt.type === 'DEFENCE' ? 'bro.gov.in' : 'egazette.gov.in';
+
       documents.push({
         id: `doc-${caseId}-1`,
         projectId: pId,
         caseId: caseId,
         documentType: 'NOTIFICATION_3A',
         title: `Gazette Notification u/s 11 RFCTLARR - ${caseObj.caseNumber}`,
-        fileName: `gazette_notification_${caseObj.caseNumber}.pdf`,
-        filePath: `/storage/documents/${caseObj.caseNumber}_3A.pdf`,
-        url: 'https://egazette.gov.in/WriteReadData/2024/252104.pdf',
+        fileName: `Gazette_Notification_${pt.code}_${caseObj.caseNumber}.pdf`,
+        filePath: `/storage/documents/${pt.code}_${caseObj.caseNumber}_3A.pdf`,
+        url: `https://${projectDomain}/notifications/${pt.code}/${pt.code}_Gazette_3A_Notification_${caseObj.caseNumber}.pdf`,
         fileSize: 2458000,
         mimeType: 'application/pdf',
         version: '1.0',
@@ -1571,9 +1573,9 @@ export function generateSeedData(): SeedDataset {
         caseId: caseId,
         documentType: 'VALUATION_SHEET',
         title: `Competent Authority Valuation u/s 26 RFCTLARR - ${caseObj.caseNumber}`,
-        fileName: `valuation_matrix_${caseObj.caseNumber}.pdf`,
-        filePath: `/storage/documents/${caseObj.caseNumber}_valuation.pdf`,
-        url: 'https://dolr.gov.in/sites/default/files/RFCTLARR_Act_2013.pdf',
+        fileName: `Valuation_Matrix_${pt.code}_${caseObj.caseNumber}.pdf`,
+        filePath: `/storage/documents/${pt.code}_${caseObj.caseNumber}_valuation.pdf`,
+        url: `https://dolr.gov.in/valuation/${pt.code}/${pt.code}_Schedule_II_Valuation_Matrix_${caseObj.caseNumber}.pdf`,
         fileSize: 1845000,
         mimeType: 'application/pdf',
         version: '1.1',
@@ -1584,15 +1586,17 @@ export function generateSeedData(): SeedDataset {
     }
 
     // Project-level documents
+    const ministryDomain = pt.ministry.toLowerCase().includes('railway') ? 'indianrailways.gov.in' : pt.ministry.toLowerCase().includes('aviation') ? 'civilaviation.gov.in' : pt.ministry.toLowerCase().includes('jal') ? 'jalshakti-dowr.gov.in' : pt.ministry.toLowerCase().includes('renewable') ? 'mnre.gov.in' : pt.ministry.toLowerCase().includes('defence') ? 'mod.gov.in' : 'morth.nic.in';
+
     documents.push({
       id: `doc-proj-${pId}-dp`,
       projectId: pId,
       caseId: null,
       documentType: 'PROPOSAL',
       title: `Detailed Project Report (DPR) & Alignment Map - ${pt.name}`,
-      fileName: `DPR_${pt.code}.pdf`,
+      fileName: `DPR_Alignment_${pt.code}.pdf`,
       filePath: `/storage/documents/DPR_${pt.code}.pdf`,
-      url: 'https://morth.nic.in/sites/default/files/Circulars_Notifications/Gazette_3A_Notification.pdf',
+      url: `https://${ministryDomain}/dpr/${pt.code}/Official_DPR_${pt.code}_Alignment_Plan.pdf`,
       fileSize: 14200000,
       mimeType: 'application/pdf',
       version: '2.0',
