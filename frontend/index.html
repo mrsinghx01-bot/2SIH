@@ -9,30 +9,130 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BULLETPROOF GOOGLE TRANSLATE BANNER SUPPRESSION
+         Targets every known class, attribute, and tag Google uses
+         ═══════════════════════════════════════════════════════════ -->
     <style>
-      /* Hide standard Google Translate attribution bars & frames */
-      .goog-te-banner-frame { display: none !important; }
-      body { top: 0px !important; position: static !important; }
-      .goog-te-gadget-icon { display: none !important; }
-      .goog-te-gadget-simple { background-color: transparent !important; border: none !important; padding: 0 !important; }
-      #google_translate_element { display: none !important; }
-      .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+      /* 1. Force body to stay at top — Google Translate pushes it down by 40px */
+      body {
+        top: 0 !important;
+        position: static !important;
+      }
+
+      /* 2. Kill the banner iframe by class */
+      .goog-te-banner-frame,
+      .goog-te-banner-frame.skiptranslate {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+      }
+
+      /* 3. Kill by attribute selector (more robust than class) */
+      iframe[class*="goog-te"] {
+        display: none !important;
+        height: 0 !important;
+        border: none !important;
+      }
+
+      /* 4. Hide any iframe injected by Google Translate at top of body */
+      body > .skiptranslate {
+        display: none !important;
+        height: 0 !important;
+      }
+
+      /* 5. Kill the floating tooltip/balloon */
+      #goog-gt-tt,
+      .goog-te-balloon-frame,
+      div[class^="goog-te-"] {
+        display: none !important;
+        box-shadow: none !important;
+      }
+
+      /* 6. Remove Google text highlight coloring */
+      .goog-text-highlight {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+
+      /* 7. Hide the hidden Google Translate widget element we inject */
+      #google_translate_element {
+        position: fixed !important;
+        bottom: -9999px !important;
+        left: -9999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -9999 !important;
+        overflow: hidden !important;
+      }
     </style>
   </head>
   <body>
-    <div id="google_translate_element"></div>
+    <!-- Hidden Google Translate widget (out of viewport, invisible) -->
+    <div id="google_translate_element" aria-hidden="true"></div>
+
     <div id="root"></div>
 
     <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,hi,mr,pa,bn,ta,te,gu,kn,ml,or',
-          autoDisplay: false
-        }, 'google_translate_element');
-      }
+      (function () {
+        // ── Step 1: Initialise the Google Translate widget ──────────────────
+        window.googleTranslateElementInit = function () {
+          new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,hi,mr,pa,bn,ta,te,gu,kn,ml,or',
+            autoDisplay: false,
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        };
+
+        // ── Step 2: Aggressively kill the banner after widget loads ─────────
+        function killBanner() {
+          // Force body back to top
+          document.body.style.top = '0';
+          document.body.style.position = 'static';
+
+          // Hide all goog-te iframes
+          var frames = document.querySelectorAll('iframe.goog-te-banner-frame, .goog-te-banner-frame, iframe[class*="goog-te"]');
+          frames.forEach(function (el) {
+            el.style.display = 'none';
+            el.style.height = '0';
+            el.style.maxHeight = '0';
+          });
+
+          // Hide skiptranslate divs (the container Google inserts at top of body)
+          var skipDivs = document.querySelectorAll('body > .skiptranslate');
+          skipDivs.forEach(function (el) {
+            el.style.display = 'none';
+            el.style.height = '0';
+          });
+        }
+
+        // Run immediately and after any DOM mutation
+        document.addEventListener('DOMContentLoaded', function () {
+          killBanner();
+          // Observe DOM mutations to catch Google's late-injected banner
+          var observer = new MutationObserver(function () {
+            killBanner();
+          });
+          observer.observe(document.body, { childList: true, subtree: false });
+        });
+
+        // Extra timed sweep for slow connections
+        setTimeout(killBanner, 500);
+        setTimeout(killBanner, 1500);
+        setTimeout(killBanner, 3000);
+      })();
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- Google Translate API -->
+    <script type="text/javascript"
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
 
     <script type="module" src="/src/main.tsx"></script>
   </body>

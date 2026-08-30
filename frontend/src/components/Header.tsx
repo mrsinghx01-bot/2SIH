@@ -12,6 +12,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleNotification, onToggleSi
   const { user, logout } = useAuth();
   const [currentDateString, setCurrentDateString] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [currentLang, setCurrentLang] = useState(() => localStorage.getItem('nlams_lang') || 'en');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +26,23 @@ export const Header: React.FC<HeaderProps> = ({ onToggleNotification, onToggleSi
     });
     setCurrentDateString(formatted);
   }, []);
+
+  const handleLanguageChange = (lang: string) => {
+    setCurrentLang(lang);
+    // Write googtrans cookie on both root and hostname paths
+    if (lang === 'en') {
+      // Clear translation — reset cookie
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname + ';';
+      localStorage.removeItem('nlams_lang');
+    } else {
+      const val = `/en/${lang}`;
+      document.cookie = `googtrans=${val}; path=/;`;
+      document.cookie = `googtrans=${val}; path=/; domain=${location.hostname};`;
+      localStorage.setItem('nlams_lang', lang);
+    }
+    window.location.reload();
+  };
 
   const isCentral = !user || user.role === 'CENTRAL_ADMIN' || user.role === 'CENTRAL_OFFICER';
 
@@ -67,19 +85,13 @@ export const Header: React.FC<HeaderProps> = ({ onToggleNotification, onToggleSi
 
       {/* Right: Language Selector, Notifications, User Profile & Dynamic Date */}
       <div className="header-actions">
-        
-        {/* Multi-Lingual Regional Language Switcher (Full-Site Translation) */}
+
+        {/* Multi-Lingual Regional Language Switcher (Google Translate — cookie-based) */}
         <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.25)', borderRadius: '8px', padding: '3px 10px', fontSize: '12px', color: '#FFF' }}>
           <span style={{ marginRight: '6px', fontSize: '14px' }}>🇮🇳</span>
           <select
-            defaultValue={localStorage.getItem('selected_lang') || 'en'}
-            onChange={(e) => {
-              const lang = e.target.value;
-              localStorage.setItem('selected_lang', lang);
-              document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
-              document.cookie = `googtrans=/en/${lang}; path=/;`;
-              window.location.reload();
-            }}
+            value={currentLang}
+            onChange={(e) => handleLanguageChange(e.target.value)}
             style={{ background: 'transparent', color: '#FFF', border: 'none', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', outline: 'none' }}
           >
             <option value="en" style={{ background: '#0F172A', color: '#FFF' }}>English (EN)</option>
