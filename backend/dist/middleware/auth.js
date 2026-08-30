@@ -12,7 +12,24 @@ function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if (!token) {
-        // If no token in development mode, provide default Central Admin user context
+        const roleHeader = req.headers['x-user-role'];
+        const stateHeader = req.headers['x-user-state'];
+        const districtHeader = req.headers['x-user-district'];
+        if (roleHeader) {
+            req.user = {
+                id: `user-${roleHeader.toLowerCase()}`,
+                employeeId: `EMP-${roleHeader}`,
+                name: `${roleHeader} User`,
+                email: `user.${roleHeader.toLowerCase()}@landrecords.gov.in`,
+                role: roleHeader,
+                designation: 'Officer Jurisdiction Scope',
+                ministry: 'Government Authority',
+                stateId: stateHeader || null,
+                districtId: districtHeader || null
+            };
+            return next();
+        }
+        // Default Central Admin
         req.user = {
             id: 'user-central-admin',
             employeeId: 'GOI-CAD-001',
@@ -47,11 +64,11 @@ function authorizeRoles(...allowedRoles) {
             });
             return;
         }
-        if (allowedRoles.length > 0 && !allowedRoles.includes(req.user.role)) {
+        if (!allowedRoles.includes(req.user.role)) {
             res.status(403).json({
                 success: false,
                 data: null,
-                message: `Access denied. Role ${req.user.role} does not have required permissions.`
+                message: `Access denied. Requires one of the following roles: ${allowedRoles.join(', ')}`
             });
             return;
         }
@@ -59,27 +76,30 @@ function authorizeRoles(...allowedRoles) {
     };
 }
 function checkGeographicScope(req, res, next) {
-    if (!req.user)
-        return next();
-    // Central roles have full national scope
-    if (req.user.role === 'CENTRAL_ADMIN' || req.user.role === 'CENTRAL_OFFICER') {
+    const user = req.user;
+    if (!user) {
+        res.status(401).json({ success: false, data: null, message: 'Authentication required.' });
+        return;
+    }
+    // Central Officers have national scope
+    if (user.role === 'CENTRAL_ADMIN' || user.role === 'CENTRAL_OFFICER') {
         return next();
     }
     const requestedStateId = req.params.stateId || req.query.stateId;
     const requestedDistrictId = req.params.districtId || req.query.districtId;
-    if (requestedStateId && req.user.stateId && req.user.stateId !== requestedStateId) {
+    if (user.stateId && requestedStateId && user.stateId !== requestedStateId) {
         res.status(403).json({
             success: false,
             data: null,
-            message: 'Access restricted: You do not have permission to access data outside your assigned State.'
+            message: `Access denied. Your access is restricted to State ID: ${user.stateId}`
         });
         return;
     }
-    if (requestedDistrictId && req.user.districtId && req.user.districtId !== requestedDistrictId) {
+    if (user.districtId && requestedDistrictId && user.districtId !== requestedDistrictId) {
         res.status(403).json({
             success: false,
             data: null,
-            message: 'Access restricted: You do not have permission to access data outside your assigned District.'
+            message: `Access denied. Your access is restricted to District ID: ${user.districtId}`
         });
         return;
     }

@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, PieChart, TrendingUp, Download, CheckCircle } from 'lucide-react';
+import { BarChart3, PieChart, TrendingUp, Download, CheckCircle, ShieldAlert } from 'lucide-react';
 import { fetchAnalytics } from '../../services/api';
+import { useAuth } from '../../store/AuthContext';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 
 export const ReportsPage: React.FC = () => {
+  const { user } = useAuth();
   const [analytics, setAnalytics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const isCentral = !user || user.role === 'CENTRAL_ADMIN' || user.role === 'CENTRAL_OFFICER';
+
   useEffect(() => {
-    fetchAnalytics()
+    fetchAnalytics(user?.districtId || undefined, user?.stateId || undefined)
       .then(res => {
         if (res.success) setAnalytics(res.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   if (loading || !analytics) {
     return (
@@ -29,11 +33,11 @@ export const ReportsPage: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div>
           <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A' }}>Reports & Strategic Analytics</h1>
-          <p style={{ fontSize: '13px', color: '#64748B' }}>National Acquisition Velocity, Lifecycle Breakdown & Sector Performance</p>
+          <p style={{ fontSize: '13px', color: '#64748B' }}>Acquisition Velocity, Lifecycle Breakdown & Sector Performance</p>
         </div>
 
         <button
-          onClick={() => alert('Exporting Official National Land Acquisition Report (PDF/Excel)...')}
+          onClick={() => alert('Exporting Official Land Acquisition Report (PDF/Excel)...')}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -49,92 +53,53 @@ export const ReportsPage: React.FC = () => {
             boxShadow: 'var(--shadow-sm)'
           }}
         >
-          <Download size={14} /> Export National Report
+          <Download size={14} /> Export MIS Report
         </button>
       </div>
+
+      {/* Role-Based Geographic Scope Banner */}
+      {!isCentral && (
+        <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', padding: '12px 16px', borderRadius: '10px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', color: '#92400E' }}>
+          <ShieldAlert size={18} />
+          <div>
+            <strong>Jurisdiction Scope Enforced ({user?.role}):</strong> Analytics & MIS Reports are generated specifically for your assigned {user?.districtId ? 'District' : 'State'} jurisdiction ({user?.assignedDistrictName || user?.assignedStateName || user?.districtId || user?.stateId}).
+          </div>
+        </div>
+      )}
 
       {/* Grid of Analytics Widgets */}
       <div className="responsive-grid grid-2" style={{ gap: '20px', marginBottom: '24px' }}>
         {/* Widget 1: Lifecycle Stage Distribution */}
         <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '20px', boxShadow: 'var(--shadow-card)' }}>
           <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>
-            Acquisition Lifecycle Stage Distribution
+            Acquisition Lifecycle Stage Breakdown
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {Object.entries(analytics.stageDistribution || {}).map(([stage, count]: any) => (
-              <div key={stage}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
-                  <span style={{ fontWeight: 600, color: '#334155' }}>{stage}</span>
-                  <strong style={{ color: '#0F172A' }}>{count} Cases</strong>
-                </div>
-                <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
-                  <div
-                    style={{
-                      height: '100%',
-                      width: `${Math.min(100, (count / 6) * 100)}%`,
-                      background: stage === 'COMPLETED' ? '#10B981' : stage === 'VALUATION' ? '#8B5CF6' : '#3B82F6',
-                      borderRadius: '4px'
-                    }}
-                  />
-                </div>
+            {Object.entries(analytics.stageCounts || {}).map(([stage, count]: [string, any]) => (
+              <div key={stage} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: '#F8FAFC', borderRadius: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#334155', fontWeight: 600 }}>{stage}</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0284C7' }}>{count} Cases</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Widget 2: Sector Wise Distribution */}
+        {/* Widget 2: Sector Breakdown */}
         <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '20px', boxShadow: 'var(--shadow-card)' }}>
           <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>
-            Sectoral Land Requisitions (Ha)
+            Infrastructure Sector Performance
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {Object.entries(analytics.sectorBreakdown || {}).map(([sec, data]: any) => (
-              <div key={sec} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: '#F8FAFC', borderRadius: '8px' }}>
-                <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>{sec.replace(/_/g, ' ')}</div>
-                  <div style={{ fontSize: '11px', color: '#64748B' }}>{data.count} Active Projects</div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#2563EB' }}>{Math.round(data.landAcq)} / {Math.round(data.landReq)} Ha</div>
-                  <div style={{ fontSize: '10.5px', color: '#059669', fontWeight: 600 }}>{Math.round((data.landAcq / (data.landReq || 1)) * 100)}% Acquired</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {Object.entries(analytics.sectorCounts || {}).map(([sector, val]: [string, any]) => (
+              <div key={sector} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: '#F8FAFC', borderRadius: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#334155', fontWeight: 600 }}>{sector}</span>
+                <div style={{ fontSize: '12px', color: '#64748B' }}>
+                  <strong style={{ color: '#0F172A' }}>{val.count}</strong> Projs | <strong style={{ color: '#047857' }}>{val.landAcq}</strong> / {val.landReq} Ha
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Top States Acquisition Velocity Table */}
-      <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '20px', boxShadow: 'var(--shadow-card)' }}>
-        <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#0F172A', marginBottom: '14px' }}>
-          State-Wise Acquisition Velocity
-        </h3>
-        <table className="gov-data-table">
-          <thead>
-            <tr>
-              <th>State / UT</th>
-              <th>Land Required (Ha)</th>
-              <th>Land Acquired (Ha)</th>
-              <th>Completion Rate</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {analytics.topStates?.map((st: any) => (
-              <tr key={st.stateName}>
-                <td><strong>{st.stateName}</strong></td>
-                <td>{st.landRequired.toLocaleString('en-IN')} Ha</td>
-                <td>{st.landAcquired.toLocaleString('en-IN')} Ha</td>
-                <td><strong>{st.completionPercentage}%</strong></td>
-                <td>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: st.completionPercentage >= 75 ? '#15803D' : '#1D4ED8', background: st.completionPercentage >= 75 ? '#DCFCE7' : '#DBEAFE', padding: '2px 8px', borderRadius: '9999px' }}>
-                    {st.completionPercentage >= 75 ? 'HIGH VELOCITY' : 'ON TRACK'}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );

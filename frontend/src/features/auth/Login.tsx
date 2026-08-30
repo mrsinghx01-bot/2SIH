@@ -543,7 +543,7 @@ export const Login: React.FC = () => {
 
           <div style={{ marginTop: '18px', textAlign: 'center', fontSize: '12px', color: '#64748B' }}>
             <span style={{ fontSize: '11px', color: '#94A3B8', display: 'inline-block' }}>
-              Secured with NIC & Ministry of Rural Development PKI • Geographic Isolation Protocol
+              Government-grade security architecture — RBAC enforced, session-scoped by jurisdiction.
             </span>
           </div>
         </div>

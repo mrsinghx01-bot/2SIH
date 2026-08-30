@@ -1,28 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Search } from 'lucide-react';
+import { Grid, Search, ShieldAlert, MapPin, Building } from 'lucide-react';
 import { fetchParcels } from '../../services/api';
+import { useAuth } from '../../store/AuthContext';
 import { StatusBadge } from '../../components/StatusBadge';
 import { DataTable } from '../../components/DataTable';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 
 export const ParcelsPage: React.FC = () => {
+  const { user } = useAuth();
   const [parcels, setParcels] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const isCentral = !user || user.role === 'CENTRAL_ADMIN' || user.role === 'CENTRAL_OFFICER';
+
   useEffect(() => {
-    fetchParcels()
+    fetchParcels({
+      stateId: user?.stateId || undefined,
+      districtId: user?.districtId || undefined
+    })
       .then(res => {
-        if (res.success) setParcels(res.data);
+        if (res.success) {
+          let list = res.data;
+          if (!isCentral) {
+            if (user?.districtId) {
+              list = list.filter((p: any) => p.districtId === user.districtId);
+            } else if (user?.stateId) {
+              list = list.filter((p: any) => p.stateId === user.stateId || p.districtStateId === user.stateId);
+            }
+          }
+          setParcels(list);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const filtered = parcels.filter(p =>
     p.parcelNumber.toLowerCase().includes(search.toLowerCase()) ||
     p.village.toLowerCase().includes(search.toLowerCase()) ||
-    (p.projectName && p.projectName.toLowerCase().includes(search.toLowerCase()))
+    (p.projectName && p.projectName.toLowerCase().includes(search.toLowerCase())) ||
+    (p.districtName && p.districtName.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -44,6 +62,16 @@ export const ParcelsPage: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* Role-Based Geographic Scope Banner */}
+      {!isCentral && (
+        <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '12px 16px', borderRadius: '10px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', color: '#1E40AF' }}>
+          <ShieldAlert size={18} />
+          <div>
+            <strong>Jurisdiction Scope Enforced ({user?.role}):</strong> Data is strictly filtered for your assigned {user?.districtId ? 'District' : 'State'} jurisdiction ({user?.assignedDistrictName || user?.assignedStateName || user?.districtId || user?.stateId}). Showing {filtered.length} matching land parcels.
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <LoadingSkeleton rows={6} />

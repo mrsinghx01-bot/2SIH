@@ -1,28 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Search, CheckCircle } from 'lucide-react';
+import { Users, Search, CheckCircle, ShieldAlert } from 'lucide-react';
 import { fetchRR } from '../../services/api';
+import { useAuth } from '../../store/AuthContext';
 import { StatusBadge } from '../../components/StatusBadge';
 import { DataTable } from '../../components/DataTable';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 
 export const RRMonitoringPage: React.FC = () => {
+  const { user } = useAuth();
   const [families, setFamilies] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const isCentral = !user || user.role === 'CENTRAL_ADMIN' || user.role === 'CENTRAL_OFFICER';
+
   useEffect(() => {
-    fetchRR()
+    fetchRR(undefined, undefined, undefined, user?.districtId || undefined, user?.stateId || undefined)
       .then(res => {
-        if (res.success) setFamilies(res.data);
+        if (res.success) {
+          let list = res.data;
+          if (!isCentral) {
+            if (user?.districtId) {
+              list = list.filter((f: any) => f.districtId === user.districtId);
+            } else if (user?.stateId) {
+              list = list.filter((f: any) => f.stateId === user.stateId || f.districtStateId === user.stateId);
+            }
+          }
+          setFamilies(list);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const filtered = families.filter(f =>
     f.headOfFamily.toLowerCase().includes(search.toLowerCase()) ||
     f.familyReference.toLowerCase().includes(search.toLowerCase()) ||
-    (f.projectName && f.projectName.toLowerCase().includes(search.toLowerCase()))
+    (f.projectName && f.projectName.toLowerCase().includes(search.toLowerCase())) ||
+    (f.districtName && f.districtName.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -45,6 +60,16 @@ export const RRMonitoringPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Role-Based Geographic Scope Banner */}
+      {!isCentral && (
+        <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '12px 16px', borderRadius: '10px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', color: '#065F46' }}>
+          <ShieldAlert size={18} />
+          <div>
+            <strong>Jurisdiction Scope Enforced ({user?.role}):</strong> Showing R&R entitlements restricted to your assigned {user?.districtId ? 'District' : 'State'} jurisdiction ({user?.assignedDistrictName || user?.assignedStateName || user?.districtId || user?.stateId}). Showing {filtered.length} matching affected family records.
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <LoadingSkeleton rows={6} />
       ) : filtered.length === 0 ? (
@@ -57,13 +82,11 @@ export const RRMonitoringPage: React.FC = () => {
           columns={[
             { header: 'Family Ref', accessor: 'familyReference', render: (r: any) => <strong style={{ color: '#2563EB' }}>{r.familyReference}</strong> },
             { header: 'Head of Family', render: (r: any) => <div><strong>{r.headOfFamily}</strong><div style={{ fontSize: '11px', color: '#64748B' }}>{r.projectName}</div></div> },
+            { header: 'District', accessor: 'districtName' },
             { header: 'Members', accessor: 'membersCount' },
-            { header: 'Vulnerability', accessor: 'vulnerabilityCategory' },
-            { header: 'Status', render: (r: any) => <StatusBadge status={r.rrStatus} /> },
-            {
-              header: 'Entitlement Package',
-              render: (r: any) => r.rrRecord?.entitlementPackage || 'Housing grant + Livelihood assistance'
-            }
+            { header: 'Displacement', render: (r: any) => r.isDisplaced ? <span style={{ color: '#DC2626', fontWeight: 700 }}>Displaced (PDF)</span> : <span style={{ color: '#047857' }}>Affected (PAF)</span> },
+            { header: 'Housing Entitlement', render: (r: any) => r.rrRecord?.housingOption || 'Constructed House Unit (PM Awas)' },
+            { header: 'R&R Progress', render: (r: any) => <StatusBadge status={r.rrStatus || 'IN_PROGRESS'} /> }
           ]}
           data={filtered}
           keyExtractor={(r: any) => r.id}

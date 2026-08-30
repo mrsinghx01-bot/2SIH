@@ -545,6 +545,34 @@ export async function getProjectById(req: AuthRequest, res: Response): Promise<v
 
   const progressPercentage = Math.min(100, Math.round((project.totalLandAcquired / (project.totalLandRequired || 1)) * 100));
 
+  // 10. Predictive Delay-Risk Analytics Engine
+  const disputedCount = parcels.filter(p => p.acquisitionStatus === 'DISPUTED' || p.acquisitionStatus === 'SURVEYED').length;
+  const pendingComp = compensationRecords.filter(c => c.paymentStatus === 'PENDING' || c.paymentStatus === 'APPROVED').length;
+  const isOverdue = targetDate.getTime() < new Date().getTime() && !isCompleted;
+  
+  let riskScore = 18;
+  const riskFactors: string[] = [];
+  
+  if (disputedCount > 0) {
+    riskScore += Math.min(35, disputedCount * 10);
+    riskFactors.push(`${disputedCount} Land Parcels under Survey / Boundary Verification`);
+  }
+  if (pendingComp > 0) {
+    riskScore += Math.min(25, pendingComp * 8);
+    riskFactors.push(`${pendingComp} Compensation Awards awaiting Direct Benefit Transfer (DBT)`);
+  }
+  if (isOverdue) {
+    riskScore += 25;
+    riskFactors.push('DPR Target Completion Date overdue');
+  }
+  if (progressPercentage < 50) {
+    riskScore += 15;
+    riskFactors.push('Acquisition Progress below 50% milestone');
+  }
+  
+  riskScore = Math.min(95, Math.max(12, riskScore));
+  const riskCategory = riskScore >= 60 ? 'HIGH' : riskScore >= 35 ? 'MEDIUM' : 'LOW';
+
   res.json({
     success: true,
     data: {
@@ -552,6 +580,11 @@ export async function getProjectById(req: AuthRequest, res: Response): Promise<v
       targetCompletion: project.targetCompletionDate || project.targetCompletion,
       targetCompletionDate: project.targetCompletionDate || project.targetCompletion,
       progressPercentage,
+      predictiveAnalytics: {
+        riskScore,
+        riskCategory,
+        riskFactors: riskFactors.length > 0 ? riskFactors : ['Optimal Milestone Acceleration — Low Acquisition Risk']
+      },
       districtBreakdown: districtDetails,
       cases,
       parcels,

@@ -15,6 +15,7 @@ import {
   Download,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   Map as MapIcon,
   Layers,
   ExternalLink
@@ -174,7 +175,52 @@ export const ProjectDetailPage: React.FC = () => {
 
         {/* Tab 1: Overview */}
         {activeTab === 1 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            
+            {/* RFCTLARR 2013 Statutory Workflow Stepper */}
+            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '16px 20px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={16} color="#0284C7" /> RFCTLARR Act 2013 Statutory Workflow Progression
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', textAlign: 'center' }}>
+                {[
+                  { step: '1', title: 'Sec 4 SIA Report', status: 'COMPLETED' },
+                  { step: '2', title: 'Sec 11 Preliminary Notif.', status: 'COMPLETED' },
+                  { step: '3', title: 'Sec 19 Declaration', status: project.progressPercentage >= 35 ? 'COMPLETED' : 'IN_PROGRESS' },
+                  { step: '4', title: 'Sec 26 Award Matrix', status: project.progressPercentage >= 65 ? 'COMPLETED' : 'IN_PROGRESS' },
+                  { step: '5', title: 'Sec 37 Possession Handover', status: project.progressPercentage >= 95 ? 'COMPLETED' : 'SCHEDULED' }
+                ].map((s, idx) => (
+                  <div key={idx} style={{ background: s.status === 'COMPLETED' ? '#ECFDF5' : s.status === 'IN_PROGRESS' ? '#EFF6FF' : '#FFF', border: `1px solid ${s.status === 'COMPLETED' ? '#A7F3D0' : s.status === 'IN_PROGRESS' ? '#BFDBFE' : '#E2E8F0'}`, borderRadius: '8px', padding: '10px 8px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 800, color: s.status === 'COMPLETED' ? '#047857' : s.status === 'IN_PROGRESS' ? '#1D4ED8' : '#64748B' }}>STEP {s.step}</div>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', marginTop: '2px' }}>{s.title}</div>
+                    <div style={{ fontSize: '10px', fontWeight: 700, color: s.status === 'COMPLETED' ? '#059669' : '#1E40AF', marginTop: '4px' }}>{s.status}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Predictive Delay Risk Analytics Card */}
+            {project.predictiveAnalytics && (
+              <div style={{ background: project.predictiveAnalytics.riskCategory === 'HIGH' ? '#FEF2F2' : project.predictiveAnalytics.riskCategory === 'MEDIUM' ? '#FFFBEB' : '#ECFDF5', border: `1px solid ${project.predictiveAnalytics.riskCategory === 'HIGH' ? '#FCA5A5' : project.predictiveAnalytics.riskCategory === 'MEDIUM' ? '#FDE68A' : '#A7F3D0'}`, borderRadius: '12px', padding: '16px 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 800, color: project.predictiveAnalytics.riskCategory === 'HIGH' ? '#991B1B' : '#065F46' }}>
+                    <AlertTriangle size={18} /> Predictive Delay-Risk Score (AI Predictive Engine)
+                  </div>
+                  <span style={{ fontSize: '12px', fontWeight: 800, padding: '4px 12px', borderRadius: '12px', background: project.predictiveAnalytics.riskCategory === 'HIGH' ? '#DC2626' : '#059669', color: '#FFF' }}>
+                    RISK SCORE: {project.predictiveAnalytics.riskScore} / 100 ({project.predictiveAnalytics.riskCategory} RISK)
+                  </span>
+                </div>
+                <div style={{ fontSize: '12.5px', color: '#334155', lineHeight: '1.5' }}>
+                  <strong>Identified Bottleneck Factors:</strong>
+                  <ul style={{ margin: '6px 0 0 18px', padding: 0 }}>
+                    {project.predictiveAnalytics.riskFactors.map((rf: string, rIdx: number) => (
+                      <li key={rIdx}>{rf}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
             <div>
               <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A', marginBottom: '8px' }}>Project Scope & Strategic Objectives</h3>
               <p style={{ fontSize: '13.5px', color: '#475569', lineHeight: '1.6' }}>

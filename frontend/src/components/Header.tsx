@@ -65,8 +65,37 @@ export const Header: React.FC<HeaderProps> = ({ onToggleNotification, onToggleSi
         <span>Better Tomorrow</span>
       </div>
 
-      {/* Right: Notifications, User Profile & Dynamic Date */}
+      {/* Right: Language Selector, Notifications, User Profile & Dynamic Date */}
       <div className="header-actions">
+        
+        {/* Multi-Lingual Regional Language Switcher (Full-Site Translation) */}
+        <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.25)', borderRadius: '8px', padding: '3px 10px', fontSize: '12px', color: '#FFF' }}>
+          <span style={{ marginRight: '6px', fontSize: '14px' }}>🇮🇳</span>
+          <select
+            defaultValue={localStorage.getItem('selected_lang') || 'en'}
+            onChange={(e) => {
+              const lang = e.target.value;
+              localStorage.setItem('selected_lang', lang);
+              document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
+              document.cookie = `googtrans=/en/${lang}; path=/;`;
+              window.location.reload();
+            }}
+            style={{ background: 'transparent', color: '#FFF', border: 'none', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', outline: 'none' }}
+          >
+            <option value="en" style={{ background: '#0F172A', color: '#FFF' }}>English (EN)</option>
+            <option value="hi" style={{ background: '#0F172A', color: '#FFF' }}>हिन्दी (Hindi)</option>
+            <option value="mr" style={{ background: '#0F172A', color: '#FFF' }}>मराठी (Marathi)</option>
+            <option value="pa" style={{ background: '#0F172A', color: '#FFF' }}>ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="bn" style={{ background: '#0F172A', color: '#FFF' }}>বাংলা (Bengali)</option>
+            <option value="ta" style={{ background: '#0F172A', color: '#FFF' }}>தமிழ் (Tamil)</option>
+            <option value="te" style={{ background: '#0F172A', color: '#FFF' }}>తెలుగు (Telugu)</option>
+            <option value="gu" style={{ background: '#0F172A', color: '#FFF' }}>ગુજરાતી (Gujarati)</option>
+            <option value="kn" style={{ background: '#0F172A', color: '#FFF' }}>ಕನ್ನಡ (Kannada)</option>
+            <option value="ml" style={{ background: '#0F172A', color: '#FFF' }}>മലയാളം (Malayalam)</option>
+            <option value="or" style={{ background: '#0F172A', color: '#FFF' }}>ଓଡ଼ିଆ (Odia)</option>
+          </select>
+        </div>
+
         {/* Notification Bell */}
         <button
           className="header-notification-btn"

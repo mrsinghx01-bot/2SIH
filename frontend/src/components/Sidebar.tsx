@@ -34,7 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: 'Compensation', path: '/compensation', icon: IndianRupee },
     { name: 'R&R Monitoring', path: '/rr-monitoring', icon: Users },
     { name: 'Reports & Analytics', path: '/reports', icon: BarChart3 },
-    { name: 'Alerts', path: '/alerts', icon: BellRing },
+    { name: 'Statutory Alerts', path: '/alerts', icon: BellRing },
     { name: 'Audit Log', path: '/audit-log', icon: History },
     { name: 'System Settings', path: '/settings', icon: Settings },
   ];
@@ -58,48 +58,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         );
       })}
 
-      {/* Field Survey App — only visible to FIELD_OFFICER */}
-      {isFieldOfficer && (
-        <NavLink
-          to="/field-officer"
-          className={({ isActive }) =>
-            `sidebar-nav-item ${isActive ? 'active' : ''}`
-          }
-          onClick={onClose}
-          style={{ marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px' }}
-        >
-          <Smartphone className="nav-icon" color="#60A5FA" />
-          <span>Field Survey App</span>
-        </NavLink>
-      )}
-
-      {/* Survey Review Queue — only for LAO, District Admin, State Admin, Central */}
-      {canReviewSurveys && (
-        <NavLink
-          to="/survey-review"
-          className={({ isActive }) =>
-            `sidebar-nav-item ${isActive ? 'active' : ''}`
-          }
-          onClick={onClose}
-          style={{ marginTop: isFieldOfficer ? '0' : '12px', borderTop: isFieldOfficer ? 'none' : '1px solid rgba(255,255,255,0.08)', paddingTop: isFieldOfficer ? '0' : '12px' }}
-        >
-          <ClipboardCheck className="nav-icon" color="#34D399" />
-          <span>Survey Review Queue</span>
-        </NavLink>
-      )}
-
-      {/* Role & Access Info at Bottom */}
-      <div className="sidebar-bottom-badge">
-        <span className="role-chip">
-          {user?.role ? user.role.replace(/_/g, ' ') : 'CENTRAL ADMIN'}
-        </span>
-        <div style={{ fontSize: '11px', color: '#94A3B8', lineHeight: '1.3' }}>
-          Geographic Scope: <br />
-          <strong style={{ color: '#E2E8F0' }}>
-            {user?.role?.startsWith('CENTRAL') ? 'National Scope (All 36 States/UTs)' : user?.stateId ? 'State Jurisdiction' : 'Assigned Jurisdiction'}
-          </strong>
+      {(isFieldOfficer || canReviewSurveys) && (
+        <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #1E293B' }}>
+          <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', padding: '0 12px 8px', textTransform: 'uppercase' }}>
+            Field Operations
+          </div>
+          {isFieldOfficer && (
+            <NavLink to="/field-officer" className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`} onClick={onClose}>
+              <Smartphone className="nav-icon" />
+              <span>Field Survey App</span>
+            </NavLink>
+          )}
+          {canReviewSurveys && (
+            <NavLink to="/survey-review" className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`} onClick={onClose}>
+              <ClipboardCheck className="nav-icon" />
+              <span>Survey Review Queue</span>
+            </NavLink>
+          )}
         </div>
-      </div>
+      )}
     </aside>
   );
 };

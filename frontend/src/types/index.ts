@@ -174,4 +174,6 @@ export interface UserData {
   ministry: string;
   stateId?: string | null;
   districtId?: string | null;
+  assignedStateName?: string;
+  assignedDistrictName?: string;
 }

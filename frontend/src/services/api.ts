@@ -3,9 +3,20 @@ const API_BASE_URL = rawUrl.endsWith('/api') ? rawUrl : (rawUrl.startsWith('http
 
 function getHeaders(): HeadersInit {
   const token = localStorage.getItem('token');
+  const userJson = localStorage.getItem('auth_user');
+  let roleHeader: Record<string, string> = {};
+  if (userJson) {
+    try {
+      const u = JSON.parse(userJson);
+      if (u.role) roleHeader['x-user-role'] = u.role;
+      if (u.stateId) roleHeader['x-user-state'] = u.stateId;
+      if (u.districtId) roleHeader['x-user-district'] = u.districtId;
+    } catch (e) {}
+  }
   return {
     'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {})
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...roleHeader
   };
 }
 
@@ -129,9 +140,10 @@ export async function updateCaseStage(id: string, newStage: string, remarks?: st
   return res.json();
 }
 
-export async function fetchParcels(filters?: { districtId?: string; projectId?: string; status?: string; search?: string }) {
+export async function fetchParcels(filters?: { districtId?: string; stateId?: string; projectId?: string; status?: string; search?: string }) {
   const params = new URLSearchParams();
   if (filters?.districtId) params.append('districtId', filters.districtId);
+  if (filters?.stateId) params.append('stateId', filters.stateId);
   if (filters?.projectId) params.append('projectId', filters.projectId);
   if (filters?.status) params.append('status', filters.status);
   if (filters?.search) params.append('search', filters.search);
@@ -143,11 +155,13 @@ export async function fetchParcels(filters?: { districtId?: string; projectId?: 
   return res.json();
 }
 
-export async function fetchCompensation(caseId?: string, status?: string, search?: string) {
+export async function fetchCompensation(caseId?: string, status?: string, search?: string, districtId?: string, stateId?: string) {
   const params = new URLSearchParams();
   if (caseId) params.append('caseId', caseId);
   if (status) params.append('status', status);
   if (search) params.append('search', search);
+  if (districtId) params.append('districtId', districtId);
+  if (stateId) params.append('stateId', stateId);
 
   const res = await fetch(`${API_BASE_URL}/compensation?${params.toString()}`, {
     headers: getHeaders()
@@ -156,11 +170,13 @@ export async function fetchCompensation(caseId?: string, status?: string, search
   return res.json();
 }
 
-export async function fetchRR(projectId?: string, status?: string, search?: string) {
+export async function fetchRR(projectId?: string, status?: string, search?: string, districtId?: string, stateId?: string) {
   const params = new URLSearchParams();
   if (projectId) params.append('projectId', projectId);
   if (status) params.append('status', status);
   if (search) params.append('search', search);
+  if (districtId) params.append('districtId', districtId);
+  if (stateId) params.append('stateId', stateId);
 
   const res = await fetch(`${API_BASE_URL}/rr?${params.toString()}`, {
     headers: getHeaders()
@@ -203,8 +219,12 @@ export async function processApproval(id: string, action: 'APPROVE' | 'REJECT' |
   return res.json();
 }
 
-export async function fetchNotifications() {
-  const res = await fetch(`${API_BASE_URL}/notifications`, {
+export async function fetchNotifications(districtId?: string, stateId?: string) {
+  const params = new URLSearchParams();
+  if (districtId) params.append('districtId', districtId);
+  if (stateId) params.append('stateId', stateId);
+
+  const res = await fetch(`${API_BASE_URL}/notifications?${params.toString()}`, {
     headers: getHeaders()
   });
   if (!res.ok) throw new Error('Failed to fetch notifications');
@@ -224,8 +244,12 @@ export async function fetchAuditLogs(search?: string, entityType?: string, actio
   return res.json();
 }
 
-export async function fetchAnalytics() {
-  const res = await fetch(`${API_BASE_URL}/reports/analytics`, {
+export async function fetchAnalytics(districtId?: string, stateId?: string) {
+  const params = new URLSearchParams();
+  if (districtId) params.append('districtId', districtId);
+  if (stateId) params.append('stateId', stateId);
+
+  const res = await fetch(`${API_BASE_URL}/reports/analytics?${params.toString()}`, {
     headers: getHeaders()
   });
   if (!res.ok) throw new Error('Failed to fetch analytics');
