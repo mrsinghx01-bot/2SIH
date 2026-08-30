@@ -16,12 +16,14 @@ const notifications_controller_1 = require("../controllers/notifications.control
 const audit_controller_1 = require("../controllers/audit.controller");
 const reports_controller_1 = require("../controllers/reports.controller");
 const auth_1 = require("../middleware/auth");
+const field_surveys_controller_1 = require("../controllers/field-surveys.controller");
 const router = (0, express_1.Router)();
 // Auth & Public routes (no token required)
 router.post('/auth/login', auth_controller_1.login);
 router.get('/auth/me', auth_1.authenticateToken, auth_controller_1.getCurrentUser);
 router.get('/auth/demo-roles', auth_controller_1.getDemoRoles);
 router.get('/states/public-master', states_controller_1.getPublicStatesMaster); // Public master directory of all 36 States & UTs for login
+router.get('/districts/public-by-state/:stateId', field_surveys_controller_1.getPublicDistrictsByState); // Public districts for login page (LAO selector)
 // All data routes below use authenticateToken so we can enforce geographic scope
 // Dashboard routes
 router.get('/dashboard/summary', auth_1.authenticateToken, dashboard_controller_1.getDashboardSummary);
@@ -59,4 +61,8 @@ router.patch('/notifications/:id/read', auth_1.authenticateToken, notifications_
 router.get('/audit-logs', auth_1.authenticateToken, audit_controller_1.getAllAuditLogs);
 // Reports routes
 router.get('/reports/analytics', auth_1.authenticateToken, reports_controller_1.getAnalyticsReport);
+// Field Survey routes
+router.get('/field-surveys', auth_1.authenticateToken, field_surveys_controller_1.getFieldSurveys);
+router.post('/field-surveys', auth_1.authenticateToken, field_surveys_controller_1.submitFieldSurvey);
+router.patch('/field-surveys/:id/review', auth_1.authenticateToken, field_surveys_controller_1.reviewFieldSurvey);
 exports.default = router;

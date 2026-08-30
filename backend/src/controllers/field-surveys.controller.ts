@@ -241,7 +241,8 @@ export async function reviewFieldSurvey(req: AuthRequest, res: Response): Promis
 // Public: GET /api/districts/public-by-state/:stateId — used on login page
 export async function getPublicDistrictsByState(req: Request, res: Response): Promise<void> {
   const store = getDatabaseStore();
-  const { stateId } = req.params;
+  const rawStateId = req.params.stateId;
+  const stateId = (Array.isArray(rawStateId) ? rawStateId[0] : rawStateId) || '';
   let districts = store.districts.filter(d => d.stateId === stateId);
   if (districts.length === 0) {
     // Try numeric lgdCode match

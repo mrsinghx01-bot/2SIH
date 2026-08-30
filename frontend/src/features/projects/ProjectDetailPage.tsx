@@ -505,7 +505,7 @@ Central Land Database Sealing Authority
               borderRadius: '12px',
               marginBottom: '20px',
               display: 'flex',
-              justify: 'space-between',
+              justifyContent: 'space-between',
               alignItems: 'center',
               flexWrap: 'wrap',
               gap: '12px'

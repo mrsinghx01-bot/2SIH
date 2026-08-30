@@ -31,20 +31,44 @@ async function getDashboardSummary(req, res) {
     const projectIds = new Set(scopedProjectDistricts.map(pd => pd.projectId));
     const scopedProjects = isCentral ? store.projects : store.projects.filter(p => projectIds.has(p.id));
     const totalProjects = scopedProjects.length;
-    const totalLandProposed = scopedProjectDistricts.reduce((acc, p) => acc + (p.landRequired || 0), 0) || (isCentral ? 842000 : 45000);
-    const totalLandAcquired = scopedProjectDistricts.reduce((acc, p) => acc + (p.landAcquired || 0), 0) || (isCentral ? 671000 : 34500);
-    const totalCompensationPaid = scopedCompensation.reduce((acc, c) => acc + (c.paidAmount || 0), 0) || (isCentral ? 1265400000000 : 425800000);
-    const totalAffectedFamilies = scopedFamilies.length || (isCentral ? 48200 : 1850);
+    // Compute KPIs from ACTUAL database records — no hardcoded fallbacks
+    const totalLandProposed = scopedProjects.reduce((acc, p) => acc + (p.totalLandRequired || 0), 0);
+    const totalLandAcquired = scopedProjects.reduce((acc, p) => acc + (p.totalLandAcquired || 0), 0);
+    const totalCompensationPaid = scopedCompensation.reduce((acc, c) => acc + (c.paidAmount || 0), 0);
+    const totalAffectedFamilies = scopedFamilies.length;
     const totalCases = scopedCases.length;
     const pendingApprovals = scopedApprovals.filter(a => a.status === 'PENDING').length;
-    const criticalAlerts = isCentral ? 12 : 3;
+    // Format large numbers for display
+    const formatLandDisplay = (ha) => {
+        if (ha >= 100000)
+            return `${(ha / 100000).toFixed(2)} Lakh Ha`;
+        if (ha >= 1000)
+            return `${(ha / 1000).toFixed(1)}K Ha`;
+        return `${Math.round(ha).toLocaleString('en-IN')} Ha`;
+    };
+    const formatCompensationDisplay = (amount) => {
+        if (amount >= 10000000000)
+            return `₹ ${(amount / 10000000).toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr`;
+        if (amount >= 10000000)
+            return `₹ ${(amount / 10000000).toFixed(1)} Cr`;
+        if (amount >= 100000)
+            return `₹ ${(amount / 100000).toFixed(1)} Lakh`;
+        return `₹ ${amount.toLocaleString('en-IN')}`;
+    };
+    const formatFamilyDisplay = (count) => {
+        if (count >= 100000)
+            return `${(count / 100000).toFixed(2)} Lakh`;
+        if (count >= 1000)
+            return `${(count / 1000).toFixed(1)}K`;
+        return count.toLocaleString('en-IN');
+    };
+    const acquisitionRate = totalLandProposed > 0 ? Math.round((totalLandAcquired / totalLandProposed) * 100) : 0;
     const currentAssignedState = (!isCentral && user?.stateId) ? store.states.find(s => s.id === user.stateId) : null;
     const realStateInfo = user?.stateId ? (0, govDataService_1.getStateData)(user.stateId) : null;
     // Real National Data from govDataService
     const realNationalKPIs = (0, govDataService_1.getNationalKPIs)();
     const dilrmpAgg = (0, govDataService_1.computeNationalDilrmpAggregate)();
     const worldBankData = isCentral ? await (0, govDataService_1.fetchWorldBankIndiaData)() : null;
-    // Format numbers for display
     const summary = {
         userScope: {
             isCentral,
@@ -59,41 +83,31 @@ async function getDashboardSummary(req, res) {
             totalProjects: {
                 value: totalProjects,
                 displayValue: totalProjects.toLocaleString('en-IN'),
-                trend: '+12%',
-                trendDirection: 'up',
-                comparisonText: 'vs last month',
-                subtitle: isCentral ? 'Across 36 States & UTs' : `${currentAssignedState?.name || 'State'} Jurisdiction`
+                comparisonText: 'from seeded project records',
+                subtitle: isCentral ? `Across ${scopedStates.length} States & UTs` : `${currentAssignedState?.name || 'State'} Jurisdiction`
             },
             landProposed: {
                 value: totalLandProposed,
-                displayValue: isCentral ? '8.42 Lakh Ha' : `${Math.round(totalLandProposed).toLocaleString('en-IN')} Ha`,
-                trend: '+8.4%',
-                trendDirection: 'up',
-                comparisonText: 'vs last month',
+                displayValue: formatLandDisplay(totalLandProposed),
+                comparisonText: 'total statutory requisitions',
                 subtitle: isCentral ? 'National Statutory Requisitions' : `${currentAssignedState?.name || 'State'} Requisitions`
             },
             landAcquired: {
                 value: totalLandAcquired,
-                displayValue: isCentral ? '6.71 Lakh Ha' : `${Math.round(totalLandAcquired).toLocaleString('en-IN')} Ha`,
-                trend: '+15.2%',
-                trendDirection: 'up',
-                comparisonText: 'vs last month',
-                subtitle: `${Math.round((totalLandAcquired / (totalLandProposed || 1)) * 100)}% Acquisition Rate`
+                displayValue: formatLandDisplay(totalLandAcquired),
+                comparisonText: `${acquisitionRate}% acquisition rate`,
+                subtitle: `${acquisitionRate}% Acquisition Rate`
             },
             compensationPaid: {
                 value: totalCompensationPaid,
-                displayValue: isCentral ? '₹ 1,26,540 Cr' : `₹ ${(totalCompensationPaid / 10000000).toFixed(1)} Cr`,
-                trend: '+18.5%',
-                trendDirection: 'up',
-                comparisonText: 'vs last month',
+                displayValue: formatCompensationDisplay(totalCompensationPaid),
+                comparisonText: 'total disbursed via PFMS',
                 subtitle: 'Direct Benefit Transfer (PFMS)'
             },
             affectedFamilies: {
                 value: totalAffectedFamilies,
-                displayValue: isCentral ? '4.82 Lakh' : `${totalAffectedFamilies.toLocaleString('en-IN')} Families`,
-                trend: '+6.1%',
-                trendDirection: 'up',
-                comparisonText: 'vs last month',
+                displayValue: formatFamilyDisplay(totalAffectedFamilies),
+                comparisonText: 'families identified for R&R',
                 subtitle: 'R&R Entitlements Tracked'
             }
         },
@@ -118,13 +132,13 @@ async function getDashboardSummary(req, res) {
             parcelsCount: scopedParcels.length,
             documentsCount: store.documents.length,
             pendingApprovals,
-            criticalAlerts
+            criticalAlerts: pendingApprovals > 0 ? pendingApprovals : 0
         },
         environment: {
             isDemo: false,
             dataSource: 'OPEN_GOV_DATA_INDIA',
             disclaimer: isCentral
-                ? 'Real Government Data: Sourced from Census of India 2011, RBI Handbook of Statistics, DILRMP-MIS (DoLR, MoRD) & data.gov.in.'
+                ? 'Data Sources: Project details from NHAI, MoRTH, NHSRCL, NWDA public records. Geographic data from LGD (lgdirectory.gov.in). DILRMP metrics from DoLR, MoRD. Population from Census of India 2011.'
                 : `State Scope (${currentAssignedState?.name || 'State'}): Integrated with official state land records & DILRMP metrics.`,
             lastUpdated: new Date().toLocaleDateString('en-IN', {
                 day: '2-digit',
@@ -138,6 +152,6 @@ async function getDashboardSummary(req, res) {
     res.json({
         success: true,
         data: summary,
-        message: 'Dashboard summary with real government data retrieved successfully.'
+        message: 'Dashboard summary computed from database records.'
     });
 }
