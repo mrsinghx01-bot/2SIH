@@ -1557,14 +1557,14 @@ export function generateSeedData(): SeedDataset {
         projectId: pId,
         caseId: caseId,
         documentType: 'NOTIFICATION_3A',
-        title: `Gazette Notification u/s 11 RFCTLARR - ${caseObj.caseNumber}`,
-        fileName: `Gazette_Notification_${pt.code}_${caseObj.caseNumber}.pdf`,
+        title: `Official Gazette Extraordinary Notification u/s 11 RFCTLARR - ${pt.name} (${assignedDist.name}, ${state.name})`,
+        fileName: `Gazette_Notification_${pt.code}_${assignedDist.name.replace(/\s+/g, '_')}_${caseObj.caseNumber}.pdf`,
         filePath: `/storage/documents/${pt.code}_${caseObj.caseNumber}_3A.pdf`,
         url: `https://egazette.gov.in/`,
         fileSize: 2458000,
         mimeType: 'application/pdf',
         version: '1.0',
-        uploadedBy: 'user-lao-01',
+        uploadedBy: `user-lao-${assignedDist.id}`,
         dataSource: 'PUBLIC_RECORDS',
         createdAt: notifDate
       });
@@ -1574,35 +1574,52 @@ export function generateSeedData(): SeedDataset {
         projectId: pId,
         caseId: caseId,
         documentType: 'VALUATION_SHEET',
-        title: `Competent Authority Valuation u/s 26 RFCTLARR - ${caseObj.caseNumber}`,
-        fileName: `Valuation_Matrix_${pt.code}_${caseObj.caseNumber}.pdf`,
+        title: `Competent Land Acquisition Collectorate Valuation Award u/s 26 - ${pt.name} (${assignedDist.name})`,
+        fileName: `Valuation_Matrix_Award_${pt.code}_${assignedDist.name.replace(/\s+/g, '_')}.pdf`,
         filePath: `/storage/documents/${pt.code}_${caseObj.caseNumber}_valuation.pdf`,
         url: `https://legislative.gov.in/actsofparliamentfromtheyear/land-acquisition-rehabilitation-and-resettlement-act-2013`,
         fileSize: 1845000,
         mimeType: 'application/pdf',
         version: '1.1',
-        uploadedBy: 'user-dist-admin-lucknow',
+        uploadedBy: `user-collector-${assignedDist.id}`,
         dataSource: 'PUBLIC_RECORDS',
         createdAt: new Date(notifDate.getTime() + 150 * 86400000)
       });
     }
 
-    // Project-level documents
+    // Project-level documents: DPR Alignment Map & MoEFCC Environmental Clearance
     documents.push({
       id: `doc-proj-${pId}-dp`,
       projectId: pId,
       caseId: null,
       documentType: 'PROPOSAL',
-      title: `Detailed Project Report (DPR) & Alignment Map - ${pt.name}`,
-      fileName: `DPR_Alignment_${pt.code}.pdf`,
+      title: `Official Detailed Project Report (DPR), Cadastral Alignment Map & Village Land Schedule - ${pt.name}`,
+      fileName: `DPR_Alignment_${pt.code}_${pt.agency.replace(/\s+/g, '_')}.pdf`,
       filePath: `/storage/documents/DPR_${pt.code}.pdf`,
       url: `https://${projectDomain}/`,
       fileSize: 14200000,
       mimeType: 'application/pdf',
       version: '2.0',
-      uploadedBy: 'user-agency-nhai',
+      uploadedBy: `user-agency-${pt.agency.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
       dataSource: 'PUBLIC_RECORDS',
       createdAt: new Date(pt.startDate + 'T09:00:00Z')
+    });
+
+    documents.push({
+      id: `doc-proj-${pId}-ec`,
+      projectId: pId,
+      caseId: null,
+      documentType: 'APPROVAL',
+      title: `MoEFCC Statutory Environment & Forest Clearance Certificate - ${pt.name} (${state.name})`,
+      fileName: `MoEFCC_Environmental_Clearance_${pt.code}_${state.shortName}.pdf`,
+      filePath: `/storage/documents/EC_${pt.code}.pdf`,
+      url: `https://parivesh.nic.in/`,
+      fileSize: 3120000,
+      mimeType: 'application/pdf',
+      version: '1.0',
+      uploadedBy: 'user-moefcc-central',
+      dataSource: 'PUBLIC_RECORDS',
+      createdAt: new Date(pt.startDate + 'T14:00:00Z')
     });
 
     // Approval record
