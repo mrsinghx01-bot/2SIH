@@ -142,6 +142,7 @@ async function updateCaseStage(req, res) {
         ipAddress: req.ip || '127.0.0.1',
         createdAt: new Date()
     });
+    (0, database_1.saveDatabaseStore)();
     res.json({
         success: true,
         data: acquisitionCase,

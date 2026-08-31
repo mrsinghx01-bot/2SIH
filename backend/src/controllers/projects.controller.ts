@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getDatabaseStore } from '../config/database';
+import { getDatabaseStore, saveDatabaseStore } from '../config/database';
 import { AuthRequest } from '../middleware/auth';
 
 export async function getAllProjects(req: AuthRequest, res: Response): Promise<void> {
@@ -667,6 +667,8 @@ export async function createProject(req: AuthRequest, res: Response): Promise<vo
     ipAddress: req.ip || '127.0.0.1',
     createdAt: new Date()
   });
+
+  saveDatabaseStore();
 
   res.status(201).json({
     success: true,

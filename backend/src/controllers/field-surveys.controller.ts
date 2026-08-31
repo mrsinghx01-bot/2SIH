@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getDatabaseStore } from '../config/database';
+import { getDatabaseStore, saveDatabaseStore } from '../config/database';
 import { AuthRequest } from '../middleware/auth';
 import path from 'path';
 import fs from 'fs';
@@ -156,6 +156,8 @@ export async function submitFieldSurvey(req: AuthRequest, res: Response): Promis
     createdAt: new Date()
   });
 
+  saveDatabaseStore();
+
   res.status(201).json({
     success: true,
     data: newSurvey,
@@ -230,6 +232,8 @@ export async function reviewFieldSurvey(req: AuthRequest, res: Response): Promis
     ipAddress: req.ip || '127.0.0.1',
     createdAt: new Date()
   });
+
+  saveDatabaseStore();
 
   res.json({
     success: true,

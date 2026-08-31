@@ -54,6 +54,7 @@ async function uploadDocument(req, res) {
         createdAt: new Date()
     };
     store.documents.unshift(doc);
+    (0, database_1.saveDatabaseStore)();
     res.status(201).json({
         success: true,
         data: doc,

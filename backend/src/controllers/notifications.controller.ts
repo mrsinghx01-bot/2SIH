@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getDatabaseStore } from '../config/database';
+import { getDatabaseStore, saveDatabaseStore } from '../config/database';
 import { AuthRequest } from '../middleware/auth';
 
 export async function getAllNotifications(req: AuthRequest, res: Response): Promise<void> {
@@ -43,6 +43,7 @@ export async function markNotificationAsRead(req: Request, res: Response): Promi
   const notif = store.notifications.find(n => n.id === id);
   if (notif) {
     notif.isRead = true;
+    saveDatabaseStore();
   }
 
   res.json({
@@ -51,3 +52,4 @@ export async function markNotificationAsRead(req: Request, res: Response): Promi
     message: 'Notification marked as read.'
   });
 }
+

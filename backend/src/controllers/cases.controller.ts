@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getDatabaseStore } from '../config/database';
+import { getDatabaseStore, saveDatabaseStore } from '../config/database';
 import { AuthRequest } from '../middleware/auth';
 
 export async function getAllCases(req: AuthRequest, res: Response): Promise<void> {
@@ -162,6 +162,8 @@ export async function updateCaseStage(req: AuthRequest, res: Response): Promise<
     ipAddress: req.ip || '127.0.0.1',
     createdAt: new Date()
   });
+
+  saveDatabaseStore();
 
   res.json({
     success: true,

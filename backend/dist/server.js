@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 app.use((0, cors_1.default)({
     origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-user-role', 'x-user-state', 'x-user-district']
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getDatabaseStore } from '../config/database';
+import { getDatabaseStore, saveDatabaseStore } from '../config/database';
 import { AuthRequest } from '../middleware/auth';
 
 export async function getAllApprovals(req: Request, res: Response): Promise<void> {
@@ -53,9 +53,12 @@ export async function processApproval(req: AuthRequest, res: Response): Promise<
     createdAt: new Date()
   });
 
+  saveDatabaseStore();
+
   res.json({
     success: true,
     data: approval,
     message: `Approval status updated to ${approval.status}.`
   });
 }
+

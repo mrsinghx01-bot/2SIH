@@ -104,6 +104,30 @@ export async function fetchProjectById(id: string) {
   return res.json();
 }
 
+export async function createProject(data: {
+  name: string;
+  projectCode: string;
+  projectType: string;
+  implementingAgency: string;
+  ministry?: string;
+  description?: string;
+  totalLandRequired: number;
+  estimatedCost: number;
+  stateId?: string;
+  districtId?: string;
+}) {
+  const res = await fetch(`${API_BASE_URL}/projects`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: 'Failed to register project' }));
+    throw new Error(err.message || 'Failed to register project');
+  }
+  return res.json();
+}
+
 export async function fetchAcquisitionCases(filters?: { projectId?: string; stateId?: string; districtId?: string; status?: string; search?: string }) {
   const params = new URLSearchParams();
   if (filters?.projectId) params.append('projectId', filters.projectId);

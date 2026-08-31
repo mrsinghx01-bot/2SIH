@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getDatabaseStore } from '../config/database';
+import { getDatabaseStore, saveDatabaseStore } from '../config/database';
 import { AuthRequest } from '../middleware/auth';
 import PDFDocument from 'pdfkit';
 
@@ -60,6 +60,8 @@ export async function uploadDocument(req: AuthRequest, res: Response): Promise<v
   };
 
   store.documents.unshift(doc);
+
+  saveDatabaseStore();
 
   res.status(201).json({
     success: true,

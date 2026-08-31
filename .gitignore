@@ -11,3 +11,7 @@ yarn-debug.log*
 yarn-error.log*
 .tempmediaStorage/
 .system_generated/
+storage/surveys/
+storage/db_store.json
+backend/storage/
+

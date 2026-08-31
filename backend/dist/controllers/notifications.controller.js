@@ -40,6 +40,7 @@ async function markNotificationAsRead(req, res) {
     const notif = store.notifications.find(n => n.id === id);
     if (notif) {
         notif.isRead = true;
+        (0, database_1.saveDatabaseStore)();
     }
     res.json({
         success: true,
