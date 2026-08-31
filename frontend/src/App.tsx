@@ -19,7 +19,6 @@ import { AuditLogPage } from './features/audit/AuditLogPage';
 import { SettingsPage } from './features/settings/SettingsPage';
 import { FieldOfficerPage } from './features/field-officer/FieldOfficerPage';
 import { SurveyReviewPage } from './features/field-officer/SurveyReviewPage';
-import { WorkflowDemoPage } from './features/workflow-demo/WorkflowDemoPage';
 
 const ProtectedLayout: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -33,7 +32,6 @@ const ProtectedLayout: React.FC = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<NationalDashboard />} />
-        <Route path="/workflow-demo" element={<WorkflowDemoPage />} />
         <Route path="/states" element={<NationalDashboard />} />
         <Route path="/states/:stateId" element={<StateDetailPage />} />
         <Route path="/districts/:districtId" element={<DistrictDetailPage />} />

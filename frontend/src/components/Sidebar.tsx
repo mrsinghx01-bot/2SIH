@@ -12,8 +12,7 @@ import {
   History,
   Settings,
   Smartphone,
-  ClipboardCheck,
-  Zap
+  ClipboardCheck
 } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
 
@@ -29,7 +28,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   const menuItems = [
     { name: 'National Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: '⚡ Lifecycle Simulator', path: '/workflow-demo', icon: Zap },
     { name: 'States / UTs', path: '/states', icon: Map },
     { name: 'Projects', path: '/projects', icon: FolderKanban },
     { name: 'Land Parcels', path: '/parcels', icon: Grid },
