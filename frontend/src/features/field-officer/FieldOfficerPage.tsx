@@ -75,32 +75,56 @@ export const FieldOfficerPage: React.FC = () => {
   const [surveysLoading, setSurveysLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'form' | 'history'>('form');
 
+  // 1. Sync with user jurisdiction whenever user profile changes
+  useEffect(() => {
+    if (user?.stateId) {
+      setSelectedStateId(user.stateId);
+    }
+    if (user?.districtId) {
+      setSelectedDistrictId(user.districtId);
+    }
+  }, [user?.stateId, user?.districtId]);
+
+  // 2. Fetch master states list on mount
   useEffect(() => {
     fetchPublicStatesMaster().then(res => {
-      if (res?.success) {
+      if (res?.success && res.data?.length > 0) {
         setStatesList(res.data);
-        if (!user?.stateId && res.data.length > 0) setSelectedStateId(res.data[0].id);
+        if (!user?.stateId && !selectedStateId) {
+          const defaultState = res.data.find((s: any) => s.id === 'state-9') || res.data[0];
+          setSelectedStateId(defaultState.id);
+        }
       }
     }).catch(() => {});
   }, []);
 
+  // 3. Fetch districts when state changes
   useEffect(() => {
     if (selectedStateId) {
       fetchPublicDistrictsByState(selectedStateId).then(res => {
-        if (res?.success) {
+        if (res?.success && res.data) {
           setDistrictsList(res.data);
-          if (!user?.districtId) setSelectedDistrictId(res.data[0]?.id || '');
+          // If user district matches this state, keep it; otherwise select first district
+          const hasCurrentDistrict = res.data.some((d: any) => d.id === selectedDistrictId);
+          if (!hasCurrentDistrict && res.data.length > 0) {
+            setSelectedDistrictId(res.data[0].id);
+          }
         }
       }).catch(() => {});
     }
   }, [selectedStateId]);
 
+  // 4. Fetch projects when state changes
   useEffect(() => {
     if (selectedStateId) {
       fetchProjects({ stateId: selectedStateId }).then(res => {
-        if (res?.success) {
+        if (res?.success && res.data) {
           setProjectsList(res.data);
-          setSelectedProjectId(res.data[0]?.id || '');
+          if (res.data.length > 0) {
+            setSelectedProjectId(res.data[0].id);
+          } else {
+            setSelectedProjectId('');
+          }
         }
       }).catch(() => {});
     }
@@ -108,7 +132,7 @@ export const FieldOfficerPage: React.FC = () => {
 
   const loadPastSurveys = () => {
     setSurveysLoading(true);
-    fetchFieldSurveys({ stateId: user?.stateId || selectedStateId }).then(res => {
+    fetchFieldSurveys({ stateId: selectedStateId || user?.stateId || undefined }).then(res => {
       if (res?.success) setPastSurveys(res.data);
     }).catch(() => {}).finally(() => setSurveysLoading(false));
   };
@@ -255,17 +279,27 @@ export const FieldOfficerPage: React.FC = () => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                 <div>
-                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>State / UT</label>
-                  <select value={selectedStateId} onChange={e => setSelectedStateId(e.target.value)} disabled={!!user?.stateId}
-                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', background: user?.stateId ? '#F1F5F9' : '#FFF' }}>
-                    {statesList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>
+                    State / UT Jurisdiction
+                  </label>
+                  <select
+                    value={selectedStateId}
+                    onChange={e => setSelectedStateId(e.target.value)}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', background: '#FFF', cursor: 'pointer' }}
+                  >
+                    {statesList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.shortName})</option>)}
                   </select>
                 </div>
                 <div>
-                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>District</label>
-                  <select value={selectedDistrictId} onChange={e => setSelectedDistrictId(e.target.value)} disabled={!!user?.districtId}
-                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', background: user?.districtId ? '#F1F5F9' : '#FFF' }}>
-                    {districtsList.length === 0 && <option value="">— Select state —</option>}
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '5px' }}>
+                    District Jurisdiction
+                  </label>
+                  <select
+                    value={selectedDistrictId}
+                    onChange={e => setSelectedDistrictId(e.target.value)}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', background: '#FFF', cursor: 'pointer' }}
+                  >
+                    {districtsList.length === 0 && <option value="">— Select state first —</option>}
                     {districtsList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                   </select>
                 </div>

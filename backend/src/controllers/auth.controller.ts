@@ -76,6 +76,44 @@ export async function login(req: Request, res: Response): Promise<void> {
     }
   }
 
+  // 1c. If stateId or districtId selected for FIELD_OFFICER
+  if (!user && roleOverride === 'FIELD_OFFICER' && (stateId || districtId)) {
+    const targetState = stateId ? store.states.find(s =>
+      s.id === stateId ||
+      s.shortName?.toLowerCase() === stateId.toLowerCase() ||
+      s.lgdCode === parseInt(stateId, 10) ||
+      s.name.toLowerCase() === stateId.toLowerCase()
+    ) : null;
+    const targetDistrict = districtId ? store.districts.find(d =>
+      d.id === districtId
+    ) : (targetState ? store.districts.find(d => d.stateId === targetState.id) : null);
+
+    const resolvedState = targetState || (targetDistrict ? store.states.find(s => s.id === (targetDistrict as any).stateId) : null);
+    const resolvedDistrict = targetDistrict;
+
+    const shortName = resolvedState?.shortName || 'IN';
+    const stateName = resolvedState?.name || 'State';
+    const distName = resolvedDistrict?.name || 'District';
+
+    user = store.users.find(u => u.role === 'FIELD_OFFICER' && u.stateId === (resolvedState?.id || null));
+    if (!user) {
+      user = {
+        id: `user-fo-${(resolvedState?.id || stateId || 'gen').replace(/[^a-z0-9]/gi, '-')}`,
+        employeeId: `FO-${shortName.toUpperCase()}-501`,
+        name: `Field Officer (${distName}, ${shortName})`,
+        email: `survey.${distName.toLowerCase().replace(/[^a-z0-9]/g, '')}@${shortName.toLowerCase()}.gov.in`,
+        passwordHash: store.users[0]?.passwordHash || '',
+        role: 'FIELD_OFFICER',
+        designation: 'Tehsildar (Land Records & Cadastral Survey)',
+        ministry: `Department of Revenue, ${stateName}`,
+        stateId: resolvedState?.id || stateId || null,
+        districtId: resolvedDistrict?.id || districtId || null,
+        isActive: true
+      };
+      store.users.push(user);
+    }
+  }
+
   // 2. Look up existing user by employeeId, email, or role
   if (!user) {
     user = store.users.find(u =>

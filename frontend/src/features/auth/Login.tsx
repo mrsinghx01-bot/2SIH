@@ -127,7 +127,7 @@ export const Login: React.FC = () => {
 
     try {
       const needsState = ['STATE_ADMIN', 'LAND_ACQUISITION_OFFICER', 'FIELD_OFFICER'].includes(selectedRole);
-      const needsDistrict = selectedRole === 'LAND_ACQUISITION_OFFICER';
+      const needsDistrict = selectedRole === 'LAND_ACQUISITION_OFFICER' || selectedRole === 'FIELD_OFFICER';
 
       await login(
         employeeId,
@@ -399,12 +399,12 @@ export const Login: React.FC = () => {
               </div>
             )}
 
-            {/* 2b. District selector — only for LAO (Step 2 of 2) */}
-            {selectedRole === 'LAND_ACQUISITION_OFFICER' && (
+            {/* 2b. District selector — for LAO & Field Officer */}
+            {(selectedRole === 'LAND_ACQUISITION_OFFICER' || selectedRole === 'FIELD_OFFICER') && (
               <div
                 style={{
-                  background: '#FFFBEB',
-                  border: '1.5px solid #F59E0B',
+                  background: selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#FFFBEB' : '#EFF6FF',
+                  border: `1.5px solid ${selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#F59E0B' : '#60A5FA'}`,
                   borderRadius: '12px',
                   padding: '14px',
                   display: 'flex',
@@ -413,12 +413,12 @@ export const Login: React.FC = () => {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 800, color: '#92400E', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <MapPin size={14} /> Select District Jurisdiction (Step 2 of 2)
+                  <label style={{ fontSize: '12px', fontWeight: 800, color: selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#92400E' : '#1D4ED8', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <MapPin size={14} /> {selectedRole === 'LAND_ACQUISITION_OFFICER' ? 'Select District Jurisdiction (Step 2 of 2)' : 'Select Assigned District'}
                   </label>
-                  {districtsLoading && <span style={{ fontSize: '10px', color: '#B45309' }}>Loading...</span>}
+                  {districtsLoading && <span style={{ fontSize: '10px', color: selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#B45309' : '#1D4ED8' }}>Loading...</span>}
                   {!districtsLoading && districtsList.length > 0 && (
-                    <span style={{ fontSize: '10.5px', background: '#FEF3C7', color: '#B45309', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                    <span style={{ fontSize: '10.5px', background: selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#FEF3C7' : '#DBEAFE', color: selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#B45309' : '#1D4ED8', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
                       {districtsList.length} Districts
                     </span>
                   )}
