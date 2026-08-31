@@ -20,8 +20,8 @@ app.use((0, cors_1.default)({
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-user-role', 'x-user-state', 'x-user-district']
 }));
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.json({ limit: '50mb' }));
+app.use(express_1.default.urlencoded({ limit: '50mb', extended: true }));
 // Static documents folder
 app.use('/storage', express_1.default.static(path_1.default.resolve(__dirname, '../../storage')));
 // API Routes
