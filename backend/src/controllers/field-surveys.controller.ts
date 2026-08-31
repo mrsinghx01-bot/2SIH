@@ -216,23 +216,47 @@ export async function reviewFieldSurvey(req: AuthRequest, res: Response): Promis
     RETURN_FOR_REVISION: 'RETURNED'
   };
 
+  const defaultRemarks = action === 'APPROVE'
+    ? 'Survey verified against cadastral land records and statutory boundary coordinates.'
+    : action === 'REJECT'
+    ? 'Survey rejected due to discrepancies in ground measurement or ownership verification.'
+    : 'Returned to Field Officer for joint demarcation and clarification.';
+
+  const reviewerDesignation = user.designation || (
+    user.role === 'LAND_ACQUISITION_OFFICER' ? 'Land Acquisition Officer (Competent Authority)' :
+    user.role === 'DISTRICT_ADMIN' ? 'District Magistrate & Collector' :
+    user.role === 'STATE_ADMIN' ? 'Principal Secretary (Revenue & Land Records)' :
+    'Central Oversight Administrator'
+  );
+
+  const reviewerMinistry = user.ministry || (
+    user.role === 'STATE_ADMIN' ? 'Department of Revenue & Disaster Management' :
+    user.role === 'LAND_ACQUISITION_OFFICER' ? 'Competent Authority Land Acquisition (CALA)' :
+    'Ministry of Rural Development / DoLR'
+  );
+
   store.fieldSurveys[surveyIndex] = {
     ...survey,
     status: statusMap[action],
     reviewedById: user.id,
     reviewedByName: user.name,
+    reviewedByRole: user.role,
+    reviewedByDesignation: reviewerDesignation,
+    reviewedByMinistry: reviewerMinistry,
     reviewedAt: new Date(),
-    reviewRemarks: reviewRemarks || '',
+    reviewRemarks: reviewRemarks?.trim() || defaultRemarks,
     updatedAt: new Date()
   };
 
   store.auditLogs.unshift({
     id: `audit-fsr-${Date.now()}`,
-    userId: user.id, userEmail: user.email,
+    userId: user.id,
+    userEmail: user.email,
     action: `FIELD_SURVEY_${action}`,
-    entityType: 'FIELD_SURVEY', entityId: id,
-    oldValue: 'PENDING_REVIEW',
-    newValue: `${statusMap[action]} by ${user.name}`,
+    entityType: 'FIELD_SURVEY',
+    entityId: id,
+    oldValue: survey.status || 'PENDING_REVIEW',
+    newValue: `${statusMap[action]} by ${user.name} (${reviewerDesignation})`,
     ipAddress: req.ip || '127.0.0.1',
     createdAt: new Date()
   });
@@ -242,7 +266,7 @@ export async function reviewFieldSurvey(req: AuthRequest, res: Response): Promis
   res.json({
     success: true,
     data: store.fieldSurveys[surveyIndex],
-    message: `Survey ${id} ${statusMap[action].toLowerCase()} by ${user.name}.`
+    message: `Survey ${id} ${statusMap[action].toLowerCase()} by ${user.name} (${reviewerDesignation}).`
   });
 }
 

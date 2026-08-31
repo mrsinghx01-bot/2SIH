@@ -224,16 +224,30 @@ export const SurveyReviewPage: React.FC = () => {
                         <div style={{ fontSize: '11px', color: '#94A3B8' }}>{s.submittedByEmployeeId}</div>
                       </td>
                       <td style={{ padding: '14px 16px' }}>
-                        <span style={{ background: ss.bg, color: ss.color, padding: '3px 8px', borderRadius: '5px', fontSize: '11px', fontWeight: 800 }}>
+                        <span style={{ background: ss.bg, color: ss.color, padding: '4px 9px', borderRadius: '5px', fontSize: '11px', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          {s.status === 'APPROVED' && <CheckCircle2 size={12} />}
+                          {s.status === 'REJECTED' && <XCircle size={12} />}
+                          {s.status === 'RETURNED' && <RotateCcw size={12} />}
                           {ss.label}
                         </span>
+                        {s.reviewedByName && (
+                          <div style={{ fontSize: '11px', color: '#334155', marginTop: '4px', lineHeight: '1.3' }}>
+                            <span style={{ color: '#64748B' }}>By: </span>
+                            <strong style={{ color: s.status === 'APPROVED' ? '#047857' : s.status === 'REJECTED' ? '#B91C1C' : '#3730A3' }}>
+                              {s.reviewedByName}
+                            </strong>
+                            <div style={{ fontSize: '10px', color: '#64748B' }}>
+                              {s.reviewedByDesignation || 'Competent Authority (LAO)'}
+                            </div>
+                          </div>
+                        )}
                       </td>
                       <td style={{ padding: '14px 16px', textAlign: 'center' }}>
                         <button
                           onClick={() => { setSelectedSurvey(s); setReviewRemarks(s.reviewRemarks || ''); }}
                           style={{ background: '#2563EB', color: '#FFF', border: 'none', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                         >
-                          <Eye size={12} /> {s.status === 'PENDING_REVIEW' ? 'Review & Decide' : 'View Details'}
+                          <Eye size={12} /> {s.status === 'PENDING_REVIEW' ? 'Review & Decide' : 'View Decision'}
                         </button>
                       </td>
                     </tr>
@@ -269,6 +283,62 @@ export const SurveyReviewPage: React.FC = () => {
             {/* Modal Body */}
             <div style={{ padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px' }}>
               
+              {/* Official Review Endorsement Banner (if already reviewed) */}
+              {selectedSurvey.status !== 'PENDING_REVIEW' && (
+                <div style={{
+                  background: selectedSurvey.status === 'APPROVED' ? '#F0FDF4' : selectedSurvey.status === 'REJECTED' ? '#FEF2F2' : '#EFF6FF',
+                  border: `1.5px solid ${selectedSurvey.status === 'APPROVED' ? '#86EFAC' : selectedSurvey.status === 'REJECTED' ? '#FCA5A5' : '#93C5FD'}`,
+                  borderRadius: '10px',
+                  padding: '14px 16px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 800, color: selectedSurvey.status === 'APPROVED' ? '#166534' : selectedSurvey.status === 'REJECTED' ? '#991B1B' : '#1E40AF' }}>
+                      <ShieldAlert size={16} /> Official Statutory Decision & Endorsement
+                    </div>
+                    <span style={{
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      background: selectedSurvey.status === 'APPROVED' ? '#DCFCE7' : selectedSurvey.status === 'REJECTED' ? '#FEE2E2' : '#DBEAFE',
+                      color: selectedSurvey.status === 'APPROVED' ? '#15803D' : selectedSurvey.status === 'REJECTED' ? '#991B1B' : '#1E40AF'
+                    }}>
+                      {selectedSurvey.status}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '12px', marginBottom: '8px' }}>
+                    <div>
+                      <span style={{ color: '#64748B', display: 'block', fontSize: '10.5px' }}>REVIEWING OFFICER</span>
+                      <strong style={{ color: '#0F172A', fontSize: '13px' }}>{selectedSurvey.reviewedByName || 'Competent Authority'}</strong>
+                    </div>
+                    <div>
+                      <span style={{ color: '#64748B', display: 'block', fontSize: '10.5px' }}>DESIGNATION & AUTHORITY</span>
+                      <strong style={{ color: '#0F172A' }}>{selectedSurvey.reviewedByDesignation || 'Land Acquisition Officer'}</strong>
+                    </div>
+                    <div>
+                      <span style={{ color: '#64748B', display: 'block', fontSize: '10.5px' }}>ADMINISTRATIVE JURISDICTION</span>
+                      <strong style={{ color: '#0F172A' }}>{selectedSurvey.reviewedByMinistry || `${selectedSurvey.districtName || 'District'} Collectorate`}</strong>
+                    </div>
+                    <div>
+                      <span style={{ color: '#64748B', display: 'block', fontSize: '10.5px' }}>DATE & TIME OF DECISION</span>
+                      <strong style={{ color: '#0F172A' }}>
+                        {selectedSurvey.reviewedAt ? new Date(selectedSurvey.reviewedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Recorded in Audit Trail'}
+                      </strong>
+                    </div>
+                  </div>
+
+                  {selectedSurvey.reviewRemarks && (
+                    <div style={{ borderTop: '1px dashed #CBD5E1', paddingTop: '8px', marginTop: '6px' }}>
+                      <span style={{ color: '#64748B', fontSize: '11px', display: 'block', fontWeight: 600 }}>OFFICIAL EVALUATION & REMARKS:</span>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '12.5px', color: '#1E293B', fontStyle: 'italic' }}>
+                        "{selectedSurvey.reviewRemarks}"
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', background: '#F8FAFC', padding: '12px', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                 <div>
                   <span style={{ color: '#64748B', display: 'block', fontSize: '11px', fontWeight: 700 }}>PROJECT</span>
@@ -333,20 +403,21 @@ export const SurveyReviewPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Review Section */}
-              <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '14px', marginTop: '4px' }}>
-                <label style={{ color: '#0F172A', fontWeight: 800, display: 'block', marginBottom: '6px' }}>
-                  Competent Authority / Collector Decision Notes
-                </label>
-                <textarea
-                  rows={2}
-                  placeholder="Enter evaluation, award details, or reasons for rejection/returned requests..."
-                  value={reviewRemarks}
-                  onChange={e => setReviewRemarks(e.target.value)}
-                  disabled={selectedSurvey.status !== 'PENDING_REVIEW'}
-                  style={{ width: '100%', padding: '10px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              {/* Review Section (for pending surveys) */}
+              {selectedSurvey.status === 'PENDING_REVIEW' && (
+                <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '14px', marginTop: '4px' }}>
+                  <label style={{ color: '#0F172A', fontWeight: 800, display: 'block', marginBottom: '6px' }}>
+                    Competent Authority / Collector Decision Notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    placeholder="Enter evaluation, award details, or reasons for rejection/returned requests..."
+                    value={reviewRemarks}
+                    onChange={e => setReviewRemarks(e.target.value)}
+                    style={{ width: '100%', padding: '10px', borderRadius: '7px', border: '1px solid #CBD5E1', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                  />
+                </div>
+              )}
 
             </div>
 

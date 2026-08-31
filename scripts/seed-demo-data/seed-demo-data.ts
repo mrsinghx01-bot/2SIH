@@ -16,6 +16,7 @@ export interface SeedDataset {
   approvals: any[];
   notifications: any[];
   auditLogs: any[];
+  fieldSurveys: any[];
   users: any[];
 }
 
@@ -828,7 +829,125 @@ export function generateSeedData(): SeedDataset {
     }
   );
 
-  console.log(`✅ Seed dataset prepared: ${allProjects.length} Projects, ${acquisitionCases.length} Cases, ${parcels.length} Parcels, ${affectedFamilies.length} Families.`);
+  // Field Surveys Seed Data
+  const fieldSurveys = [
+    {
+      id: 'FS-UP-2026-0801',
+      projectId: 'proj-1',
+      projectName: 'Delhi-Mumbai Expressway Package 14',
+      stateId: 'state-9',
+      stateName: 'Uttar Pradesh',
+      districtId: 'dist-157',
+      districtName: 'Lucknow',
+      khasraNo: '104/2-A',
+      villageNameMouza: 'Banthra Rural Reach',
+      areaSurveyed: 2.85,
+      landCategory: 'Private Agricultural (Single Crop)',
+      soilClassification: 'Alluvial Loam',
+      encumbranceStatus: 'No Encumbrance',
+      structuresPresent: true,
+      treesCount: 14,
+      gpsLatitude: 26.7025,
+      gpsLongitude: 80.8256,
+      gpsAccuracy: '±2m',
+      landUseActual: 'Agricultural',
+      ownerName: 'Shri Ramavatar & Brothers',
+      remarks: 'Cadastral boundary verified with Patwari. 1 tubewell and pump house structure present for valuation.',
+      photoUrl: null,
+      surveyDate: '2026-08-25',
+      submittedById: 'user-field-officer-01',
+      submittedByName: 'Anand Prakash',
+      submittedByEmployeeId: 'FO-UP-501',
+      status: 'APPROVED',
+      reviewedById: 'user-lao-01',
+      reviewedByName: 'Rajesh Narayan',
+      reviewedByRole: 'LAND_ACQUISITION_OFFICER',
+      reviewedByDesignation: 'Competent Authority (Land Acquisition) & LAO',
+      reviewedByMinistry: 'National Highways Authority of India (NHAI)',
+      reviewedAt: new Date('2026-08-26T14:30:00Z'),
+      reviewRemarks: 'Survey verified against cadastral khasra records. Boundary GPS coordinates matched with corridor alignment.',
+      createdAt: new Date('2026-08-25T10:00:00Z'),
+      updatedAt: new Date('2026-08-26T14:30:00Z')
+    },
+    {
+      id: 'FS-MH-2026-0802',
+      projectId: 'proj-3',
+      projectName: 'Mumbai-Ahmedabad High Speed Rail (MAHSR Bullet Train)',
+      stateId: 'state-27',
+      stateName: 'Maharashtra',
+      districtId: 'dist-488',
+      districtName: 'Thane',
+      khasraNo: '78/1-C',
+      villageNameMouza: 'Bhiwandi Sector 4',
+      areaSurveyed: 4.10,
+      landCategory: 'Commercial / Industrial',
+      soilClassification: 'Clayey Soil',
+      encumbranceStatus: 'Disputed Title',
+      structuresPresent: true,
+      treesCount: 4,
+      gpsLatitude: 19.2965,
+      gpsLongitude: 73.0631,
+      gpsAccuracy: '±3m',
+      landUseActual: 'Commercial Warehouse Boundary',
+      ownerName: 'Apex Logistics Pvt Ltd',
+      remarks: 'Boundary overlaps with proposed state highway widening buffer zone.',
+      photoUrl: null,
+      surveyDate: '2026-08-27',
+      submittedById: 'user-field-officer-01',
+      submittedByName: 'Anand Prakash',
+      submittedByEmployeeId: 'FO-UP-501',
+      status: 'REJECTED',
+      reviewedById: 'user-state-admin-mh',
+      reviewedByName: 'Priyanka Patil IAS',
+      reviewedByRole: 'STATE_ADMIN',
+      reviewedByDesignation: 'Divisional Commissioner & State Revenue Authority',
+      reviewedByMinistry: 'Revenue & Forest Department, Maharashtra',
+      reviewedAt: new Date('2026-08-28T11:15:00Z'),
+      reviewRemarks: 'Survey rejected due to title dispute and overlapping state highway right-of-way buffer. Joint survey required with PWD.',
+      createdAt: new Date('2026-08-27T09:30:00Z'),
+      updatedAt: new Date('2026-08-28T11:15:00Z')
+    },
+    {
+      id: 'FS-UP-2026-0803',
+      projectId: 'proj-2',
+      projectName: 'Purvanchal Industrial Corridor Phase II',
+      stateId: 'state-9',
+      stateName: 'Uttar Pradesh',
+      districtId: 'dist-157',
+      districtName: 'Lucknow',
+      khasraNo: '112/3-B',
+      villageNameMouza: 'Sarojini Nagar Sector 2',
+      areaSurveyed: 1.95,
+      landCategory: 'Private Agricultural (Single Crop)',
+      soilClassification: 'Sandy Loam',
+      encumbranceStatus: 'No Encumbrance',
+      structuresPresent: false,
+      treesCount: 22,
+      gpsLatitude: 26.7450,
+      gpsLongitude: 80.8710,
+      gpsAccuracy: '±2m',
+      landUseActual: 'Agricultural',
+      ownerName: 'Smt. Kamlesh Devi',
+      remarks: 'Field ground truth verification completed. 22 mature mango trees tagged for Solatium tree valuation.',
+      photoUrl: null,
+      surveyDate: '2026-08-29',
+      submittedById: 'user-field-officer-01',
+      submittedByName: 'Anand Prakash',
+      submittedByEmployeeId: 'FO-UP-501',
+      status: 'PENDING_REVIEW',
+      reviewedById: null,
+      reviewedByName: null,
+      reviewedByRole: null,
+      reviewedByDesignation: null,
+      reviewedByMinistry: null,
+      reviewedAt: null,
+      reviewRemarks: null,
+      createdAt: new Date('2026-08-29T11:00:00Z'),
+      updatedAt: new Date('2026-08-29T11:00:00Z')
+    }
+  ];
+
+  console.log(`✅ Seed dataset prepared: ${allProjects.length} Projects, ${acquisitionCases.length} Cases, ${parcels.length} Parcels, ${affectedFamilies.length} Families, ${fieldSurveys.length} Field Surveys.`);
   return {
     states,
     districts,
@@ -844,6 +963,7 @@ export function generateSeedData(): SeedDataset {
     approvals,
     notifications,
     auditLogs,
+    fieldSurveys,
     users
   };
 }

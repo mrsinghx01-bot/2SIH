@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Smartphone, MapPin, Camera, CheckCircle2, Send, X, RefreshCw,
-  AlertCircle, ClipboardList, Image as ImageIcon, Info
+  AlertCircle, ClipboardList, Image as ImageIcon, Info, XCircle, RotateCcw
 } from 'lucide-react';
 import { useAuth } from '../../store/AuthContext';
 import { fetchPublicStatesMaster, fetchPublicDistrictsByState, fetchProjects, fetchFieldSurveys, submitFieldSurvey } from '../../services/api';
@@ -547,10 +547,36 @@ export const FieldOfficerPage: React.FC = () => {
                     {ss.label}
                   </span>
                 </div>
-                {survey.reviewRemarks && (
-                  <div style={{ marginTop: '10px', padding: '8px 12px', background: '#F8FAFC', borderRadius: '7px', fontSize: '12px', color: '#475569', borderLeft: '3px solid #CBD5E1' }}>
-                    <strong>Reviewer Remarks:</strong> {survey.reviewRemarks}
-                    {survey.reviewedByName && <span style={{ color: '#94A3B8' }}> — {survey.reviewedByName}</span>}
+                {survey.status !== 'PENDING_REVIEW' && (
+                  <div style={{
+                    marginTop: '12px',
+                    padding: '12px 14px',
+                    background: survey.status === 'APPROVED' ? '#F0FDF4' : survey.status === 'REJECTED' ? '#FEF2F2' : '#EFF6FF',
+                    borderRadius: '8px',
+                    border: `1px solid ${survey.status === 'APPROVED' ? '#86EFAC' : survey.status === 'REJECTED' ? '#FCA5A5' : '#93C5FD'}`,
+                    fontSize: '12px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                      <div style={{ fontWeight: 800, color: survey.status === 'APPROVED' ? '#166534' : survey.status === 'REJECTED' ? '#991B1B' : '#1E40AF', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        {survey.status === 'APPROVED' && <CheckCircle2 size={13} />}
+                        {survey.status === 'REJECTED' && <XCircle size={13} />}
+                        {survey.status === 'RETURNED' && <RotateCcw size={13} />}
+                        {survey.status === 'APPROVED' ? 'Survey Endorsed & Approved' : survey.status === 'REJECTED' ? 'Survey Rejected by Competent Authority' : 'Returned for Revision'}
+                      </div>
+                      {survey.reviewedAt && (
+                        <span style={{ fontSize: '10.5px', color: '#64748B' }}>
+                          {new Date(survey.reviewedAt).toLocaleDateString('en-IN', { dateStyle: 'medium' })}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ color: '#334155', marginBottom: '4px' }}>
+                      <strong>Decision by:</strong> {survey.reviewedByName || 'Competent Authority (LAO)'} &bull; <span style={{ color: '#64748B' }}>{survey.reviewedByDesignation || 'Land Acquisition Officer'}</span>
+                    </div>
+                    {survey.reviewRemarks && (
+                      <div style={{ color: '#1E293B', fontStyle: 'italic', background: '#FFFFFF', padding: '6px 10px', borderRadius: '5px', border: '1px solid rgba(0,0,0,0.06)', marginTop: '6px' }}>
+                        "{survey.reviewRemarks}"
+                      </div>
+                    )}
                   </div>
                 )}
                 {survey.photoUrl && (
