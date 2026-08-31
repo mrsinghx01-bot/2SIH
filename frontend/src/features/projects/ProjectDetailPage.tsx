@@ -31,7 +31,7 @@ export const ProjectDetailPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<number>(4); // Default to GIS Parcels tab or Overview
+  const [activeTab, setActiveTab] = useState<number>(1); // Default to Overview tab
   const [loading, setLoading] = useState(true);
   const [actionSuccess, setActionSuccess] = useState('');
 

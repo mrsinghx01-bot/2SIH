@@ -28,16 +28,45 @@ export const ReportsPage: React.FC = () => {
     );
   }
 
+  const exportMISReport = () => {
+    if (!analytics) return;
+    
+    let csv = 'NATIONAL LAND ACQUISITION & MANAGEMENT SYSTEM - OFFICIAL MIS REPORT\n';
+    csv += `Generated On: ${new Date().toLocaleString('en-IN')}\n`;
+    csv += `Jurisdiction: ${user?.assignedDistrictName || user?.assignedStateName || 'National Master Scope (36 States & UTs)'}\n\n`;
+    
+    csv += '--- ACQUISITION LIFECYCLE STAGE BREAKDOWN ---\n';
+    csv += 'Stage,Active Cases Count\n';
+    Object.entries(analytics.stageCounts || {}).forEach(([stage, count]) => {
+      csv += `"${stage}",${count}\n`;
+    });
+
+    csv += '\n--- INFRASTRUCTURE SECTOR PERFORMANCE ---\n';
+    csv += 'Sector,Project Count,Land Required (Ha),Land Acquired (Ha)\n';
+    Object.entries(analytics.sectorCounts || {}).forEach(([sector, val]: [string, any]) => {
+      csv += `"${sector}",${val.count},${val.landReq},${val.landAcq}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `National_Land_Acquisition_MIS_Report_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A' }}>Reports & Strategic Analytics</h1>
           <p style={{ fontSize: '13px', color: '#64748B' }}>Acquisition Velocity, Lifecycle Breakdown & Sector Performance</p>
         </div>
 
         <button
-          onClick={() => alert('Exporting Official Land Acquisition Report (PDF/Excel)...')}
+          onClick={exportMISReport}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -53,7 +82,7 @@ export const ReportsPage: React.FC = () => {
             boxShadow: 'var(--shadow-sm)'
           }}
         >
-          <Download size={14} /> Export MIS Report
+          <Download size={14} /> Export MIS Report (.CSV)
         </button>
       </div>
 

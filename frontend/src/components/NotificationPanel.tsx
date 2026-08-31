@@ -85,8 +85,12 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, on
                 onClose();
                 if (n.referenceType === 'PROJECT' && n.referenceId) {
                   navigate(`/projects/${n.referenceId}`);
-                } else if (n.referenceType === 'CASE' && n.referenceId) {
-                  navigate(`/acquisition-cases/${n.referenceId}`);
+                } else if (n.referenceType === 'CASE') {
+                  navigate('/acquisition-cases');
+                } else if (n.referenceType === 'SURVEY') {
+                  navigate('/survey-review');
+                } else {
+                  navigate('/alerts');
                 }
               }}
               style={{
