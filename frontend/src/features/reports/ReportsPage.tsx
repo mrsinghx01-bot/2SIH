@@ -487,9 +487,9 @@ export const ReportsPage: React.FC = () => {
           <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '14px 18px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Scale size={20} color="#059669" />
             <div>
-              <strong style={{ fontSize: '13.5px', color: '#0F172A' }}>District Collectorate Statutory Dispute & Bottleneck Remedies</strong>
+              <strong style={{ fontSize: '13.5px', color: '#0F172A' }}>District Collectorate Statutory Dispute & Bottleneck Protocols (SOPs)</strong>
               <div style={{ fontSize: '12px', color: '#64748B' }}>
-                Prescriptive legal resolution workflows under the Right to Fair Compensation and Transparency in Land Acquisition Act (RFCTLARR 2013).
+                Codified Standard Operating Procedures based on Act No. 30 of 2013 (Parliament of India) & Supreme Court of India Landmark Precedents.
               </div>
             </div>
           </div>
@@ -497,66 +497,71 @@ export const ReportsPage: React.FC = () => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
             {[
               {
-                bottleneck: 'Section 15 Public Objections Exceeding 60-Day Window',
-                statutoryClause: 'RFCTLARR Act Section 15(2) & Section 15(3)',
+                protocolCode: 'STATUTORY PROTOCOL 01',
+                bottleneck: 'Section 15 Public Objections Exceeding 60-Day Mandatory Window',
+                statutoryClause: 'RFCTLARR Act 2013 § 15(2) & § 15(3) | DoLR Model Rules',
                 severity: 'HIGH_RISK',
-                impact: 'Threat of 12-month Section 19(7) notification lapse if inquiry report delayed.',
+                impact: 'Threat of 12-month Section 19(7) notification lapse if inquiry report is not finalized by the Collectorate within statutory limits.',
                 actionSteps: [
-                  'Collector issues 7-day final summary hearing notice to recorded objectors.',
-                  'LAO submits consolidated Section 15(2) inquiry report with categorical disposal findings.',
-                  'Forward approved report to Appropriate Government for Section 19 final declaration.'
+                  'District Collector issues 7-day final summary hearing notice to recorded objectors under Section 15(2).',
+                  'Competent LAO submits consolidated Section 15(2) inquiry report with categorical disposal findings.',
+                  'Forward approved report to State Revenue Department / Central Ministry for Section 19 final declaration.'
                 ]
               },
               {
-                bottleneck: 'Conflicting Titleholder Claims & Succession Disputes on Same Khasra',
-                statutoryClause: 'RFCTLARR Act Section 64 & Section 77(2)',
+                protocolCode: 'STATUTORY PROTOCOL 02',
+                bottleneck: 'Conflicting Titleholder Succession Disputes & Refusal of Award Acceptance',
+                statutoryClause: 'RFCTLARR Act 2013 § 64 & § 77(2) | Supreme Court Precedent: Indore Dev. Auth. (2020)',
                 severity: 'CRITICAL_LITIGATION',
-                impact: 'Direct Benefit Transfer (DBT) blocked; landowners refusing award acceptance.',
+                impact: 'Direct Benefit Transfer (DBT) blocked due to contested khata/khasra co-shares; landowners stalling possession handover.',
                 actionSteps: [
-                  'DO NOT disburse contested funds directly to either claimant.',
-                  'Deposit total determined compensation into LARRA (Land Acquisition Authority) Court Escrow Trust Account.',
-                  'Collector issues Section 38 Certificate of Vesting and proceeds with physical Right-of-Way handover.'
+                  'DO NOT disburse contested funds directly to either claimant pending civil title adjudication.',
+                  'Deposit total determined compensation into LARRA (Land Acquisition, Rehabilitation and Resettlement Authority) Court Escrow Trust Account u/s 77(2).',
+                  'District Collector executes Section 38 Certificate of Vesting and delivers clear physical Right-of-Way possession to the acquiring agency.'
                 ]
               },
               {
-                bottleneck: 'Scheduled Tribe / Fifth Schedule Area Acquisition Submergence',
-                statutoryClause: 'RFCTLARR Act Section 41 (Special Provisions for SC/STs)',
+                protocolCode: 'STATUTORY PROTOCOL 03',
+                bottleneck: 'Scheduled Tribe / Fifth Schedule Tribal Habitation Land Submergence',
+                statutoryClause: 'RFCTLARR Act 2013 § 41 | PESA Act 1996 & Forest Rights Act (FRA 2006)',
                 severity: 'STATUTORY_MANDATE',
-                impact: 'Mandatory Gram Sabha Free Prior Informed Consent (FPIC) required before Section 11.',
+                impact: 'Mandatory Gram Sabha Free Prior Informed Consent (FPIC) required prior to preliminary Section 11 Gazette notification.',
                 actionSteps: [
-                  'Convene special Gram Sabha resolution meeting in scheduled tribal habitations.',
-                  'Disburse mandatory one-third upfront compensation upon preliminary notification.',
-                  'Allot 2.5 acres of alternative developed agricultural land per displaced tribal family.'
+                  'Convene special Gram Sabha quorum in scheduled tribal habitations with videographed consent endorsement.',
+                  'Disburse mandatory one-third upfront compensation upon preliminary Section 11 publication.',
+                  'Allot 2.5 acres of alternative developed agricultural land per displaced tribal family in the rehabilitation zone.'
                 ]
               },
               {
+                protocolCode: 'STATUTORY PROTOCOL 04',
                 bottleneck: 'Approaching 12-Month Section 19 Statutory Lapse Deadline',
-                statutoryClause: 'RFCTLARR Act Section 19(7) & Proviso',
+                statutoryClause: 'RFCTLARR Act 2013 § 19(7) & Proviso | Statutory 12-Month Bar',
                 severity: 'IMMINENT_LAPSE',
-                impact: 'Entire preliminary notification lapses automatically if Section 19 declaration is not published in Gazette within 12 months.',
+                impact: 'Section 11 Preliminary Notification lapses automatically by operation of law if Section 19 declaration is not published in Gazette within 12 months.',
                 actionSteps: [
-                  'Compute remaining days to 12-month cut-off date.',
-                  'If genuine administrative delay, submit urgent application to State Government for 12-month extension under Section 19(7) proviso.',
-                  'Publish emergency Section 19 declaration in Official e-Gazette and local newspapers immediately.'
+                  'Automated DSS alert calculates remaining days to the 12-month statutory cut-off date.',
+                  'If genuine administrative delay, submit urgent recommendation to State Government for 12-month extension under Section 19(7) proviso.',
+                  'Publish emergency Section 19 declaration in Official e-Gazette and two daily local vernacular newspapers immediately.'
                 ]
               },
               {
-                bottleneck: 'Under-Assessed Tree / Standing Crop / Structure Valuation Disputes',
-                statutoryClause: 'RFCTLARR Act Section 29 & Section 30(2)',
+                protocolCode: 'STATUTORY PROTOCOL 05',
+                bottleneck: 'Under-Assessed Fruit-Bearing Trees, Crops & Immovable Structure Valuation Disputes',
+                statutoryClause: 'RFCTLARR Act 2013 § 29 & § 30(2) | State Horticulture & PWD Schedule',
                 severity: 'VALUATION_DISPUTE',
-                impact: 'Titleholders refusing spot measurement; stalling joint survey completion.',
+                impact: 'Titleholders refusing spot measurement; stalling joint boundary demarcation and solatium award signing.',
                 actionSteps: [
-                  'Depute joint inspection team consisting of Horticulture Officer, PWD Executive Engineer, and LAO.',
-                  'Re-enumerate standing fruit-bearing timber trees as per state horticulture yield schedules.',
-                  'Issue revised Section 29 supplemental award table within 14 days.'
+                  'Depute joint technical committee consisting of District Horticulture Officer, PWD Executive Engineer, and LAO.',
+                  'Re-enumerate standing fruit-bearing timber trees as per state horticulture 20-year yield capitalization schedules.',
+                  'Issue revised Section 29 supplemental asset valuation schedule and integrate into final Section 30 award matrix within 14 days.'
                 ]
               }
             ].map((p, idx) => (
               <div key={idx} style={{ background: '#FFFFFF', borderRadius: '14px', border: '1px solid #E2E8F0', padding: '18px', boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 800, background: '#0F172A', color: '#FFFFFF', padding: '2px 8px', borderRadius: '6px' }}>
-                      Case {idx + 1}
+                    <span style={{ fontSize: '11px', fontWeight: 800, background: '#0F172A', color: '#FFFFFF', padding: '3px 8px', borderRadius: '6px', letterSpacing: '0.04em' }}>
+                      {p.protocolCode}
                     </span>
                     <strong style={{ fontSize: '14px', color: '#0F172A' }}>{p.bottleneck}</strong>
                   </div>
