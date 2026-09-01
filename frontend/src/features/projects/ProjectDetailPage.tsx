@@ -18,13 +18,7 @@ import {
   AlertTriangle,
   Map as MapIcon,
   Layers,
-  ExternalLink,
-  Sparkles,
-  Cpu,
-  ShieldAlert,
-  Zap,
-  TrendingUp,
-  AlertOctagon
+  ExternalLink
 } from 'lucide-react';
 import { fetchProjectById, updateCaseStage, processApproval } from '../../services/api';
 import { StatusBadge } from '../../components/StatusBadge';
@@ -40,7 +34,6 @@ export const ProjectDetailPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(1); // Default to Overview tab
   const [loading, setLoading] = useState(true);
   const [actionSuccess, setActionSuccess] = useState('');
-  const [mitigationApplied, setMitigationApplied] = useState(false);
 
   const loadData = () => {
     if (projectId) {
@@ -89,7 +82,6 @@ export const ProjectDetailPage: React.FC = () => {
     { id: 2, name: 'Land Requirements', icon: MapPin },
     { id: 3, name: 'Acquisition Cases', icon: GitBranch },
     { id: 4, name: 'Interactive GIS / Parcels', icon: Grid },
-    { id: 11, name: 'AI Risk Engine', icon: Sparkles },
     { id: 5, name: 'Documents', icon: FileText },
     { id: 6, name: 'Compensation', icon: IndianRupee },
     { id: 7, name: 'R&R', icon: Users },
@@ -398,178 +390,6 @@ export const ProjectDetailPage: React.FC = () => {
                 keyExtractor={(r: any) => r.id}
               />
             )}
-          </div>
-        )}
-
-        {/* Tab 11: AI ACQUISITION RISK ENGINE & PREDICTIVE ANALYTICS */}
-        {activeTab === 11 && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
-                  <Sparkles size={20} color="#2563EB" /> AI Predictive Risk Engine & Delay Forecast
-                </h3>
-                <p style={{ fontSize: '13px', color: '#64748B', margin: '4px 0 0 0' }}>
-                  Ensemble Machine Learning models trained on 1,400+ infrastructure projects to predict statutory bottlenecks, court stays, and completion delays before they happen.
-                </p>
-              </div>
-
-              {!mitigationApplied ? (
-                <button
-                  onClick={() => {
-                    setMitigationApplied(true);
-                    setActionSuccess('AI Mitigation Package Deployed: Fast-Track Section 15(2) hearing triggered & Special Lok Adalat Bench assigned.');
-                    setTimeout(() => setActionSuccess(''), 5000);
-                  }}
-                  style={{
-                    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '8px 16px',
-                    fontSize: '12.5px',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 4px 12px rgba(37,99,235,0.3)'
-                  }}
-                >
-                  <Zap size={14} /> Execute AI Mitigation Playbook
-                </button>
-              ) : (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#DCFCE7', color: '#15803D', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 800, border: '1px solid #86EFAC' }}>
-                  <CheckCircle2 size={15} /> Mitigation In Action (-68 Days Delay Reduction)
-                </div>
-              )}
-            </div>
-
-            {/* 3 Top Risk KPI Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '20px' }}>
-              <div style={{ background: mitigationApplied ? '#F0FDF4' : '#FEF2F2', border: `1.5px solid ${mitigationApplied ? '#86EFAC' : '#FCA5A5'}`, borderRadius: '14px', padding: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: mitigationApplied ? '#166534' : '#991B1B', textTransform: 'uppercase' }}>
-                    AI PREDICTIVE RISK SCORE
-                  </span>
-                  <Cpu size={16} color={mitigationApplied ? '#16A34A' : '#DC2626'} />
-                </div>
-                <div style={{ fontSize: '28px', fontWeight: 900, color: mitigationApplied ? '#15803D' : '#DC2626' }}>
-                  {mitigationApplied ? '28 / 100' : '78 / 100'}
-                </div>
-                <div style={{ fontSize: '11.5px', color: mitigationApplied ? '#166534' : '#991B1B', fontWeight: 600, marginTop: '2px' }}>
-                  {mitigationApplied ? 'LOW RISK (Mitigation Active)' : 'HIGH STATUTORY RISK'} &bull; 94.2% AI Confidence
-                </div>
-              </div>
-
-              <div style={{ background: mitigationApplied ? '#EFF6FF' : '#FFFBEB', border: `1.5px solid ${mitigationApplied ? '#BFDBFE' : '#FDE68A'}`, borderRadius: '14px', padding: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: mitigationApplied ? '#1D4ED8' : '#B45309', textTransform: 'uppercase' }}>
-                    PROJECTED STATUTORY DELAY
-                  </span>
-                  <Clock size={16} color={mitigationApplied ? '#2563EB' : '#F59E0B'} />
-                </div>
-                <div style={{ fontSize: '28px', fontWeight: 900, color: mitigationApplied ? '#1D4ED8' : '#D97706' }}>
-                  {mitigationApplied ? '+50 Days' : '+118 Days'}
-                </div>
-                <div style={{ fontSize: '11.5px', color: mitigationApplied ? '#1E40AF' : '#B45309', fontWeight: 600, marginTop: '2px' }}>
-                  {mitigationApplied ? 'Savings of 68 Days via fast-track' : 'Estimated if objections unmitigated'}
-                </div>
-              </div>
-
-              <div style={{ background: '#F8FAFC', border: '1.5px solid #E2E8F0', borderRadius: '14px', padding: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#475569', textTransform: 'uppercase' }}>
-                    REVISED COMPLETION FORECAST
-                  </span>
-                  <TrendingUp size={16} color="#475569" />
-                </div>
-                <div style={{ fontSize: '22px', fontWeight: 900, color: '#0F172A', marginTop: '4px' }}>
-                  {mitigationApplied ? '18 Oct 2027' : '28 Dec 2027'}
-                </div>
-                <div style={{ fontSize: '11.5px', color: '#64748B', fontWeight: 600, marginTop: '2px' }}>
-                  Original DPR Milestone: 30 Jun 2027
-                </div>
-              </div>
-            </div>
-
-            {/* Bottleneck Decomposition & AI Mitigation Plan */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px', marginBottom: '20px' }}>
-              {/* Left: Identified Root Cause Factors */}
-              <div style={{ background: '#F8FAFC', borderRadius: '14px', border: '1px solid #CBD5E1', padding: '18px' }}>
-                <div style={{ fontSize: '14px', fontWeight: 800, color: '#0F172A', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ShieldAlert size={16} color="#DC2626" /> Multi-Factor Delay Decomposition
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <strong style={{ fontSize: '13px', color: '#991B1B' }}>1. Disputed Cadastral Title & High Court Stays</strong>
-                      <span style={{ fontSize: '11px', fontWeight: 800, background: '#FEE2E2', color: '#991B1B', padding: '2px 8px', borderRadius: '4px' }}>42% Weight</span>
-                    </div>
-                    <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#475569' }}>
-                      Khasra 104/2 and 108/1 subject to WP-2025/1104 in High Court. Title dispute between co-sharers blocks Section 19 declaration.
-                    </p>
-                  </div>
-
-                  <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <strong style={{ fontSize: '13px', color: '#B45309' }}>2. Section 15 Public Objection Density</strong>
-                      <span style={{ fontSize: '11px', fontWeight: 800, background: '#FEF3C7', color: '#B45309', padding: '2px 8px', borderRadius: '4px' }}>28% Weight</span>
-                    </div>
-                    <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#475569' }}>
-                      14 landholders submitted formal Section 15 objections contesting horticultural tree and tubewell compensation valuation.
-                    </p>
-                  </div>
-
-                  <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <strong style={{ fontSize: '13px', color: '#1D4ED8' }}>3. Rural Multiplier Factor Disparity</strong>
-                      <span style={{ fontSize: '11px', fontWeight: 800, background: '#DBEAFE', color: '#1D4ED8', padding: '2px 8px', borderRadius: '4px' }}>18% Weight</span>
-                    </div>
-                    <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#475569' }}>
-                      Dispute regarding peri-urban vs rural distance buffer factor (1.25x vs 2.0x under First Schedule RFCTLARR).
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right: Statutory Mitigation Playbook */}
-              <div style={{ background: '#0F172A', color: '#FFFFFF', borderRadius: '14px', padding: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ fontSize: '11px', color: '#38BDF8', fontWeight: 800, textTransform: 'uppercase', marginBottom: '6px' }}>
-                    Statutory AI Mitigation Engine
-                  </div>
-                  <h4 style={{ fontSize: '15px', margin: '0 0 12px 0' }}>Automated Legal & Administrative Playbook</h4>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
-                    <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 12px', borderRadius: '8px', borderLeft: '3px solid #38BDF8' }}>
-                      <strong style={{ color: '#E0F2FE' }}>Action 1: Fast-Track Section 15(2) Hearing</strong>
-                      <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>
-                        Issue automated hearing summons to 14 objectors. Estimated delay reduction: <strong>35 Days</strong>.
-                      </div>
-                    </div>
-
-                    <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 12px', borderRadius: '8px', borderLeft: '3px solid #4ADE80' }}>
-                      <strong style={{ color: '#DCFCE7' }}>Action 2: Apply Statutory 2.0x Multiplier</strong>
-                      <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>
-                        Adopting 2.0x rural multiplier factor secures consent from 82% of ag landholders.
-                      </div>
-                    </div>
-
-                    <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 12px', borderRadius: '8px', borderLeft: '3px solid #FBBF24' }}>
-                      <strong style={{ color: '#FEF3C7' }}>Action 3: Lok Adalat Mediation Bench</strong>
-                      <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>
-                        Special Tehsildar Lok Adalat resolves court stay out-of-court in under 14 days.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '6px', color: '#4ADE80', fontSize: '11.5px', fontWeight: 700 }}>
-                  <CheckCircle2 size={14} /> AI Optimization Engine Active &bull; RFCTLARR 2013 Aligned
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
