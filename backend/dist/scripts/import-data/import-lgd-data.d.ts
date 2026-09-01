@@ -20,6 +20,8 @@ export interface DistrictRecord {
     census2011Code: string;
     isActive: boolean;
     geometryMatchStatus: 'AUTO_MATCHED' | 'REVIEW_REQUIRED' | 'VERIFIED' | 'REJECTED';
+    latitude?: number;
+    longitude?: number;
 }
 export declare function loadMasterGeographicData(): {
     states: StateRecord[];

@@ -72,28 +72,50 @@ async function getAllStates(req, res) {
         message: 'States fetched successfully.'
     });
 }
-// Pre-defined state center coordinates for GIS mapping
+// Pre-defined state center coordinates for GIS mapping across all 36 States and UTs
 const STATE_COORDINATES = {
-    'UP': { lat: 26.8467, lng: 80.9462, zoom: 7 },
-    'MH': { lat: 19.7515, lng: 75.7139, zoom: 7 },
-    'BR': { lat: 25.0961, lng: 85.3131, zoom: 7 },
-    'WB': { lat: 22.9868, lng: 87.8550, zoom: 7 },
-    'TN': { lat: 11.1271, lng: 78.6569, zoom: 7 },
-    'RJ': { lat: 27.0238, lng: 74.2179, zoom: 7 },
-    'GJ': { lat: 22.2587, lng: 71.1924, zoom: 7 },
-    'KA': { lat: 15.3173, lng: 75.7139, zoom: 7 },
-    'DL': { lat: 28.7041, lng: 77.1025, zoom: 10 },
-    'CH': { lat: 30.7333, lng: 76.7794, zoom: 11 },
-    'JK': { lat: 33.7782, lng: 76.5762, zoom: 7 },
-    'PY': { lat: 11.9416, lng: 79.8083, zoom: 11 },
-    'KL': { lat: 10.8505, lng: 76.2711, zoom: 7 },
-    'AP': { lat: 15.9129, lng: 79.7400, zoom: 7 },
-    'TG': { lat: 18.1124, lng: 79.0193, zoom: 7 },
-    'MP': { lat: 22.9734, lng: 78.6569, zoom: 7 },
-    'PB': { lat: 31.1471, lng: 75.3412, zoom: 7 },
-    'HR': { lat: 29.0588, lng: 76.0856, zoom: 7 },
-    'OD': { lat: 20.9517, lng: 85.0985, zoom: 7 },
-    'AS': { lat: 26.2006, lng: 92.9376, zoom: 7 }
+    // Northern States & UTs
+    'JK': { lat: 33.7782, lng: 76.5762, zoom: 7 }, // Jammu & Kashmir
+    'HP': { lat: 31.7087, lng: 77.1734, zoom: 8 }, // Himachal Pradesh
+    'PB': { lat: 31.1471, lng: 75.3412, zoom: 8 }, // Punjab
+    'CH': { lat: 30.7333, lng: 76.7794, zoom: 11 }, // Chandigarh
+    'UK': { lat: 30.0668, lng: 79.0193, zoom: 8 }, // Uttarakhand
+    'HR': { lat: 29.0588, lng: 76.0856, zoom: 8 }, // Haryana
+    'DL': { lat: 28.7041, lng: 77.1025, zoom: 10 }, // Delhi
+    'UP': { lat: 26.8467, lng: 80.9462, zoom: 7 }, // Uttar Pradesh
+    'RJ': { lat: 27.0238, lng: 74.2179, zoom: 7 }, // Rajasthan
+    'LA': { lat: 34.1526, lng: 77.5771, zoom: 7 }, // Ladakh
+    // Western States & UTs
+    'GJ': { lat: 22.2587, lng: 71.1924, zoom: 7 }, // Gujarat
+    'MH': { lat: 19.7515, lng: 75.7139, zoom: 7 }, // Maharashtra
+    'GA': { lat: 15.2993, lng: 74.1240, zoom: 9 }, // Goa
+    'DD': { lat: 20.4283, lng: 72.8397, zoom: 10 }, // Dadra and Nagar Haveli and Daman and Diu
+    // Central States
+    'MP': { lat: 22.9734, lng: 78.6569, zoom: 7 }, // Madhya Pradesh
+    'CG': { lat: 21.2787, lng: 81.8661, zoom: 7 }, // Chhattisgarh
+    // Eastern States
+    'BR': { lat: 25.0961, lng: 85.3131, zoom: 7 }, // Bihar
+    'JH': { lat: 23.6102, lng: 85.2799, zoom: 7 }, // Jharkhand
+    'WB': { lat: 22.9868, lng: 87.8550, zoom: 7 }, // West Bengal
+    'OD': { lat: 20.9517, lng: 85.0985, zoom: 7 }, // Odisha
+    // Southern States & UTs
+    'AP': { lat: 15.9129, lng: 79.7400, zoom: 7 }, // Andhra Pradesh
+    'TG': { lat: 18.1124, lng: 79.0193, zoom: 7 }, // Telangana
+    'KA': { lat: 15.3173, lng: 75.7139, zoom: 7 }, // Karnataka
+    'KL': { lat: 10.8505, lng: 76.2711, zoom: 7 }, // Kerala
+    'TN': { lat: 11.1271, lng: 78.6569, zoom: 7 }, // Tamil Nadu
+    'PY': { lat: 11.9416, lng: 79.8083, zoom: 11 }, // Puducherry
+    'AN': { lat: 11.7401, lng: 92.6586, zoom: 8 }, // Andaman and Nicobar Islands
+    'LD': { lat: 10.5667, lng: 72.6417, zoom: 10 }, // Lakshadweep
+    // North-Eastern States
+    'SK': { lat: 27.5330, lng: 88.5122, zoom: 9 }, // Sikkim
+    'AR': { lat: 28.2180, lng: 94.7278, zoom: 7 }, // Arunachal Pradesh
+    'AS': { lat: 26.2006, lng: 92.9376, zoom: 7 }, // Assam
+    'NL': { lat: 26.1584, lng: 94.5624, zoom: 8 }, // Nagaland
+    'MN': { lat: 24.6637, lng: 93.9063, zoom: 8 }, // Manipur
+    'MZ': { lat: 23.1645, lng: 92.9376, zoom: 8 }, // Mizoram
+    'TR': { lat: 23.9408, lng: 91.9882, zoom: 8 }, // Tripura
+    'ML': { lat: 25.4670, lng: 91.3662, zoom: 8 } // Meghalaya
 };
 async function getStateById(req, res) {
     const id = String(req.params.id || '');

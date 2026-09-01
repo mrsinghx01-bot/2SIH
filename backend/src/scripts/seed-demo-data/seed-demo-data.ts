@@ -558,7 +558,7 @@ export function generateSeedData(): SeedDataset {
       startDate: '2009-06-01',
       notificationDate: '2006-03-15',
       awardDate: '2009-12-10',
-      targetCompletion: '2018-11-10'
+      targetCompletion: '2018-11-19'
     },
     {
       code: 'PRJ-NHAI-DAK-017',
@@ -1313,7 +1313,15 @@ export function generateSeedData(): SeedDataset {
       dataSource: 'PUBLIC_RECORDS',
       createdBy: 'user-central-admin',
       createdAt: new Date(pt.startDate + 'T09:00:00Z'),
-      updatedAt: new Date('2026-08-25T14:30:00Z')
+      updatedAt: new Date('2026-08-25T14:30:00Z'),
+      centerCoord: pt.centerCoord,
+      centerLat: pt.centerCoord ? pt.centerCoord[1] : (dist1?.latitude || 26.8467),
+      centerLng: pt.centerCoord ? pt.centerCoord[0] : (dist1?.longitude || 80.9462),
+      stateId: state.id,
+      stateName: state.name,
+      stateLgd: pt.stateLgd,
+      districtId: dist1.id,
+      districtName: dist1.name
     };
     allProjects.push(projectObj);
 

@@ -48,8 +48,8 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
   const [selectedParcel, setSelectedParcel] = useState<MapParcel | null>(null);
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACQUIRED' | 'IN_PROGRESS' | 'DISPUTED' | 'GOVT'>('ALL');
 
-  // Categorize parcel for 4-tier visual tracking
-  const getParcelCategory = (status: string, landUse?: string, holdUp?: string): 'ACQUIRED' | 'IN_PROGRESS' | 'DISPUTED' | 'GOVT' => {
+  // Categorize parcel for 4-tier visual tracking based on authentic status and land use
+  const getParcelCategory = (status?: string, landUse?: string, holdUp?: string): 'ACQUIRED' | 'IN_PROGRESS' | 'DISPUTED' | 'GOVT' => {
     const s = (status || '').toUpperCase();
     const l = (landUse || '').toUpperCase();
     const h = (holdUp || '').toUpperCase();
@@ -81,45 +81,45 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
     }
   };
 
-  // Generate synthetic rich attributes if parcel lacks them
-  const enrichParcel = (p: MapParcel, idx: number): MapParcel => {
-    const isDisputed = idx % 5 === 2 || (p.acquisitionStatus || '').includes('OBJECTION');
-    const isGovt = idx % 6 === 4 || (p.landUse || '').toUpperCase().includes('GOVT');
-    const isAcquired = (p.acquisitionStatus === 'COMPLETED' || p.acquisitionStatus === 'POSSESSION' || p.acquisitionStatus === 'ACQUIRED') && !isDisputed;
+  // Format and standardize real parcel data from backend
+  const formatParcel = (p: MapParcel, idx: number): MapParcel => {
+    const s = (p.acquisitionStatus || '').toUpperCase();
+    const isAcquired = s === 'COMPLETED' || s === 'POSSESSION' || s === 'ACQUIRED';
+    const isAwarded = s === 'AWARDED' || s === 'AWARD' || s === 'COMPENSATION';
+    const isDisputed = s === 'DISPUTED' || s === 'OBJECTION';
 
-    let defaultHoldUp = 'Clear Title — Ready for Final DBT Compensation Release';
-    if (isDisputed) {
-      const disputes = [
-        'Section 15 Public Objection: Titleholder claims tree valuation under-assessed',
-        'Civil Court Stay WP-2025/1104: Boundary dispute with adjacent Gram Panchayat',
-        'Succession Dispute: Multiple legal heirs claiming compensation entitlement',
-        'Section 19 Notification Delay: Re-survey requested by Special Land Acquisition Officer'
-      ];
-      defaultHoldUp = disputes[idx % disputes.length];
-    } else if (isGovt) {
-      defaultHoldUp = 'Inter-Departmental Transfer: Forest Clearance (FRA Sec 41) / Gram Sabha Concurrence in progress';
-    } else if (!isAcquired) {
-      defaultHoldUp = 'RFCTLARR 2013 Award Stage: Solatium & 12% additional market value in review';
+    let defaultHoldUp = 'Joint Cadastral Boundary & Drone Survey in progress under Section 4(2).';
+    if (isAcquired) {
+      defaultHoldUp = 'Clear Title — Possession handed over. DBT compensation released via PFMS.';
+    } else if (isAwarded) {
+      defaultHoldUp = 'Section 30 Solatium Award Approved — Payment disbursement in process.';
+    } else if (isDisputed) {
+      defaultHoldUp = 'Section 15 Public Objection — Valuation / Title clarification under Collectorate hearing.';
+    } else if (s === 'VALUATION') {
+      defaultHoldUp = 'Section 26 Circle Rate & Solatium Determination Matrix under verification.';
+    } else if (s === 'NOTIFICATION') {
+      defaultHoldUp = 'Section 11 Preliminary Notification Gazette publication active.';
     }
 
-    const calculatedValuation = p.valuationCr || ((p.areaHectares || 1.5) * 1.85).toFixed(2);
-    const solatium = (parseFloat(calculatedValuation) * 1.0).toFixed(2); // 100% Solatium
+    const areaVal = Number(p.areaHectares) || 1.5;
+    const calcValuation = p.valuationCr || `₹${(areaVal * 1.85).toFixed(2)} Cr`;
+    const solatium = p.solatiumAmountCr || `₹${(areaVal * 1.85).toFixed(2)} Cr (100% Solatium u/s 30)`;
 
     return {
       ...p,
-      ownerName: p.ownerName || `Shri ${['Ramesh Kumar', 'Devendra Singh', 'Kamla Devi', 'Satish Chandra', 'Gurpreet Singh'][idx % 5]} & Co-sharers`,
-      khasraNumber: p.khasraNumber || `${101 + idx}/${2 * idx + 1}`,
-      landCategory: p.landCategory || (isGovt ? 'Government / Gram Sabha' : idx % 2 === 0 ? 'Private Irrigated Multi-Crop' : 'Non-Irrigated Agricultural'),
-      valuationCr: `₹${calculatedValuation} Cr`,
-      solatiumAmountCr: `₹${solatium} Cr (100% Solatium u/s 30)`,
+      ownerName: p.ownerName || `Recorded Landowner (Khasra ${p.khasraNumber || p.parcelNumber || (idx + 1)})`,
+      khasraNumber: p.khasraNumber || p.parcelNumber || `${101 + idx}/${(idx % 3) + 1}`,
+      landCategory: p.landCategory || (p.landUse === 'AGRICULTURAL' ? 'Private Agricultural Land' : p.landUse === 'GOVERNMENT' ? 'Government / Gram Sabha' : p.landUse === 'FOREST' ? 'Forest Land (FRA)' : p.landUse || 'Private Land'),
+      valuationCr: calcValuation,
+      solatiumAmountCr: solatium,
       holdUpReason: p.holdUpReason || defaultHoldUp
     };
   };
 
-  const enrichedParcels = parcels.map((p, idx) => enrichParcel(p, idx));
+  const formattedParcels = parcels.map((p, idx) => formatParcel(p, idx));
 
   // Filtered parcels based on active status filter
-  const displayedParcels = enrichedParcels.filter(p => {
+  const displayedParcels = formattedParcels.filter(p => {
     if (statusFilter === 'ALL') return true;
     const cat = getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason);
     return cat === statusFilter;
@@ -156,6 +156,8 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       }
     });
 
+    const allGeometryBounds: L.LatLngExpression[] = [];
+
     // 1. Draw Project Corridor Alignment Polyline
     if (alignmentPolyline && alignmentPolyline.length > 0) {
       L.polyline(alignmentPolyline, {
@@ -173,6 +175,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       }).addTo(map);
 
       mainLine.bindTooltip('<strong>Project Alignment Corridor</strong><br/>Statutory Right of Way (RoW)', { sticky: true });
+      alignmentPolyline.forEach(pt => allGeometryBounds.push(pt));
     }
 
     // 2. Draw Cadastral Land Parcels (Khasra Polygons)
@@ -202,6 +205,8 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
           setSelectedParcel(p);
           if (onParcelSelect) onParcelSelect(p);
         });
+
+        p.polygon.forEach(pt => allGeometryBounds.push(pt));
       } else if (p.center) {
         const marker = L.circleMarker(p.center, {
           radius: 9,
@@ -221,6 +226,8 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
           setSelectedParcel(p);
           if (onParcelSelect) onParcelSelect(p);
         });
+
+        allGeometryBounds.push(p.center);
       }
     });
 
@@ -248,8 +255,20 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
         distMarker.on('click', () => {
           if (onDistrictSelect) onDistrictSelect(d);
         });
+
+        allGeometryBounds.push([d.latitude, d.longitude]);
       }
     });
+
+    // Auto-fit bounds if we have valid geometry coordinates
+    if (allGeometryBounds.length > 1 && !selectedParcel) {
+      try {
+        const b = L.latLngBounds(allGeometryBounds);
+        if (b.isValid()) {
+          map.fitBounds(b, { padding: [35, 35], maxZoom: 14 });
+        }
+      } catch (e) { /* ignore bounds error */ }
+    }
 
   }, [center, zoom, alignmentPolyline, displayedParcels, districts]);
 
@@ -276,10 +295,10 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
     }
   };
 
-  const acquiredCount = enrichedParcels.filter(p => getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason) === 'ACQUIRED').length;
-  const inProgressCount = enrichedParcels.filter(p => getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason) === 'IN_PROGRESS').length;
-  const disputedCount = enrichedParcels.filter(p => getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason) === 'DISPUTED').length;
-  const govtCount = enrichedParcels.filter(p => getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason) === 'GOVT').length;
+  const acquiredCount = formattedParcels.filter(p => getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason) === 'ACQUIRED').length;
+  const inProgressCount = formattedParcels.filter(p => getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason) === 'IN_PROGRESS').length;
+  const disputedCount = formattedParcels.filter(p => getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason) === 'DISPUTED').length;
+  const govtCount = formattedParcels.filter(p => getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason) === 'GOVT').length;
 
   return (
     <div className="gis-map-container" style={{ position: 'relative', width: '100%', height, borderRadius: '16px', overflow: 'hidden', border: '1px solid #CBD5E1', boxShadow: 'var(--shadow-card)', fontFamily: 'Inter, sans-serif' }}>
@@ -301,7 +320,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
             color: statusFilter === 'ALL' ? '#FFFFFF' : '#475569'
           }}
         >
-          All Parcels ({enrichedParcels.length})
+          All Parcels ({formattedParcels.length})
         </button>
         <button
           onClick={() => setStatusFilter('ACQUIRED')}
