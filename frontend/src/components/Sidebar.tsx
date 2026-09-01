@@ -33,7 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: 'Land Parcels', path: '/parcels', icon: Grid },
     { name: 'Compensation', path: '/compensation', icon: IndianRupee },
     { name: 'R&R Monitoring', path: '/rr-monitoring', icon: Users },
-    { name: 'Reports & Analytics', path: '/reports', icon: BarChart3 },
+    { name: 'Decision Support & Reports', path: '/reports', icon: BarChart3 },
     { name: 'Statutory Alerts', path: '/alerts', icon: BellRing },
     { name: 'Audit Log', path: '/audit-log', icon: History },
     { name: 'System Settings', path: '/settings', icon: Settings },
