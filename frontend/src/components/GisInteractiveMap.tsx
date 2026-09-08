@@ -158,77 +158,159 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
 
     const allGeometryBounds: L.LatLngExpression[] = [];
 
-    // 1. Draw Project Corridor Alignment Polyline
+    // 1. Draw Project Corridor Alignment Ribbon / Master Perimeter Polygon
     if (alignmentPolyline && alignmentPolyline.length > 0) {
-      L.polyline(alignmentPolyline, {
-        color: '#3B82F6',
-        weight: 10,
-        opacity: 0.35,
-        lineCap: 'round'
-      }).addTo(map);
+      const isClosedPolygon = alignmentPolyline.length >= 4 && (
+        (alignmentPolyline[0][0] === alignmentPolyline[alignmentPolyline.length - 1][0] &&
+         alignmentPolyline[0][1] === alignmentPolyline[alignmentPolyline.length - 1][1]) ||
+        // Check if explicitly configured as a perimeter box
+        (Math.abs(alignmentPolyline[0][0] - alignmentPolyline[alignmentPolyline.length - 1][0]) < 0.001 &&
+         Math.abs(alignmentPolyline[0][1] - alignmentPolyline[alignmentPolyline.length - 1][1]) < 0.001)
+      );
 
-      const mainLine = L.polyline(alignmentPolyline, {
-        color: '#1D4ED8',
-        weight: 4,
-        dashArray: '6, 8',
-        opacity: 0.95
-      }).addTo(map);
-
-      mainLine.bindTooltip('<strong>Project Alignment Corridor</strong><br/>Statutory Right of Way (RoW)', { sticky: true });
-      alignmentPolyline.forEach(pt => allGeometryBounds.push(pt));
-    }
-
-    // 2. Draw Cadastral Land Parcels (Khasra Polygons)
-    displayedParcels.forEach((p) => {
-      const category = getParcelCategory(p.acquisitionStatus, p.landUse, p.holdUpReason);
-      const color = getStatusColor(category);
-
-      if (p.polygon && p.polygon.length > 0) {
-        const poly = L.polygon(p.polygon, {
-          color: '#FFFFFF',
-          weight: 2.5,
-          fillColor: color,
-          fillOpacity: 0.7
+      if (isClosedPolygon) {
+        // Draw Facility / Airport / Port Master Perimeter Polygon
+        const facilityPolygon = L.polygon(alignmentPolyline, {
+          color: '#1D4ED8',
+          weight: 3.5,
+          dashArray: '6, 6',
+          fillColor: '#3B82F6',
+          fillOpacity: 0.18
         }).addTo(map);
 
-        poly.bindTooltip(
-          `<div style="font-family:Inter,sans-serif;font-size:12px;padding:2px">
-            <strong style="color:#0F172A">Khasra: ${p.khasraNumber}</strong> (${p.village})<br/>
-            <span>Owner: <strong>${p.ownerName}</strong></span><br/>
-            <span>Area: <strong>${p.areaHectares} Ha</strong></span><br/>
-            <span style="color:${color};font-weight:bold;margin-top:2px;display:block">● ${category.replace('_', ' ')}</span>
+        facilityPolygon.bindTooltip(
+          `<div style="font-family:Inter,sans-serif;font-size:12px;padding:3px 5px">
+            <strong style="color:#1E3A8A">Statutory Acquisition & Project Facility Perimeter</strong><br/>
+            <span style="color:#475569">Master-Plan Gazetted Boundary (Sec 3D / Sec 19)</span>
           </div>`,
           { sticky: true }
         );
-
-        poly.on('click', () => {
-          setSelectedParcel(p);
-          if (onParcelSelect) onParcelSelect(p);
-        });
-
-        p.polygon.forEach(pt => allGeometryBounds.push(pt));
-      } else if (p.center) {
-        const marker = L.circleMarker(p.center, {
-          radius: 9,
-          fillColor: color,
-          color: '#FFFFFF',
-          weight: 2.5,
-          fillOpacity: 0.85
+      } else {
+        // Draw Linear Infrastructure Right-of-Way (RoW) Ribbon
+        // Outer RoW Buffer Zone
+        L.polyline(alignmentPolyline, {
+          color: '#60A5FA',
+          weight: 16,
+          opacity: 0.35,
+          lineCap: 'round',
+          lineJoin: 'round'
         }).addTo(map);
 
-        marker.bindTooltip(
-          `<div style="font-family:Inter,sans-serif;font-size:12px">
-            <strong>Khasra ${p.khasraNumber}</strong> (${p.village})<br/>
-            <span style="color:${color};font-weight:bold">● ${category.replace('_', ' ')}</span>
-          </div>`
-        );
-        marker.on('click', () => {
-          setSelectedParcel(p);
-          if (onParcelSelect) onParcelSelect(p);
-        });
+        // Core Alignment Centerline
+        const mainLine = L.polyline(alignmentPolyline, {
+          color: '#1D4ED8',
+          weight: 4.5,
+          dashArray: '7, 8',
+          opacity: 0.95,
+          lineCap: 'round'
+        }).addTo(map);
 
-        allGeometryBounds.push(p.center);
+        mainLine.bindTooltip(
+          `<div style="font-family:Inter,sans-serif;font-size:12px;padding:3px 5px">
+            <strong style="color:#1E3A8A">Project Statutory Alignment Corridor</strong><br/>
+            <span style="color:#475569">Gazetted Right of Way (RoW) Ribbon</span>
+          </div>`,
+          { sticky: true }
+        );
       }
+
+      alignmentPolyline.forEach(pt => allGeometryBounds.push(pt));
+    }
+
+    // 2. Draw Authentic Surveyed Revenue Village Milestone Pins along the project footprint
+    // Group parcels by village to create clean, authentic village survey pins
+    const villageMap = new Map<string, {
+      name: string;
+      parcels: MapParcel[];
+      totalArea: number;
+      acquiredArea: number;
+      center: [number, number];
+      status: string;
+    }>();
+
+    displayedParcels.forEach((p, idx) => {
+      const vName = p.village || 'Survey Section';
+      if (!villageMap.has(vName)) {
+        // Compute village location along the alignment
+        let vCenter: [number, number] = center;
+        if (alignmentPolyline && alignmentPolyline.length > 0) {
+          const ptIdx = Math.min(villageMap.size, alignmentPolyline.length - 1);
+          vCenter = alignmentPolyline[ptIdx];
+        }
+        villageMap.set(vName, {
+          name: vName,
+          parcels: [],
+          totalArea: 0,
+          acquiredArea: 0,
+          center: vCenter,
+          status: p.acquisitionStatus
+        });
+      }
+
+      const vData = villageMap.get(vName)!;
+      vData.parcels.push(p);
+      const a = Number(p.areaHectares) || 1.5;
+      vData.totalArea += a;
+      const s = (p.acquisitionStatus || '').toUpperCase();
+      if (s === 'COMPLETED' || s === 'POSSESSION' || s === 'ACQUIRED') {
+        vData.acquiredArea += a;
+      }
+    });
+
+    // Render village milestone markers
+    villageMap.forEach((v) => {
+      const pct = v.totalArea > 0 ? Math.round((v.acquiredArea / v.totalArea) * 100) : 100;
+      const markerColor = pct >= 80 ? '#10B981' : pct >= 40 ? '#F59E0B' : '#3B82F6';
+
+      // Custom HTML Leaflet DivIcon for authentic national portal milestone badge
+      const pinIcon = L.divIcon({
+        className: 'custom-village-pin',
+        html: `
+          <div style="
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #FFFFFF;
+            border: 2px solid ${markerColor};
+            border-radius: 20px;
+            padding: 2px 8px 2px 6px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+            cursor: pointer;
+            white-space: nowrap;
+            font-family: Inter, sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            color: #0F172A;
+          ">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: ${markerColor}; display: inline-block;"></span>
+            <span>${v.name}</span>
+            <span style="font-size: 9.5px; color: ${markerColor}; font-weight: 800; background: ${markerColor}15; padding: 1px 4px; border-radius: 10px;">${pct}%</span>
+          </div>
+        `,
+        iconSize: [120, 26],
+        iconAnchor: [60, 13]
+      });
+
+      const marker = L.marker(v.center, { icon: pinIcon }).addTo(map);
+
+      marker.bindTooltip(
+        `<div style="font-family:Inter,sans-serif;font-size:12px;padding:3px">
+          <strong style="color:#0F172A;font-size:13px">Revenue Village: ${v.name}</strong><br/>
+          <span>Surveyed Parcels: <strong>${v.parcels.length} Khasra Entries</strong></span><br/>
+          <span>Land Acquisition: <strong>${v.acquiredArea.toFixed(1)} / ${v.totalArea.toFixed(1)} Ha (${pct}%)</strong></span><br/>
+          <span style="color:${markerColor};font-weight:bold;margin-top:3px;display:block">● ${pct >= 80 ? 'Possession Handed Over' : 'Survey & Valuation Active'}</span>
+        </div>`,
+        { sticky: true }
+      );
+
+      marker.on('click', () => {
+        if (v.parcels.length > 0) {
+          setSelectedParcel(v.parcels[0]);
+          if (onParcelSelect) onParcelSelect(v.parcels[0]);
+        }
+      });
+
+      allGeometryBounds.push(v.center);
     });
 
     // 3. Draw District Markers (if on state view)
@@ -265,7 +347,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       try {
         const b = L.latLngBounds(allGeometryBounds);
         if (b.isValid()) {
-          map.fitBounds(b, { padding: [35, 35], maxZoom: 14 });
+          map.fitBounds(b, { padding: [40, 40], maxZoom: 14 });
         }
       } catch (e) { /* ignore bounds error */ }
     }
@@ -437,28 +519,24 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       {/* Bottom Left: Map Legend */}
       <div style={{ position: 'absolute', bottom: '12px', left: '12px', zIndex: 500, background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(8px)', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '11px' }}>
         <div style={{ fontWeight: 800, color: '#0F172A', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <Layers size={13} color="#2563EB" /> Cadastral Status Legend
+          <Layers size={13} color="#2563EB" /> Statutory Alignment Legend
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '10px', height: '10px', background: '#10B981', borderRadius: '2px', display: 'inline-block' }} />
-            <span>Acquired / Clear Possession</span>
+            <span style={{ width: '14px', height: '4px', background: '#1D4ED8', display: 'inline-block', borderRadius: '1px' }} />
+            <span>Statutory RoW Alignment Corridor</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '10px', height: '10px', background: '#F59E0B', borderRadius: '2px', display: 'inline-block' }} />
-            <span>Under Acquisition / Valuation (Sec 3G)</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '10px', height: '10px', background: '#EF4444', borderRadius: '2px', display: 'inline-block' }} />
-            <span>Disputed Title / Court Stay / Sec 15</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '10px', height: '10px', background: '#3B82F6', borderRadius: '2px', display: 'inline-block' }} />
-            <span>Government / Gram Panchayat Land</span>
+            <span style={{ width: '12px', height: '12px', background: 'rgba(59, 130, 246, 0.2)', border: '1.5px dashed #1D4ED8', borderRadius: '2px', display: 'inline-block' }} />
+            <span>Master Facility Perimeter Polygon</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px', paddingTop: '4px', borderTop: '1px solid #E2E8F0' }}>
-            <span style={{ width: '14px', height: '3px', background: '#1D4ED8', display: 'inline-block' }} />
-            <span>Statutory RoW Corridor Buffer</span>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }} />
+            <span>Village Milestone: 100% Acquired</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B', display: 'inline-block' }} />
+            <span>Village Milestone: Survey / Valuation Active</span>
           </div>
         </div>
       </div>

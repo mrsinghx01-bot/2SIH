@@ -352,9 +352,9 @@ export const ProjectDetailPage: React.FC = () => {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A' }}>Interactive GIS Cadastral Map & Alignment Corridor</h3>
+                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A' }}>Statutory Alignment Corridor & Revenue Survey Map</h3>
                 <p style={{ fontSize: '12.5px', color: '#64748B' }}>
-                  Click on any parcel polygon to view khasra boundary, titleholder valuation, and acquisition status
+                  Gazetted Right-of-Way (RoW) buffer, master facility perimeter, and revenue village milestone points
                 </p>
               </div>
             </div>
