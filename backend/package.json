@@ -11,9 +11,9 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:seed": "tsx ../scripts/seed-demo-data/seed-demo-data.ts",
-    "data:validate": "tsx ../scripts/validate-data/validate-data.ts",
-    "data:import": "tsx ../scripts/import-data/import-lgd-data.ts"
+    "db:seed": "tsx src/scripts/seed-demo-data/seed-demo-data.ts",
+    "data:validate": "tsx src/scripts/validate-data/validate-data.ts",
+    "data:import": "tsx src/scripts/import-data/import-lgd-data.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
