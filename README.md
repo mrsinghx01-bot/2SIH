@@ -1,30 +1,30 @@
-# 🏛️ National Land Acquisition & Management System (NLAMS)
-### Government of India • Ministry of Rural Development • Department of Land Resources (DoLR)
-> **Real-Time National Land Acquisition & Management System for End-to-End Digital Monitoring and Decision Support**  
-> *Developed for the Smart India Hackathon (SIH) • Compliant with RFCTLARR Act 2013 & DILRMP*
+# 🏛️ Bhoomisetu (भूमिसेतु) • National Land Acquisition & Management System
+### Government of India • Ministry of Rural Development (MoRD) • Department of Land Resources (DoLR)
+> **Unified National e-Governance Platform for Transparent Land Acquisition, Geospatial Monitoring, and Statutory Decision Support**  
+> *Developed for the Smart India Hackathon (SIH) • Compliant with RFCTLARR Act 2013, PM GatiShakti & DILRMP*
 
 ---
 
-## 🌐 Live Production Links & Deployments
+## 🌐 Live Production Deployments & Links
 
-| Component | Environment | URL / Endpoint | Status |
+| Component | Platform | Live Production URL | Status |
 | :--- | :--- | :--- | :--- |
-| **Frontend Web Portal** | Production (Vercel) | [https://frontend-git-main-manik14.vercel.app](https://frontend-git-main-manik14.vercel.app/dashboard) | 🟢 Live |
-| **Backend REST API** | Production (Render) | [https://national-land-aquisisation.onrender.com](https://national-land-aquisisation.onrender.com/api/v1/health) | 🟢 Live |
-| **Local Web Interface** | Local Dev | `http://localhost:5173` | 🟢 Active |
-| **Local API Server** | Local Dev | `http://localhost:5000` | 🟢 Active |
+| **Frontend Web Portal** | **Cloudflare Pages** | 🚀 **[https://bhoomisetu.pages.dev](https://bhoomisetu.pages.dev)** | 🟢 **Live & Active** |
+| **Backend REST API** | **Render** | ⚡ **[https://national-land-aquisisation.onrender.com](https://national-land-aquisisation.onrender.com/api/v1/health)** | 🟢 **Live & Active** |
+| **Local Web Interface** | Local Dev Server | `http://localhost:5173` | 🟢 Ready |
+| **Local API Server** | Local Express | `http://localhost:5000` | 🟢 Ready |
 
 ---
 
-## 🎯 Executive Summary & Vision
+## 🎯 Executive Vision & Problem Statement
 
-The **National Land Acquisition & Management System (NLAMS)** is a unified, production-grade e-Governance platform engineered to digitize, monitor, and accelerate the entire land acquisition lifecycle for national infrastructure projects across India. 
+Land acquisition in India for mega infrastructure corridors (Expressways, High-Speed Rail, Dedicated Freight Corridors, Mega Solar Parks) historically suffers from **inter-departmental silos, valuation litigations, Section 19 statutory lapses, and lack of pre-notification feasibility analysis**.
 
-Governed by the **Right to Fair Compensation and Transparency in Land Acquisition, Rehabilitation and Resettlement Act, 2013 (RFCTLARR)** and integrated with the **Digital India Land Records Modernization Programme (DILRMP)**, the platform replaces fragmented manual files with real-time geospatial intelligence, automated statutory valuation engines, and prescriptive decision support.
+**Bhoomisetu (भूमिसेतु)** provides a unified e-Governance platform that brings together the Ministry of Rural Development, State Revenue Departments, District Collectorates / CALA, and Displaced Landowners onto a single transparent digital ledger.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                     THE 9-STAGE STATUTORY LIFECYCLE                                    │
+│                                 THE 9-STAGE STATUTORY LIFECYCLE (RFCTLARR 2013)                        │
 │                                                                                                        │
 │  [1. REQUISITION]  ➔  [2. SIA & SURVEY]  ➔  [3. SEC 11 NOTIFICATION]  ➔  [4. SEC 15 OBJECTIONS]      │
 │         │                                                                             │                │
@@ -37,154 +37,76 @@ Governed by the **Right to Fair Compensation and Transparency in Land Acquisitio
 
 ---
 
-## 🌟 Key Architecture & Technical Highlights
+## 🌟 Core Modules & Technical Innovations
 
-### 1. 🗺️ Interactive GIS & Cadastral Parcel Engine
-- **47 Real National Infrastructure Mega-Projects**: Spanning all **28 States and 8 Union Territories** (Highways, High-Speed Rail, Airports, Freight Corridors, Solar Ultra Parks, Ports, and Irrigation Canals).
-- **4-Tier Cadastral Visual Status Tracking**:
-  - 🟢 **Acquired & Handed Over**: Clear Title, Section 38 Vesting complete, PFMS DBT compensation disbursed.
-  - 🟡 **Under Acquisition / Valuation**: Active joint survey, Section 11/19 Gazette stage, or Section 30 award pending.
-  - 🔴 **Disputed / Statutory Hold-Up**: Section 15 public objections, co-sharer succession disputes, or High Court stays.
-  - 🔵 **Government / Forest / Public Land**: Gram Sabha, PSU, or Forest Rights Act (FRA 2006) land.
-- **Dynamic Auto-Fit Bounds (`map.fitBounds`)**: Seamlessly centers and zooms to the exact Right-of-Way (RoW) corridor polygon and cadastral parcels on project load.
-- **Cadastral Side Inspector**: Real-time drill-down to Khasra numbers, village revenue records, Aadhaar-verified landowners, assessed market values, and **100% Solatium u/s 30(1)** awards.
+### 1. 🧠 Decision Support System (DSS) & What-If Corridor Feasibility Simulator
+* **Pre-Notification Corridor Optimization:** Simulates compensation budgets, solatium overhead, R&R displacement, and clearance velocity **before** issuing Section 4/11 Gazette notifications.
+* **Statutory RFCTLARR Act 2013 Calculation Engine:**
+  $$\text{Total Acquisition Budget} = \text{Sec 26 Market Value} + \mathbf{100\%\ Solatium\ u/s\ 30(1)} + \mathbf{12\%\ p.a.\ AMV\ u/s\ 30(3)} + \mathbf{Schedule\ II\ R\&R\ Grants}$$
+* **Instant Terrain Friction Comparison:** Compares 4 real-world alignment scenarios (*Irrigated Multi-Crop*, *Rainfed Rural*, *Barren / Govt Gram Sabha*, and *Forest FRA Eco-Zone*).
+* **📥 Official DSS Brief CSV Export:** Generates an auditable, standardized 5-column executive briefing document with **UTF-8 Byte Order Mark (BOM)** formatting for Microsoft Excel and Cabinet EFC/CCEA appraisal.
+* **Collector Statutory Action Playbook:** Codified SOPs (Protocols 01–05) guiding District Magistrates through Section 15 objection timelines, Section 77(2) LARRA Court Escrow deposits, tribal FPIC clearances, and Section 19(7) lapse prevention.
 
-### 2. 🧠 Decision Support System (DSS) & Feasibility Engine
-- **What-If Corridor Feasibility Simulator**: 
-  - Allows Ministry Planners and NHAI/DFCCIL directors to simulate alternative corridor routes across all 36 States/UTs before issuing Gazette notifications.
-  - Computes exact statutory financial models: $(\text{Circle Rate} \times \text{Rural Multiplier } [1.0\times - 2.0\times]) + \mathbf{100\%\ Solatium\ u/s\ 30(1)} + \mathbf{12\%\ p.a.\ AMV\ u/s\ 30(3)} + \mathbf{Schedule\ II\ R\&R\ Grants}$.
-  - Instant comparative analysis across **4 Land-Use Scenarios**: *Irrigated Multi-Crop*, *Rainfed Rural*, *Barren / Govt Wasteland*, and *Forest FRA*.
-- **Collector Statutory Action Playbook (Protocols 01 to 05)**:
-  - Prescriptive legal resolution workflows for District Magistrates and LAOs based on codified Indian law and Supreme Court precedents:
-    - `Protocol 01`: *Section 15 Public Objections Exceeding 60-Day Window* (RFCTLARR § 15(2) & § 15(3)).
-    - `Protocol 02`: *Title Succession Disputes & Refusal of Award* (RFCTLARR § 64 & § 77(2) LARRA Court Escrow).
-    - `Protocol 03`: *Fifth Schedule Tribal Area Protections* (RFCTLARR § 41 & Gram Sabha FPIC).
-    - `Protocol 04`: *Section 19(7) 12-Month Statutory Lapse Prevention*.
-    - `Protocol 05`: *Standing Crops, Trees & Immovable Asset Joint Re-Valuation* (RFCTLARR § 29).
+### 2. 🗺️ Interactive GIS & Cadastral Parcel Engine
+* **47 Real National Mega-Projects:** Spanning all **36 States and Union Territories** across 9 infrastructure sectors (Highways, High-Speed Rail, Airports, Solar, Ports, Defence, Urban Development, Industrial Corridors, Irrigation).
+* **4-Tier Cadastral Status Tracking:**
+  * 🟢 **Acquired & Handed Over:** Clear Title, Section 38 Vesting, DBT compensation disbursed.
+  * 🟡 **Under Acquisition / Valuation:** Active joint survey, Section 11/19 Gazette, or award inquiry.
+  * 🔴 **Disputed / Statutory Hold-Up:** Section 15 objections, co-sharer disputes, or Court stays.
+  * 🔵 **Government / Forest Land:** Gram Sabha, PSU, or FRA 2006 land.
+* **Dynamic Corridor Bounds & Village Analytics:** Automatic bounding-box camera zoom (`map.fitBounds`) with sector-specific corridor titles and surveyed revenue village tallies.
+* **Cadastral Side Inspector:** Deep drill-down to Khasra/Khata numbers, Aadhaar-linked titleholders, assessed market values, and asset schedules.
 
-### 3. ⚖️ 100% RFCTLARR 2013 Statutory Compliance
-- **First Schedule (Section 26–30)**: Automated market value determination with state-notified rural multipliers ($1.0\times$ to $2.0\times$), mandatory 100% Solatium, and 12% p.a. Additional Market Value.
-- **Second Schedule (Section 31 R&R Entitlements)**: Mandatory ₹5.0 Lakh one-time annuity/resettlement grant, ₹50,000 subsistence allowance, and constructed housing allocations.
-- **Section 41 Tribal Safeguards**: Gram Sabha Free Prior Informed Consent (FPIC), one-third upfront compensation, and 2.5 acres alternative land.
-- **Section 77(2) LARRA Escrow Deposit**: Prevents infrastructure delays by depositing disputed title compensation directly into Reference Court Escrow while issuing Section 38 Vesting Orders.
+### 3. 📱 All-Device Responsive Design
+* **100% Mobile & Tablet Compatible:** Seamless experience from smartphones (320px–480px), iPads/tablets (641px–1024px), to 4K desktop screens.
+* **Off-Canvas Slide-In Navigation Drawer:** Glassmorphism overlay with auto-close interaction on mobile viewports.
+* **Touch-Friendly Controls:** Horizontal swipe tab navigation, touch-scrolling GIS filter chips, and bottom-sheet parcel inspector.
+* **Responsive Multi-Tier Grid Breakpoints:** Adaptive 5-column to 1-column layouts for statutory lifecycle steppers and executive MIS cards.
 
-### 4. 📱 Mobile-Optimized Field Officer Survey Portal
-- **HTML5 Geolocation Geofencing**: Validates that the surveyor is physically within the cadastral parcel boundary.
-- **Drone & Ground-Truth Photo Capture**: Live geotagged photo uploads with camera sensor metadata.
-- **Tree & Asset Enumeration**: Record-by-record enumeration of fruit-bearing timber trees and structures.
-- **Competent Authority Review Queue (`/survey-review`)**: District LAOs review survey evidence and issue official statutory decisions (`APPROVE`, `REQUEST_RESURVEY`, `REJECT`).
+### 4. 📲 Mobile Field Officer Survey Portal
+* **HTML5 Geolocation Geofencing:** Validates surveyor presence within the parcel polygon before unlocking inspection tools.
+* **Drone & Ground-Truth Photo Capture:** Live geotagged photograph uploads with metadata verification.
+* **Asset & Tree Enumeration:** Detailed logging of fruit-bearing timber trees and immovable structures as per Section 29 schedules.
+* **Competent Authority Review Queue (`/survey-review`):** LAOs review field surveyor evidence and issue binding decisions (`APPROVE`, `REQUEST_RESURVEY`, `REJECT`).
 
-### 5. 🗣️ Multilingual Accessibility (8th Schedule Languages)
-- Real-time language switching supporting **12+ Official Indian Languages** with authentic native typography:
-  - English, हिन्दी (Hindi), தமிழ் (Tamil), తెలుగు (Telugu), मराठी (Marathi), বাংলা (Bengali), ગુજરાતી (Gujarati), ಕನ್ನಡ (Kannada), മലയാളം (Malayalam), ଓଡ଼ିଆ (Odia), ਪੰਜਾਬੀ (Punjabi), অসমীয়া (Assamese).
+### 5. ⚖️ 100% RFCTLARR 2013 Statutory Compliance
+* **First Schedule (Sections 26–30):** State-notified rural multipliers ($1.0\times$ to $2.0\times$), mandatory 100% Solatium, and 12% p.a. Additional Market Value.
+* **Second Schedule (Section 31 R&R):** Mandatory ₹5.0 Lakh annuity/resettlement grant, ₹50,000 subsistence allowance, and constructed housing allocations.
+* **Section 41 Tribal Protections:** Gram Sabha Free Prior Informed Consent (FPIC), one-third upfront compensation, and 2.5 acres alternative land.
+* **Section 77(2) LARRA Court Escrow Deposit:** Prevents project stall by depositing contested title compensation into Court Escrow while delivering clear Section 38 physical possession to the acquiring agency.
 
-### 6. 🔒 Enterprise Role-Based Access Control (RBAC)
-- **Strict Server-Side Geographic Scoping**: District Admins and LAOs can only access data within their assigned Local Government Directory (LGD) district jurisdiction.
-- **Immutable Audit Trail**: Append-only tamper-evident logging of every administrative approval, document hash, and compensation sign-off.
+### 6. 🗣️ Multilingual Accessibility (8th Schedule Languages)
+* Real-time language switching supporting **12+ Official Indian Languages** with authentic typography:
+  * English, हिन्दी (Hindi), தமிழ் (Tamil), తెలుగు (Telugu), मराठी (Marathi), বাংলা (Bengali), ગુજરાતી (Gujarati), ಕನ್ನಡ (Kannada), മലയാളം (Malayalam), ଓଡ଼ିଆ (Odia), ਪੰਜਾਬੀ (Punjabi), অসমীয়া (Assamese).
 
----
-
-## 🗂️ Project Repository Structure
-
-```
-national-land-acquisition-management-system/
-├── frontend/                          # React 18 + Vite + TypeScript (SPA Client)
-│   ├── public/assets/                 # Ashoka emblem SVG, India flag SVG, Mountain background
-│   └── src/
-│       ├── components/                # GisInteractiveMap, Sidebar, Header, KPI Cards, LoadingSkeleton
-│       ├── features/
-│       │   ├── dashboard/             # National Master Dashboard & State KPIs
-│       │   ├── states/                # 36 States & UTs Geographical Explorer
-│       │   ├── projects/              # Projects List & 10-Tab Deep Project Console
-│       │   ├── parcels/               # Cadastral Parcel Registry & Khasra Inspector
-│       │   ├── compensation/          # PFMS Direct Benefit Transfer (DBT) Settlement
-│       │   ├── rr/                    # Resettlement & Rehabilitation Monitoring
-│       │   ├── reports/               # Decision Support System (DSS) Hub & What-If Simulator
-│       │   ├── alerts/                # Statutory Exception & Lapse Monitoring
-│       │   ├── audit/                 # Immutable Event Sourcing Audit Trail
-│       │   ├── field-officer/         # Mobile Field Survey App & Survey Review Queue
-│       │   └── settings/              # System Settings & Jurisdiction Configuration
-│       ├── i18n/                      # 8th Schedule Multilingual Translation Engine
-│       ├── services/                  # Axios API Client & Endpoints
-│       └── store/                     # Auth & Session State Context
-│
-├── backend/                           # Node.js + Express + TypeScript API Server
-│   ├── src/
-│   │   ├── controllers/               # Projects, States, Parcels, Compensation, DSS Analytics
-│   │   ├── data/                      # Real Census 2011, RBI, and DoLR Master Data
-│   │   ├── middleware/                # JWT Auth, RBAC Authorization & Geographic Scope Guards
-│   │   ├── routes/                    # Versioned REST API Route Definitions (/api/v1)
-│   │   └── scripts/                   # LGD Ingestion & Master 47-Project Seed Generator
-│   ├── storage/                       # Local disk JSON store & digital document archives
-│   └── prisma/                        # PostgreSQL Schema definition
-│
-├── data/
-│   ├── raw/                           # Official LGD master datasets (States & 785 Districts)
-│   └── processed/                     # Survey of India administrative boundary mappings
-│
-└── docs/                              # Statutory Architecture, API Specs, and Evaluation Guides
-```
-
----
-
-## 🚀 Quick Start & Local Setup
-
-### Prerequisites
-- **Node.js**: `v18.0.0` or higher
-- **npm**: `v9.0.0` or higher
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/mrsinghx01-bot/2SIH.git
-cd 2SIH
-```
-
-### 2. Install Root, Backend & Frontend Dependencies
-```bash
-npm install
-cd backend && npm install && cd ..
-cd frontend && npm install && cd ..
-```
-
-### 3. Build & Seed Master Database
-```bash
-cd backend
-npm run build
-cd ..
-```
-
-### 4. Launch Full-Stack Application
-```bash
-# Concurrently starts Backend (Port 5000) and Frontend (Port 5173):
-npm run dev
-```
-
-Open your browser at **`http://localhost:5173`**.
+### 7. 🔒 Enterprise Role-Based Access Control (RBAC)
+* **Strict Server-Side Geographic Scoping:** State and District administrators can only view and authorize records within their assigned Local Government Directory (LGD) boundaries.
+* **Immutable Audit Trail:** Tamper-evident logging of every administrative decision, compensation voucher, and statutory approval.
 
 ---
 
 ## 🔑 Demo Credentials & Role Access
 
-| Role | Email / Employee ID | Password | Geographic Jurisdiction Scope |
+Access the portal directly via **[https://bhoomisetu.pages.dev/login](https://bhoomisetu.pages.dev/login)** using 1-click demo role switcher or credentials:
+
+| Role | Demo Employee ID | Default Password | Geographic Jurisdiction Scope |
 | :--- | :--- | :--- | :--- |
-| **Central Admin** | `central.admin@landrecords.gov.in` (`GOI-CAD-001`) | `Admin@123` | **National Master Scope** (All 36 States & UTs) |
-| **Central Officer** | `central.officer@mord.gov.in` (`GOI-COF-002`) | `Admin@123` | **National Oversight** (Ministry Monitoring) |
-| **State Admin (UP)** | `state.admin.up@landrecords.gov.in` (`UP-SAD-101`) | `Admin@123` | **State Scope** (Uttar Pradesh — LGD Code 9) |
-| **District Admin** | `district.admin.lucknow@landrecords.gov.in` (`UP-DAD-201`) | `Admin@123` | **District Scope** (Lucknow District) |
-| **District LAO** | `lao.lucknow@landrecords.gov.in` (`LAO-GOI-301`) | `Admin@123` | **Competent Authority** (Land Valuation & Awards) |
-| **Field Officer** | `field.officer.lucknow@landrecords.gov.in` (`FO-UP-501`) | `Admin@123` | **Field Survey Jurisdiction** (Mobile App) |
+| **Central Admin** | `GOI-CAD-001` | `Admin@123` | **National Master Scope** (All 36 States & UTs) |
+| **Central Officer** | `GOI-COF-002` | `Admin@123` | **National Oversight** (Ministry of Rural Development) |
+| **State Admin (UP)** | `UP-SAD-101` | `Admin@123` | **State Scope** (Uttar Pradesh — LGD Code 9) |
+| **District Admin** | `UP-DAD-201` | `Admin@123` | **District Scope** (Lucknow District) |
+| **District LAO** | `LAO-GOI-301` | `Admin@123` | **Competent Authority** (Valuation & Awards) |
+| **Field Survey Officer** | `FO-UP-501` | `Admin@123` | **Field Survey Scope** (Mobile Geo-Survey App) |
 
 ---
 
-## 📊 Comprehensive 47 National Infrastructure Projects
-
-The platform includes verified public infrastructure projects across all 36 States and Union Territories:
+## 📊 47 National Infrastructure Mega-Projects Catalog
 
 <details>
-<summary><strong>Click to expand the 47-Project National Registry</strong></summary>
+<summary><strong>Click to expand the Complete 47-Project National Registry across all 36 States & UTs</strong></summary>
 
-1. **Delhi-Mumbai Expressway** (`PRJ-NHAI-DME-001`) — Maharashtra / Haryana / Rajasthan / MP / Gujarat
-2. **Mumbai-Ahmedabad High-Speed Rail** (`PRJ-NHSRCL-MAHSR-005`) — Maharashtra / Gujarat
+1. **Delhi-Mumbai Expressway** (`PRJ-NHAI-DME-001`) — Maharashtra / Rajasthan / Gujarat / MP / Haryana
+2. **Mumbai-Ahmedabad High-Speed Rail (Bullet Train)** (`PRJ-NHSRCL-MAHSR-005`) — Maharashtra / Gujarat
 3. **Navi Mumbai International Airport** (`PRJ-CIDCO-NMIA-006`) — Maharashtra (Panvel)
 4. **Noida International Airport Jewar Phase 1** (`PRJ-YEIDA-NIA-002`) — Uttar Pradesh
 5. **Noida International Airport Phase 3 & 4** (`PRJ-YEIDA-NIA-003`) — Uttar Pradesh
@@ -235,17 +157,81 @@ The platform includes verified public infrastructure projects across all 36 Stat
 
 ---
 
-## 🛡️ Statutory Legal Framework & Standards
+## 🗂️ Project Repository Structure
 
-This software is built to comply with:
-- **RFCTLARR Act, 2013** *(Act No. 30 of 2013, Parliament of India)*
-- **National Highways Act, 1956** *(Sections 3A, 3D, 3G)*
-- **Railways Act, 1989 & Amendment 2008** *(Section 20A–20N)*
-- **Forest Rights Act (FRA), 2006 & PESA Act, 1996**
-- **Digital India Land Records Modernization Programme (DILRMP)** standards for Bhu-Aadhaar / Unique Land Parcel Identification Number (ULPIN).
+```
+2SIH/
+├── frontend/                          # React 18 + Vite + TypeScript (Single Page App)
+│   ├── public/assets/                 # Ashoka emblem, Indian flag, mountain branding
+│   └── src/
+│       ├── components/                # GisInteractiveMap, Sidebar, Header, KPI Cards
+│       ├── features/
+│       │   ├── auth/                  # Authentication & Role Switching
+│       │   ├── dashboard/             # National Dashboard & Analytics
+│       │   ├── states/                # 36 States & UTs Explorer
+│       │   ├── projects/              # Projects List & 10-Tab Project Console
+│       │   ├── parcels/               # Cadastral Parcel Registry
+│       │   ├── compensation/          # Direct Benefit Transfer (DBT) Registry
+│       │   ├── rr/                    # Resettlement & Rehabilitation Monitoring
+│       │   ├── reports/               # Decision Support System (DSS) Simulator & MIS
+│       │   ├── alerts/                # Statutory Exception & Lapse Monitoring
+│       │   ├── audit/                 # Immutable Event Sourcing Audit Trail
+│       │   └── field-officer/         # Mobile Field Survey App & Review Queue
+│       ├── i18n/                      # 8th Schedule Multilingual Translations
+│       ├── services/                  # REST API Client
+│       └── store/                     # Auth & Session Context
+│
+├── backend/                           # Node.js + Express + TypeScript API Server
+│   ├── src/
+│   │   ├── controllers/               # Projects, States, Compensation, DSS Analytics
+│   │   ├── middleware/                # JWT Auth, RBAC & LGD Scope Guards
+│   │   ├── routes/                    # Versioned REST API Routes (/api)
+│   │   └── scripts/                   # LGD Data & 47-Project Master Seed Generator
+│   ├── storage/                       # Database Store & Document Archives
+│   └── prisma/                        # PostgreSQL Schema
+│
+└── scripts/                           # Cross-Platform CI/CD Build Pipelines
+```
 
 ---
 
-## 📜 License
+## 🚀 Quick Start & Local Setup
 
-This project is developed for the **Smart India Hackathon (SIH)** under the auspices of the **Ministry of Rural Development & Department of Land Resources, Government of India**. Released under the [MIT License](LICENSE).
+### Prerequisites
+- **Node.js**: `v20.0.0` or higher
+- **npm**: `v9.0.0` or higher
+
+### 1. Clone & Install
+```bash
+git clone https://github.com/mrsinghx01-bot/2SIH.git
+cd 2SIH
+npm install
+```
+
+### 2. Run Locally
+```bash
+# Starts Backend (Port 5000) and Frontend (Port 5173) concurrently:
+npm run dev
+```
+Open **`http://localhost:5173`** in your browser.
+
+### 3. Build for Production
+```bash
+npm run build
+```
+
+---
+
+## 🛡️ Statutory Legal Framework & Standards
+
+* **RFCTLARR Act, 2013** *(Act No. 30 of 2013, Parliament of India)*
+* **National Highways Act, 1956** *(Sections 3A, 3D, 3G)*
+* **Railways Act, 1989 & Amendment 2008** *(Sections 20A–20N)*
+* **Forest Rights Act (FRA), 2006 & PESA Act, 1996**
+* **Digital India Land Records Modernization Programme (DILRMP)** standards for Bhu-Aadhaar & ULPIN.
+
+---
+
+## 📜 License & Hackathon Declaration
+
+Developed for the **Smart India Hackathon (SIH)** under the problem statement issued by the **Ministry of Rural Development & Department of Land Resources (DoLR), Government of India**. Released under the [MIT License](LICENSE).
