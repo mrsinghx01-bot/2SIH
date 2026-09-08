@@ -90,7 +90,68 @@ export const ProjectDetailPage: React.FC = () => {
     { id: 10, name: 'Audit', icon: History }
   ];
 
+  // Dynamic sector-specific GIS title, subtitle & survey context
+  const getGisTitleAndSubtitle = (p: any) => {
+    const pType = (p?.projectType || '').toUpperCase();
+    const districtStr = (p?.districtBreakdown || []).map((d: any) => d.districtName).join(', ') || p?.implementingAgency || 'Statutory Region';
+    const rawVillages = (p?.parcels || []).map((pcl: any) => pcl.village).filter(Boolean);
+    const uniqueVillages = Array.from(new Set(rawVillages));
+    const villageSummary = uniqueVillages.length > 0
+      ? `across ${uniqueVillages.length} Surveyed Villages (${uniqueVillages.slice(0, 3).join(', ')}${uniqueVillages.length > 3 ? '...' : ''})`
+      : `across ${districtStr}`;
+
+    switch (pType) {
+      case 'AIRPORT':
+        return {
+          title: `${p.name} • Greenfield Airport Master Perimeter & Cadastral Plot Boundary Map`,
+          subtitle: `Gazetted Section 3D Master Facility Perimeter & Runway Buffer ${villageSummary} • ${p.implementingAgency}`
+        };
+      case 'HIGHWAY':
+        return {
+          title: `${p.name} • Gazetted Right-of-Way (RoW) Alignment Corridor & Revenue Map`,
+          subtitle: `8-Lane Access-Controlled RoW Corridor Ribbon ${villageSummary} • ${p.implementingAgency}`
+        };
+      case 'RAILWAY':
+        return {
+          title: `${p.name} • High-Speed Rail Statutory Alignment & Station Footprint Map`,
+          subtitle: `Viaduct, Tunnel & Station RoW Corridor ${villageSummary} • ${p.implementingAgency}`
+        };
+      case 'RENEWABLE_ENERGY':
+        return {
+          title: `${p.name} • Ultra Mega Solar Park Plot Perimeter & Cadastral Grid Map`,
+          subtitle: `Solar Power Zone Perimeter & Substation Transmission Corridors ${villageSummary} • ${p.implementingAgency}`
+        };
+      case 'IRRIGATION':
+        return {
+          title: `${p.name} • River Interlinking Submergence & Link Canal Alignment Map`,
+          subtitle: `Dam Reservoir Submergence Contour & Link Canal Right-of-Way ${villageSummary} • ${p.implementingAgency}`
+        };
+      case 'PORT':
+        return {
+          title: `${p.name} • Major Maritime Port Waterfront Zone & Land Requisition Map`,
+          subtitle: `Deepwater Port Terminal Footprint & Rail/Road Connectivity Corridor ${villageSummary} • ${p.implementingAgency}`
+        };
+      case 'INDUSTRIAL_CORRIDOR':
+        return {
+          title: `${p.name} • Industrial Node & Freight Logistics Corridor Map`,
+          subtitle: `Smart Industrial City Master Boundary & Connectivity RoW ${villageSummary} • ${p.implementingAgency}`
+        };
+      case 'DEFENCE':
+        return {
+          title: `${p.name} • Strategic Defence Installation & Security Perimeter Map`,
+          subtitle: `Restricted Defence Installation Perimeter & Access Corridors ${villageSummary} • ${p.implementingAgency}`
+        };
+      default:
+        return {
+          title: `${p.name} • Statutory Alignment Corridor & Revenue Survey Map`,
+          subtitle: `Gazetted Right-of-Way (RoW) Buffer, Facility Perimeter, and Revenue Village Milestone Points ${villageSummary}`
+        };
+    }
+  };
+
   const mapCenter: [number, number] = project.gisMap?.center || [26.8467, 80.9462];
+  const uniqueVillagesList = Array.from(new Set((project.parcels || []).map((p: any) => p.village).filter(Boolean)));
+  const villageCountDisplay = uniqueVillagesList.length > 0 ? uniqueVillagesList.length : (project.districtBreakdown?.length ? project.districtBreakdown.length * 3 : 6);
 
   return (
     <div>
@@ -285,7 +346,7 @@ export const ProjectDetailPage: React.FC = () => {
               </div>
               <div style={{ padding: '14px', borderRadius: '10px', background: '#F5F3FF', border: '1px solid #DDD6FE' }}>
                 <div style={{ fontSize: '11px', color: '#6D28D9' }}>Total Villages Impacted</div>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: '#4C1D95' }}>18 Villages</div>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: '#4C1D95' }}>{villageCountDisplay} Villages</div>
               </div>
             </div>
           </div>
@@ -348,50 +409,53 @@ export const ProjectDetailPage: React.FC = () => {
         )}
 
         {/* Tab 4: INTERACTIVE GIS MAP / PARCELS */}
-        {activeTab === 4 && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0F172A' }}>Statutory Alignment Corridor & Revenue Survey Map</h3>
-                <p style={{ fontSize: '12.5px', color: '#64748B' }}>
-                  Gazetted Right-of-Way (RoW) buffer, master facility perimeter, and revenue village milestone points
-                </p>
+        {activeTab === 4 && (() => {
+          const { title, subtitle } = getGisTitleAndSubtitle(project);
+          return (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A' }}>{title}</h3>
+                  <p style={{ fontSize: '12.5px', color: '#64748B', marginTop: '3px' }}>
+                    {subtitle}
+                  </p>
+                </div>
               </div>
-            </div>
 
-            {/* Interactive Leaflet GIS Map */}
-            <div style={{ marginBottom: '24px' }}>
-              <GisInteractiveMap
-                center={mapCenter}
-                zoom={project.gisMap?.zoom || 10}
-                alignmentPolyline={project.gisMap?.alignmentPolyline}
-                parcels={project.gisMap?.parcels || project.parcels}
-                height="500px"
-              />
-            </div>
-
-            {/* Cadastral Parcels Table */}
-            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', marginBottom: '10px' }}>Cadastral Parcels — Revenue Record Ledger</h4>
-            {(project.parcels || []).length === 0 ? (
-              <div style={{ padding: '24px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0', textAlign: 'center', color: '#64748B', fontSize: '13px' }}>
-                <strong style={{ display: 'block', marginBottom: '6px' }}>No cadastral parcel records available</strong>
-                Parcel-level data (Khasra, owner, valuation) must be submitted by Field Officers via the Field Survey App or integrated directly from the State Revenue / BhuNaksha portal.
+              {/* Interactive Leaflet GIS Map */}
+              <div style={{ marginBottom: '24px' }}>
+                <GisInteractiveMap
+                  center={mapCenter}
+                  zoom={project.gisMap?.zoom || 10}
+                  alignmentPolyline={project.gisMap?.alignmentPolyline}
+                  parcels={project.gisMap?.parcels || project.parcels}
+                  height="500px"
+                />
               </div>
-            ) : (
-              <DataTable
-                columns={[
-                  { header: 'Parcel No.', accessor: 'parcelNumber', render: (r: any) => <strong style={{ color: '#2563EB' }}>{r.parcelNumber}</strong> },
-                  { header: 'Village', accessor: 'village' },
-                  { header: 'Area (Ha)', accessor: 'areaHectares', render: (r: any) => `${r.areaHectares} Ha` },
-                  { header: 'Land Use', accessor: 'landUse' },
-                  { header: 'Status', render: (r: any) => <StatusBadge status={r.acquisitionStatus} /> }
-                ]}
-                data={project.parcels || []}
-                keyExtractor={(r: any) => r.id}
-              />
-            )}
-          </div>
-        )}
+
+              {/* Cadastral Parcels Table */}
+              <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', marginBottom: '10px' }}>Cadastral Parcels — Revenue Record Ledger</h4>
+              {(project.parcels || []).length === 0 ? (
+                <div style={{ padding: '24px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #E2E8F0', textAlign: 'center', color: '#64748B', fontSize: '13px' }}>
+                  <strong style={{ display: 'block', marginBottom: '6px' }}>No cadastral parcel records available</strong>
+                  Parcel-level data (Khasra, owner, valuation) must be submitted by Field Officers via the Field Survey App or integrated directly from the State Revenue / BhuNaksha portal.
+                </div>
+              ) : (
+                <DataTable
+                  columns={[
+                    { header: 'Parcel No.', accessor: 'parcelNumber', render: (r: any) => <strong style={{ color: '#2563EB' }}>{r.parcelNumber}</strong> },
+                    { header: 'Village', accessor: 'village' },
+                    { header: 'Area (Ha)', accessor: 'areaHectares', render: (r: any) => `${r.areaHectares} Ha` },
+                    { header: 'Land Use', accessor: 'landUse' },
+                    { header: 'Status', render: (r: any) => <StatusBadge status={r.acquisitionStatus} /> }
+                  ]}
+                  data={project.parcels || []}
+                  keyExtractor={(r: any) => r.id}
+                />
+              )}
+            </div>
+          );
+        })()}
 
         {/* Tab 5: Documents */}
         {activeTab === 5 && (
