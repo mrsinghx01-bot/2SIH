@@ -1,7 +1,9 @@
 name = "bhoomisetu"
+main = "./worker.js"
 compatibility_date = "2024-09-23"
-pages_build_output_dir = "./dist"
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
 not_found_handling = "single-page-application"
