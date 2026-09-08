@@ -188,10 +188,13 @@ export const Login: React.FC = () => {
             alt="Government of India State Emblem"
             style={{ width: '50px', height: '60px', margin: '0 auto 10px', objectFit: 'contain', filter: 'brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}
           />
-          <h2 style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '0.3px', lineHeight: '1.2' }}>
-            National Land Acquisition &<br />Management System
+          <h2 style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '0.3px', lineHeight: '1.2' }}>
+            Bhoomisetu (भूमिसेतु)
           </h2>
-          <span style={{ fontSize: '11.5px', color: '#E2C974', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', marginTop: '6px', display: 'block' }}>
+          <span style={{ fontSize: '12px', color: '#93C5FD', fontWeight: 600, letterSpacing: '0.3px', marginTop: '4px', display: 'block' }}>
+            National Land Acquisition & Management System
+          </span>
+          <span style={{ fontSize: '11px', color: '#E2C974', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px', display: 'block' }}>
             Government of India
           </span>
         </div>

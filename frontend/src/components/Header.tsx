@@ -67,9 +67,9 @@ export const Header: React.FC<HeaderProps> = ({ onToggleNotification, onToggleSi
           />
           <div className="branding-text">
             <span className="branding-title">
-              National Land Acquisition &<br />Management System
+              Bhoomisetu (भूमिसेतु)
             </span>
-            <span className="branding-sub">Government of India</span>
+            <span className="branding-sub">National Land Acquisition & Management System</span>
           </div>
         </Link>
       </div>

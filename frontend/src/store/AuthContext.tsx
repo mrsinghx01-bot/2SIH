@@ -23,8 +23,8 @@ const defaultUser: UserData = {
 };
 
 const AuthContext = createContext<AuthContextType>({
-  user: defaultUser,
-  isAuthenticated: true,
+  user: null,
+  isAuthenticated: false,
   token: null,
   login: async () => {},
   switchRole: async () => {},
@@ -35,7 +35,7 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserData | null>(() => {
     const saved = localStorage.getItem('auth_user');
-    return saved ? JSON.parse(saved) : defaultUser;
+    return saved ? JSON.parse(saved) : null;
   });
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [availableRoles, setAvailableRoles] = useState<any[]>([]);

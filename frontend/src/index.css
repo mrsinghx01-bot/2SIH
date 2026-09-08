@@ -855,6 +855,12 @@ html, body {
 /* Responsive Adaptations */
 .data-table-container {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+}
+
+.gov-data-table {
+  min-width: 600px;
 }
 
 @media (max-width: 1360px) {
@@ -904,7 +910,7 @@ html, body {
 }
 
 .gov-sidebar {
-  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease-in-out;
 }
 
 @media (max-width: 1024px) {
@@ -929,7 +935,13 @@ html, body {
   }
 }
 
-/* --- Responsive Utility Grid System (Replacing Hardcoded Inline Grid Columns) --- */
+@media (max-width: 480px) {
+  .main-content-viewport {
+    padding: 12px 10px 24px;
+  }
+}
+
+/* --- Responsive Utility Grid System --- */
 .responsive-grid {
   display: grid;
   gap: 14px;
@@ -964,6 +976,32 @@ html, body {
     grid-template-columns: 1fr;
   }
   .responsive-grid.grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Statutory Workflow Stepper Grid --- */
+.statutory-stepper-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .statutory-stepper-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .statutory-stepper-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .statutory-stepper-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -1017,14 +1055,135 @@ html, body {
   }
 }
 
-/* --- Leaflet Map Responsive Height Limit --- */
+/* --- Interactive GIS Map Container & Responsive Overlays --- */
+.gis-map-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
 .gis-map-container {
-  height: 480px;
+  height: 520px;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
   .gis-map-container {
+    height: 380px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .gis-map-container {
     height: 320px !important;
+  }
+}
+
+.gis-map-top-bar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.gis-map-filter-group {
+  pointer-events: auto;
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: calc(100% - 150px);
+}
+
+.gis-map-filter-group::-webkit-scrollbar {
+  display: none;
+}
+
+.gis-map-layer-group {
+  pointer-events: auto;
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.gis-map-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 500;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 11px;
+}
+
+.gis-parcel-drawer {
+  position: absolute;
+  top: 55px;
+  right: 12px;
+  z-index: 600;
+  width: 320px;
+  background: #FFFFFF;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1.5px solid #CBD5E1;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  max-height: calc(100% - 70px);
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .gis-map-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+  }
+  .gis-map-filter-group {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .gis-map-layer-group {
+    align-self: flex-end;
+  }
+  .gis-map-legend {
+    display: none;
+  }
+  .gis-parcel-drawer {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 70%;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -1060,19 +1219,74 @@ html, body {
   }
   .gov-top-header {
     padding: 0 12px !important;
+    height: 60px !important;
   }
   .branding-title {
     font-size: 11px !important;
+    line-height: 1.15 !important;
   }
   .branding-sub {
     font-size: 9px !important;
   }
   .header-actions {
-    gap: 12px !important;
+    gap: 10px !important;
   }
   .user-meta {
     display: none !important;
   }
 }
+
+@media (max-width: 480px) {
+  .gov-top-header {
+    padding: 0 8px !important;
+  }
+  .branding-title {
+    font-size: 10px !important;
+  }
+  .branding-sub {
+    display: none !important;
+  }
+  .header-actions {
+    gap: 6px !important;
+  }
+}
+
+/* --- Modal Overlay & Dialog Responsiveness --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-content-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #E2E8F0;
+  padding: 24px;
+}
+
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .modal-content-card {
+    padding: 16px;
+    max-height: 88vh;
+    border-radius: 16px 16px 0 0;
+  }
+}
+
 
 

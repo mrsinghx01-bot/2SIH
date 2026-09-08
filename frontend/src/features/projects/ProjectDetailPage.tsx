@@ -182,7 +182,7 @@ export const ProjectDetailPage: React.FC = () => {
               <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <CheckCircle2 size={16} color="#0284C7" /> RFCTLARR Act 2013 Statutory Workflow Progression
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', textAlign: 'center' }}>
+              <div className="statutory-stepper-grid">
                 {[
                   { step: '1', title: 'Sec 4 SIA Report', status: 'COMPLETED' },
                   { step: '2', title: 'Sec 11 Preliminary Notif.', status: 'COMPLETED' },

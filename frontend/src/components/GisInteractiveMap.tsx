@@ -137,7 +137,8 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       });
 
       const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
+        maxZoom: 20,
+        maxNativeZoom: 19,
         attribution: '&copy; Government of India • OpenStreetMap'
       });
 
@@ -366,13 +367,15 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
 
     if (layer === 'street') {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
+        maxZoom: 20,
+        maxNativeZoom: 19,
         attribution: '&copy; OpenStreetMap'
       }).addTo(map);
     } else {
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 19,
-        attribution: '&copy; Esri World Imagery'
+      L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        maxNativeZoom: 20,
+        attribution: '&copy; Google Maps • Satellite Hybrid'
       }).addTo(map);
     }
   };
@@ -387,137 +390,147 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       {/* Leaflet Map DOM Container */}
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
 
-      {/* Top Left: Interactive Visual Status Filters */}
-      <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 500, display: 'flex', gap: '6px', background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(8px)', padding: '5px', borderRadius: '10px', border: '1px solid #CBD5E1', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', flexWrap: 'wrap', maxWidth: 'calc(100% - 200px)' }}>
-        <button
-          onClick={() => setStatusFilter('ALL')}
-          style={{
-            padding: '5px 10px',
-            borderRadius: '6px',
-            fontSize: '11px',
-            fontWeight: 700,
-            border: 'none',
-            cursor: 'pointer',
-            background: statusFilter === 'ALL' ? '#0F172A' : '#F1F5F9',
-            color: statusFilter === 'ALL' ? '#FFFFFF' : '#475569'
-          }}
-        >
-          All Parcels ({formattedParcels.length})
-        </button>
-        <button
-          onClick={() => setStatusFilter('ACQUIRED')}
-          style={{
-            padding: '5px 10px',
-            borderRadius: '6px',
-            fontSize: '11px',
-            fontWeight: 700,
-            border: 'none',
-            cursor: 'pointer',
-            background: statusFilter === 'ACQUIRED' ? '#10B981' : '#F0FDF4',
-            color: statusFilter === 'ACQUIRED' ? '#FFFFFF' : '#166534',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}
-        >
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }} />
-          Acquired ({acquiredCount})
-        </button>
-        <button
-          onClick={() => setStatusFilter('IN_PROGRESS')}
-          style={{
-            padding: '5px 10px',
-            borderRadius: '6px',
-            fontSize: '11px',
-            fontWeight: 700,
-            border: 'none',
-            cursor: 'pointer',
-            background: statusFilter === 'IN_PROGRESS' ? '#F59E0B' : '#FFFBEB',
-            color: statusFilter === 'IN_PROGRESS' ? '#FFFFFF' : '#B45309',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}
-        >
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B', display: 'inline-block' }} />
-          Under Acquisition ({inProgressCount})
-        </button>
-        <button
-          onClick={() => setStatusFilter('DISPUTED')}
-          style={{
-            padding: '5px 10px',
-            borderRadius: '6px',
-            fontSize: '11px',
-            fontWeight: 700,
-            border: 'none',
-            cursor: 'pointer',
-            background: statusFilter === 'DISPUTED' ? '#EF4444' : '#FEF2F2',
-            color: statusFilter === 'DISPUTED' ? '#FFFFFF' : '#B91C1C',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}
-        >
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444', display: 'inline-block' }} />
-          Disputed / Hold-ups ({disputedCount})
-        </button>
-        <button
-          onClick={() => setStatusFilter('GOVT')}
-          style={{
-            padding: '5px 10px',
-            borderRadius: '6px',
-            fontSize: '11px',
-            fontWeight: 700,
-            border: 'none',
-            cursor: 'pointer',
-            background: statusFilter === 'GOVT' ? '#3B82F6' : '#EFF6FF',
-            color: statusFilter === 'GOVT' ? '#FFFFFF' : '#1D4ED8',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}
-        >
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3B82F6', display: 'inline-block' }} />
-          Govt / Public ({govtCount})
-        </button>
-      </div>
+      {/* Top Controls Bar: Visual Status Filter Chips & Base Layer Switcher */}
+      <div className="gis-map-top-bar">
+        {/* Visual Status Filter Group */}
+        <div className="gis-map-filter-group">
+          <button
+            onClick={() => setStatusFilter('ALL')}
+            style={{
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontSize: '11px',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              background: statusFilter === 'ALL' ? '#0F172A' : '#F1F5F9',
+              color: statusFilter === 'ALL' ? '#FFFFFF' : '#475569'
+            }}
+          >
+            All ({formattedParcels.length})
+          </button>
+          <button
+            onClick={() => setStatusFilter('ACQUIRED')}
+            style={{
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontSize: '11px',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              background: statusFilter === 'ACQUIRED' ? '#10B981' : '#F0FDF4',
+              color: statusFilter === 'ACQUIRED' ? '#FFFFFF' : '#166534',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }} />
+            Acquired ({acquiredCount})
+          </button>
+          <button
+            onClick={() => setStatusFilter('IN_PROGRESS')}
+            style={{
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontSize: '11px',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              background: statusFilter === 'IN_PROGRESS' ? '#F59E0B' : '#FFFBEB',
+              color: statusFilter === 'IN_PROGRESS' ? '#FFFFFF' : '#B45309',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B', display: 'inline-block' }} />
+            Under Acq. ({inProgressCount})
+          </button>
+          <button
+            onClick={() => setStatusFilter('DISPUTED')}
+            style={{
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontSize: '11px',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              background: statusFilter === 'DISPUTED' ? '#EF4444' : '#FEF2F2',
+              color: statusFilter === 'DISPUTED' ? '#FFFFFF' : '#B91C1C',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444', display: 'inline-block' }} />
+            Hold-ups ({disputedCount})
+          </button>
+          <button
+            onClick={() => setStatusFilter('GOVT')}
+            style={{
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontSize: '11px',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              background: statusFilter === 'GOVT' ? '#3B82F6' : '#EFF6FF',
+              color: statusFilter === 'GOVT' ? '#FFFFFF' : '#1D4ED8',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3B82F6', display: 'inline-block' }} />
+            Govt ({govtCount})
+          </button>
+        </div>
 
-      {/* Top Right: Layer Controls */}
-      <div style={{ position: 'absolute', top: '12px', right: '12px', zIndex: 500, display: 'flex', gap: '6px', background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(8px)', padding: '4px', borderRadius: '8px', border: '1px solid #CBD5E1', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-        <button
-          onClick={() => toggleLayer('street')}
-          style={{
-            padding: '5px 10px',
-            borderRadius: '6px',
-            fontSize: '11px',
-            fontWeight: 700,
-            border: 'none',
-            cursor: 'pointer',
-            background: activeLayer === 'street' ? '#2563EB' : 'transparent',
-            color: activeLayer === 'street' ? '#FFFFFF' : '#475569'
-          }}
-        >
-          Street Map
-        </button>
-        <button
-          onClick={() => toggleLayer('satellite')}
-          style={{
-            padding: '5px 10px',
-            borderRadius: '6px',
-            fontSize: '11px',
-            fontWeight: 700,
-            border: 'none',
-            cursor: 'pointer',
-            background: activeLayer === 'satellite' ? '#2563EB' : 'transparent',
-            color: activeLayer === 'satellite' ? '#FFFFFF' : '#475569'
-          }}
-        >
-          Satellite Hybrid
-        </button>
+        {/* Base Layer Switcher Group */}
+        <div className="gis-map-layer-group">
+          <button
+            onClick={() => toggleLayer('street')}
+            style={{
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontSize: '11px',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              background: activeLayer === 'street' ? '#2563EB' : 'transparent',
+              color: activeLayer === 'street' ? '#FFFFFF' : '#475569'
+            }}
+          >
+            Street
+          </button>
+          <button
+            onClick={() => toggleLayer('satellite')}
+            style={{
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontSize: '11px',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              background: activeLayer === 'satellite' ? '#2563EB' : 'transparent',
+              color: activeLayer === 'satellite' ? '#FFFFFF' : '#475569'
+            }}
+          >
+            Satellite
+          </button>
+        </div>
       </div>
 
       {/* Bottom Left: Map Legend */}
-      <div style={{ position: 'absolute', bottom: '12px', left: '12px', zIndex: 500, background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(8px)', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '11px' }}>
+      <div className="gis-map-legend">
         <div style={{ fontWeight: 800, color: '#0F172A', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Layers size={13} color="#2563EB" /> Statutory Alignment Legend
         </div>
@@ -543,20 +556,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
 
       {/* Selected Parcel Inspector Side-Drawer / Modal Card */}
       {selectedParcel && (
-        <div style={{
-          position: 'absolute',
-          top: '60px',
-          right: '12px',
-          zIndex: 600,
-          width: '320px',
-          background: '#FFFFFF',
-          padding: '16px',
-          borderRadius: '14px',
-          border: '1.5px solid #CBD5E1',
-          boxShadow: '0 12px 30px rgba(0,0,0,0.2)',
-          maxHeight: 'calc(100% - 80px)',
-          overflowY: 'auto'
-        }}>
+        <div className="gis-parcel-drawer">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
             <div>
               <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#EFF6FF', color: '#1D4ED8', padding: '3px 8px', borderRadius: '4px' }}>

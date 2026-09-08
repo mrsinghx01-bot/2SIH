@@ -1,4 +1,6 @@
-const rawUrl = (import.meta.env.VITE_API_URL || '/api').trim().replace(/\/+$/, '');
+const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const defaultProdApi = isLocal ? '/api' : 'https://national-land-aquisisation.onrender.com';
+const rawUrl = (import.meta.env.VITE_API_URL || defaultProdApi).trim().replace(/\/+$/, '');
 const API_BASE_URL = rawUrl.endsWith('/api') ? rawUrl : (rawUrl.startsWith('http') ? `${rawUrl}/api` : rawUrl);
 
 function getHeaders(): HeadersInit {
