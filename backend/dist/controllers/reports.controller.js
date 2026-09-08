@@ -72,7 +72,9 @@ async function getAnalyticsReport(req, res) {
         success: true,
         data: {
             stageDistribution: stageCounts,
+            stageCounts: stageCounts,
             sectorBreakdown: sectorCounts,
+            sectorCounts: sectorCounts,
             topStates: stateSummary,
             summary: {
                 totalProjects: scopedProjects.length,
