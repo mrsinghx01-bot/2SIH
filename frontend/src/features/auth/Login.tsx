@@ -59,7 +59,19 @@ export const Login: React.FC = () => {
   const [districtsList, setDistrictsList] = useState<any[]>([]);
   const [districtsLoading, setDistrictsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [slowLoading, setSlowLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    let timer: any;
+    if (loading) {
+      timer = setTimeout(() => setSlowLoading(true), 2500);
+    } else {
+      setSlowLoading(false);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
+
 
   useEffect(() => {
     fetchPublicStatesMaster()
@@ -523,16 +535,19 @@ export const Login: React.FC = () => {
                 borderRadius: '8px',
                 fontSize: '13.5px',
                 fontWeight: 800,
-                cursor: 'pointer',
+                cursor: loading ? 'wait' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
                 marginTop: '6px',
-                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.35)'
+                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.35)',
+                opacity: loading ? 0.85 : 1
               }}
             >
-              {loading ? 'Authenticating...' : (
+              {loading ? (
+                slowLoading ? '⚡ Connecting to Cloud Server...' : 'Authenticating...'
+              ) : (
                 selectedRole === 'STATE_ADMIN'
                   ? `LOGIN AS STATE ADMIN (${selectedStateObj?.shortName?.toUpperCase() || 'STATE'})`
                   : selectedRole === 'LAND_ACQUISITION_OFFICER'
@@ -542,6 +557,7 @@ export const Login: React.FC = () => {
                   : 'LOGIN TO NATIONAL PORTAL'
               )} <ArrowRight size={16} />
             </button>
+
           </form>
 
           <div style={{ marginTop: '18px', textAlign: 'center', fontSize: '12px', color: '#64748B' }}>
