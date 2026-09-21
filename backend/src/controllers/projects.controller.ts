@@ -135,12 +135,35 @@ export async function getProjectById(req: AuthRequest, res: Response): Promise<v
 
   // Real GIS Alignment Corridors & Master-Plan Perimeter Polygons for all 47 national infrastructure projects
   const PROJECT_GIS_CONFIG: Record<string, { center: [number, number]; zoom: number; polyline: [number, number][] }> = {
-    // 1. Maharashtra
+    // 1. Maharashtra / Multi-State Corridors
     'PRJ-NHAI-DME-001': {
-      center: [19.8500, 73.3500],
-      zoom: 10,
+      center: [23.8500, 75.5000],
+      zoom: 7,
       polyline: [
-        [19.2500, 73.1500], [19.4500, 73.2200], [19.7000, 73.2800], [19.8500, 73.3500], [20.0500, 73.5500]
+        [28.3200, 77.0500], // Sohna, Haryana / Delhi NCR
+        [28.1100, 77.0100], // Nuh, Haryana
+        [27.7500, 76.8500], // Naugaon / Alwar, Rajasthan
+        [26.9000, 76.4000], // Bandikui / Dausa, Rajasthan
+        [26.1500, 76.3500], // Sawai Madhopur, Rajasthan
+        [25.1800, 75.8500], // Kota (Chambal River Bridge), Rajasthan
+        [24.5200, 75.7500], // Bhanpura, Madhya Pradesh
+        [24.3200, 75.6500], // Garoth, Madhya Pradesh
+        [23.3300, 75.0500], // Ratlam, Madhya Pradesh
+        [23.0000, 74.5800], // Thandla / Jhabua, Madhya Pradesh
+        [22.8300, 74.2500], // Dahod, Gujarat
+        [22.7500, 73.6100], // Godhra, Gujarat
+        [22.3000, 73.2000], // Vadodara, Gujarat
+        [21.7000, 73.0000], // Bharuch (Narmada River), Gujarat
+        [21.2500, 72.9000], // Surat / Kim, Gujarat
+        [20.9500, 72.9200], // Navsari, Gujarat
+        [20.6100, 72.9300], // Valsad, Gujarat
+        [20.3700, 72.9100], // Vapi, Gujarat
+        [20.1200, 72.9200], // Talasari / Dahanu, Maharashtra
+        [19.8500, 73.3500], // Kasara / Igatpuri / Shahpur, Maharashtra
+        [19.7500, 72.9100], // Manor / Palghar, Maharashtra
+        [19.4700, 72.8200], // Virar / Mumbai Suburban, Maharashtra
+        [19.2000, 73.1500], // Thane / Kalyan, Maharashtra
+        [18.9500, 72.9500]  // JNPT / Navi Mumbai Terminal, Maharashtra
       ]
     },
     'PRJ-NHSRCL-MAHSR-005': {
