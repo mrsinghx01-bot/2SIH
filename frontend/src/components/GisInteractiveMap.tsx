@@ -24,6 +24,7 @@ export interface GisInteractiveMapProps {
   center: [number, number];
   zoom?: number;
   alignmentPolyline?: [number, number][];
+  milestones?: { name: string; coord: [number, number]; state?: string; chainageKm?: string }[];
   parcels?: MapParcel[];
   districts?: any[];
   height?: string;
@@ -36,6 +37,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
   center,
   zoom = 12,
   alignmentPolyline,
+  milestones = [],
   parcels = [],
   districts = [],
   height = '520px',
@@ -125,6 +127,23 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
     return cat === statusFilter;
   });
 
+  const fitFullBounds = () => {
+    if (!mapInstanceRef.current) return;
+    const allGeometryBounds: L.LatLngExpression[] = [];
+    if (alignmentPolyline) alignmentPolyline.forEach(pt => allGeometryBounds.push(pt));
+    if (milestones) milestones.forEach(m => allGeometryBounds.push(m.coord));
+    parcels.forEach(p => { if (p.center) allGeometryBounds.push(p.center); });
+    
+    if (allGeometryBounds.length > 0) {
+      const b = L.latLngBounds(allGeometryBounds);
+      if (b.isValid()) {
+        mapInstanceRef.current.fitBounds(b, { padding: [40, 40], maxZoom: 14 });
+      }
+    } else {
+      mapInstanceRef.current.setView(center, zoom);
+    }
+  };
+
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
@@ -152,7 +171,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
 
     // Clear existing dynamic feature layers (except base tiles)
     map.eachLayer((layer) => {
-      if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.CircleMarker) {
+      if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.CircleMarker || layer instanceof L.Marker) {
         map.removeLayer(layer);
       }
     });
@@ -218,7 +237,52 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       alignmentPolyline.forEach(pt => allGeometryBounds.push(pt));
     }
 
-    // 2. Draw Authentic Surveyed Revenue Village Milestone Pins along the project footprint
+    // 2. Render prominent National Milestones (if configured)
+    if (milestones && milestones.length > 0) {
+      milestones.forEach((m, mIdx) => {
+        const milestoneIcon = L.divIcon({
+          className: 'custom-milestone-badge',
+          html: `
+            <div style="
+              display: flex;
+              align-items: center;
+              gap: 5px;
+              background: #0F172A;
+              border: 2px solid #38BDF8;
+              color: #FFFFFF;
+              border-radius: 18px;
+              padding: 3px 8px;
+              box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+              cursor: pointer;
+              white-space: nowrap;
+              font-family: Inter, sans-serif;
+              font-weight: 700;
+              font-size: 11px;
+            ">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #38BDF8; display: inline-block;"></span>
+              <span>${m.name}</span>
+              ${m.chainageKm ? `<span style="font-size: 9.5px; color: #E2C974; font-weight: 800; background: rgba(226,201,116,0.2); padding: 1px 4px; border-radius: 6px;">${m.chainageKm}</span>` : ''}
+            </div>
+          `,
+          iconSize: [140, 26],
+          iconAnchor: [70, 13]
+        });
+
+        const mMarker = L.marker(m.coord, { icon: milestoneIcon }).addTo(map);
+        mMarker.bindTooltip(
+          `<div style="font-family:Inter,sans-serif;font-size:12px;padding:4px">
+            <strong style="color:#0F172A;font-size:13px">${m.name}</strong><br/>
+            <span>State: <strong>${m.state || 'National Infrastructure'}</strong></span><br/>
+            ${m.chainageKm ? `<span>Corridor Chainage: <strong>${m.chainageKm}</strong></span><br/>` : ''}
+            <span style="color:#0284C7;font-weight:bold;margin-top:2px;display:block">● National Highway & Greenfield Expressway Node</span>
+          </div>`,
+          { sticky: true }
+        );
+        allGeometryBounds.push(m.coord);
+      });
+    }
+
+    // 3. Draw Authentic Surveyed Revenue Village Milestone Pins along the project footprint
     // Group parcels by village to create clean, authentic village survey pins
     const villageMap = new Map<string, {
       name: string;
@@ -229,13 +293,18 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       status: string;
     }>();
 
+    const totalVillages = displayedParcels.length;
     displayedParcels.forEach((p, idx) => {
-      const vName = p.village || 'Survey Section';
+      const vName = p.village || `Survey Section ${idx + 1}`;
       if (!villageMap.has(vName)) {
-        // Compute village location along the alignment
-        let vCenter: [number, number] = center;
-        if (alignmentPolyline && alignmentPolyline.length > 0) {
-          const ptIdx = Math.min(villageMap.size, alignmentPolyline.length - 1);
+        // Compute village location along the full alignment span
+        let vCenter: [number, number] = p.center || center;
+        if (!p.center && alignmentPolyline && alignmentPolyline.length > 0) {
+          const ratio = totalVillages > 1 ? idx / (totalVillages - 1) : 0.5;
+          const ptIdx = Math.min(
+            Math.floor(ratio * (alignmentPolyline.length - 1)),
+            alignmentPolyline.length - 1
+          );
           vCenter = alignmentPolyline[ptIdx];
         }
         villageMap.set(vName, {
@@ -314,7 +383,7 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       allGeometryBounds.push(v.center);
     });
 
-    // 3. Draw District Markers (if on state view)
+    // 4. Draw District Markers (if on state view)
     districts.forEach((d) => {
       if (d.latitude && d.longitude) {
         const baseRadius = 6;
@@ -348,12 +417,13 @@ export const GisInteractiveMap: React.FC<GisInteractiveMapProps> = ({
       try {
         const b = L.latLngBounds(allGeometryBounds);
         if (b.isValid()) {
-          map.fitBounds(b, { padding: [40, 40], maxZoom: 14 });
+          map.fitBounds(b, { padding: [30, 30], maxZoom: 14 });
         }
       } catch (e) { /* ignore bounds error */ }
     }
 
-  }, [center, zoom, alignmentPolyline, displayedParcels, districts]);
+  }, [center, zoom, alignmentPolyline, displayedParcels, districts, milestones]);
+
 
   // Switch Base Layer
   const toggleLayer = (layer: 'street' | 'satellite') => {

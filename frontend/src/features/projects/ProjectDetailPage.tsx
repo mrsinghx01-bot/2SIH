@@ -26,6 +26,7 @@ import { ProgressRing } from '../../components/ProgressRing';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import { DataTable } from '../../components/DataTable';
 import { GisInteractiveMap } from '../../components/GisInteractiveMap';
+import { MASTER_PROJECT_GIS_REGISTRY } from '../../utils/projectGisConfigs';
 
 export const ProjectDetailPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -149,9 +150,16 @@ export const ProjectDetailPage: React.FC = () => {
     }
   };
 
-  const mapCenter: [number, number] = project.gisMap?.center || [26.8467, 80.9462];
+  const masterGisConfig = (project.projectCode && MASTER_PROJECT_GIS_REGISTRY[project.projectCode]) || MASTER_PROJECT_GIS_REGISTRY[project.name] || null;
+  const effectivePolyline = masterGisConfig?.alignmentPolyline || project.gisMap?.alignmentPolyline;
+  const effectiveCenter: [number, number] = masterGisConfig?.center || project.gisMap?.center || [23.8500, 75.5000];
+  const effectiveZoom = masterGisConfig?.zoom || project.gisMap?.zoom || 7;
+  const effectiveMilestones = masterGisConfig?.milestones || [];
+  const mapCenter = effectiveCenter;
+
   const uniqueVillagesList = Array.from(new Set((project.parcels || []).map((p: any) => p.village).filter(Boolean)));
   const villageCountDisplay = uniqueVillagesList.length > 0 ? uniqueVillagesList.length : (project.districtBreakdown?.length ? project.districtBreakdown.length * 3 : 6);
+
 
   return (
     <div>
@@ -425,13 +433,15 @@ export const ProjectDetailPage: React.FC = () => {
               {/* Interactive Leaflet GIS Map */}
               <div style={{ marginBottom: '24px' }}>
                 <GisInteractiveMap
-                  center={mapCenter}
-                  zoom={project.gisMap?.zoom || 10}
-                  alignmentPolyline={project.gisMap?.alignmentPolyline}
+                  center={effectiveCenter}
+                  zoom={effectiveZoom}
+                  alignmentPolyline={effectivePolyline}
+                  milestones={effectiveMilestones}
                   parcels={project.gisMap?.parcels || project.parcels}
-                  height="500px"
+                  height="520px"
                 />
               </div>
+
 
               {/* Cadastral Parcels Table */}
               <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', marginBottom: '10px' }}>Cadastral Parcels — Revenue Record Ledger</h4>
