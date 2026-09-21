@@ -73,32 +73,43 @@ export const CompensationPage: React.FC = () => {
       )}
 
       {/* Summary KPI Counters */}
-      <div className="responsive-grid grid-4" style={{ gap: '16px', marginBottom: '24px' }}>
-        <div style={{ background: '#F5F3FF', border: '1px solid #DDD6FE', padding: '16px', borderRadius: '12px' }}>
-          <div style={{ fontSize: '12px', color: '#6D28D9', fontWeight: 600 }}>Total Assessed Compensation</div>
-          <div style={{ fontSize: '22px', fontWeight: 800, color: '#4C1D95', marginTop: '2px' }}>
-            ₹ {summary ? (summary.totalAssessed / 10000000).toFixed(1) : '0'} Cr
+      {(() => {
+        const totalAssessedVal = summary?.totalAssessed ?? filtered.reduce((acc, c) => acc + (c.amountAssessed || c.assessedAmount || 0), 0);
+        const totalDisbursedVal = summary?.totalDisbursed ?? summary?.totalPaid ?? filtered.reduce((acc, c) => acc + (c.amountPaid || c.paidAmount || 0), 0);
+        const totalAssessedCr = (totalAssessedVal / 10000000).toFixed(1);
+        const totalDisbursedCr = (totalDisbursedVal / 10000000).toFixed(1);
+        const disbursementRate = summary?.disbursementPct ?? (totalAssessedVal > 0 ? Math.round((totalDisbursedVal / totalAssessedVal) * 100) : 0);
+        const pendingClaims = summary?.pendingCount ?? filtered.filter(c => c.paymentStatus !== 'PAID').length;
+
+        return (
+          <div className="responsive-grid grid-4" style={{ gap: '16px', marginBottom: '24px' }}>
+            <div style={{ background: '#F5F3FF', border: '1px solid #DDD6FE', padding: '16px', borderRadius: '12px' }}>
+              <div style={{ fontSize: '12px', color: '#6D28D9', fontWeight: 600 }}>Total Assessed Compensation</div>
+              <div style={{ fontSize: '22px', fontWeight: 800, color: '#4C1D95', marginTop: '2px' }}>
+                ₹ {totalAssessedCr} Cr
+              </div>
+            </div>
+            <div style={{ background: '#ECFDF5', border: '1px solid #BBF7D0', padding: '16px', borderRadius: '12px' }}>
+              <div style={{ fontSize: '12px', color: '#047857', fontWeight: 600 }}>Total Disbursed (DBT)</div>
+              <div style={{ fontSize: '22px', fontWeight: 800, color: '#065F46', marginTop: '2px' }}>
+                ₹ {totalDisbursedCr} Cr
+              </div>
+            </div>
+            <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '16px', borderRadius: '12px' }}>
+              <div style={{ fontSize: '12px', color: '#1D4ED8', fontWeight: 600 }}>Disbursement Rate</div>
+              <div style={{ fontSize: '22px', fontWeight: 800, color: '#1E40AF', marginTop: '2px' }}>
+                {disbursementRate}%
+              </div>
+            </div>
+            <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', padding: '16px', borderRadius: '12px' }}>
+              <div style={{ fontSize: '12px', color: '#B45309', fontWeight: 600 }}>Pending Award Claims</div>
+              <div style={{ fontSize: '22px', fontWeight: 800, color: '#92400E', marginTop: '2px' }}>
+                {pendingClaims} Beneficiaries
+              </div>
+            </div>
           </div>
-        </div>
-        <div style={{ background: '#ECFDF5', border: '1px solid #BBF7D0', padding: '16px', borderRadius: '12px' }}>
-          <div style={{ fontSize: '12px', color: '#047857', fontWeight: 600 }}>Total Disbursed (DBT)</div>
-          <div style={{ fontSize: '22px', fontWeight: 800, color: '#065F46', marginTop: '2px' }}>
-            ₹ {summary ? (summary.totalDisbursed / 10000000).toFixed(1) : '0'} Cr
-          </div>
-        </div>
-        <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '16px', borderRadius: '12px' }}>
-          <div style={{ fontSize: '12px', color: '#1D4ED8', fontWeight: 600 }}>Disbursement Rate</div>
-          <div style={{ fontSize: '22px', fontWeight: 800, color: '#1E40AF', marginTop: '2px' }}>
-            {summary ? summary.disbursementPct : 0}%
-          </div>
-        </div>
-        <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', padding: '16px', borderRadius: '12px' }}>
-          <div style={{ fontSize: '12px', color: '#B45309', fontWeight: 600 }}>Pending Award Claims</div>
-          <div style={{ fontSize: '22px', fontWeight: 800, color: '#92400E', marginTop: '2px' }}>
-            {summary ? summary.pendingCount : 0}
-          </div>
-        </div>
-      </div>
+        );
+      })()}
 
       {loading ? (
         <LoadingSkeleton rows={6} />
@@ -106,12 +117,23 @@ export const CompensationPage: React.FC = () => {
         <DataTable
           columns={[
             { header: 'Beneficiary Ref', accessor: 'beneficiaryReference', render: (r: any) => <strong style={{ color: '#0284C7' }}>{r.beneficiaryReference}</strong> },
-            { header: 'Beneficiary Name', accessor: 'beneficiaryName' },
+            { header: 'Beneficiary / Titleholders', accessor: 'beneficiaryName' },
             { header: 'District', accessor: 'districtName' },
             { header: 'Associated Project', accessor: 'projectName' },
-            { header: 'Assessed Amount', render: (r: any) => `₹ ${(r.amountAssessed || 0).toLocaleString('en-IN')}` },
-            { header: 'Disbursed Amount', render: (r: any) => <span style={{ fontWeight: 700, color: r.paymentStatus === 'PAID' ? '#047857' : '#B45309' }}>₹ {(r.amountPaid || 0).toLocaleString('en-IN')}</span> },
-            { header: 'Payment Mode', accessor: 'paymentMode' },
+            { header: 'Assessed Amount', render: (r: any) => `₹ ${(r.amountAssessed ?? r.assessedAmount ?? 0).toLocaleString('en-IN')}` },
+            { header: 'Disbursed Amount', render: (r: any) => {
+              const paid = r.amountPaid ?? r.paidAmount ?? 0;
+              return (
+                <span style={{ fontWeight: 700, color: paid > 0 ? '#047857' : '#B45309' }}>
+                  ₹ {paid.toLocaleString('en-IN')}
+                </span>
+              );
+            }},
+            { header: 'Payment Mode', render: (r: any) => (
+              <span style={{ fontSize: '12px', color: '#334155' }}>
+                {r.paymentMode || (r.transactionRef ? 'PFMS_DBT (Direct Account Transfer)' : (r.paymentStatus === 'PAID' ? 'PFMS_ELECTRONIC' : 'PFMS_CLEARANCE_PENDING'))}
+              </span>
+            )},
             { header: 'DBT Status', render: (r: any) => <StatusBadge status={r.paymentStatus} /> }
           ]}
           data={filtered}
@@ -121,3 +143,4 @@ export const CompensationPage: React.FC = () => {
     </div>
   );
 };
+

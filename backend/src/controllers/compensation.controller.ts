@@ -52,6 +52,10 @@ export async function getAllCompensation(req: AuthRequest, res: Response): Promi
     const dist = acCase ? store.districts.find(d => d.id === acCase.districtId) : null;
     return {
       ...c,
+      amountAssessed: c.assessedAmount || 0,
+      amountApproved: c.approvedAmount || 0,
+      amountPaid: c.paidAmount || 0,
+      paymentMode: c.transactionRef ? 'PFMS_DBT (Direct Bank Transfer)' : (c.paymentStatus === 'PAID' ? 'PFMS_ELECTRONIC' : 'PFMS_CLEARANCE_PENDING'),
       caseNumber: acCase ? acCase.caseNumber : 'Unknown',
       projectName: proj ? proj.name : 'Unknown',
       districtName: dist ? dist.name : 'Unknown'
@@ -61,6 +65,8 @@ export async function getAllCompensation(req: AuthRequest, res: Response): Promi
   const totalAssessed = results.reduce((acc, c) => acc + (c.assessedAmount || 0), 0);
   const totalApproved = results.reduce((acc, c) => acc + (c.approvedAmount || 0), 0);
   const totalPaid = results.reduce((acc, c) => acc + (c.paidAmount || 0), 0);
+  const pendingCount = results.filter(c => c.paymentStatus !== 'PAID').length;
+  const disbursementPct = totalAssessed > 0 ? Math.round((totalPaid / totalAssessed) * 100) : 0;
 
   res.json({
     success: true,
@@ -70,8 +76,12 @@ export async function getAllCompensation(req: AuthRequest, res: Response): Promi
       totalAssessed,
       totalApproved,
       totalPaid,
-      totalPending: totalApproved - totalPaid
+      totalDisbursed: totalPaid,
+      totalPending: totalApproved - totalPaid,
+      disbursementPct,
+      pendingCount
     },
     message: 'Compensation records retrieved.'
   });
 }
+
