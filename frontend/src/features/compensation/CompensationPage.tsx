@@ -76,8 +76,8 @@ export const CompensationPage: React.FC = () => {
       {(() => {
         const totalAssessedVal = summary?.totalAssessed ?? filtered.reduce((acc, c) => acc + (c.amountAssessed || c.assessedAmount || 0), 0);
         const totalDisbursedVal = summary?.totalDisbursed ?? summary?.totalPaid ?? filtered.reduce((acc, c) => acc + (c.amountPaid || c.paidAmount || 0), 0);
-        const totalAssessedCr = (totalAssessedVal / 10000000).toFixed(1);
-        const totalDisbursedCr = (totalDisbursedVal / 10000000).toFixed(1);
+        const totalAssessedCr = (totalAssessedVal / 10000000).toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        const totalDisbursedCr = (totalDisbursedVal / 10000000).toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
         const disbursementRate = summary?.disbursementPct ?? (totalAssessedVal > 0 ? Math.round((totalDisbursedVal / totalAssessedVal) * 100) : 0);
         const pendingClaims = summary?.pendingCount ?? filtered.filter(c => c.paymentStatus !== 'PAID').length;
 

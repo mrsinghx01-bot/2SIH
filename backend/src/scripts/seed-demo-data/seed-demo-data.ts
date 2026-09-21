@@ -1483,7 +1483,8 @@ export function generateSeedData(): SeedDataset {
         const parcelId = `parcel-${parcelCount++}`;
         const villageName = pt.villages[(c * numParcels + p) % pt.villages.length];
         const khasraNum = `${100 + p * 14 + c * 7}/${(p % 3) + 1}`;
-        const pArea = Math.round((caseLandReq / numParcels) * 100) / 100;
+        // Realistic individual landholder survey parcel size (0.35 to 2.45 Hectares / 0.85 to 6.0 Acres)
+        const pArea = Math.round((0.45 + (((c * 3 + p * 5 + pIdx) % 7) * 0.30)) * 100) / 100;
 
         const lngOffset = (c * 0.015) + (p * 0.008);
         const latOffset = (c * 0.012) + (p * 0.006);
@@ -1521,11 +1522,17 @@ export function generateSeedData(): SeedDataset {
         };
         parcels.push(parcelObj);
 
-        // Compute authentic compensation award based on real project DPR land valuation rate
-        const ratePerHa = pt.type === 'AIRPORT' ? 23000000 : pt.type === 'HIGHWAY' ? 7500000 : pt.type === 'URBAN_DEVELOPMENT' ? 15000000 : pt.type === 'RAILWAY' ? 6000000 : 4000000;
-        const assessed = Math.round(pArea * ratePerHa);
-        const solatium = Math.round(assessed * 1.0); // 100% Solatium under RFCTLARR
-        const totalComp = assessed + solatium;
+        // Compute authentic compensation award strictly under RFCTLARR Act 2013 (Sections 26-30):
+        // 1. Base circle rate per hectare by infrastructure category
+        const circleRatePerHa = pt.type === 'AIRPORT' ? 9500000 : pt.type === 'HIGHWAY' ? 4500000 : pt.type === 'URBAN_DEVELOPMENT' ? 8500000 : pt.type === 'RAILWAY' ? 5500000 : 3500000;
+        // 2. Rural Multiplier Factor (Section 26) = 1.5x
+        const marketValue = Math.round(pArea * circleRatePerHa * 1.5);
+        // 3. Solatium @ 100% (Section 30(1))
+        const solatium = marketValue;
+        // 4. Additional Component @ 12% per annum (Section 30(3))
+        const additionalInterest = Math.round(marketValue * 0.12);
+        // Total Statutory Award under Section 23/30
+        const totalComp = marketValue + solatium + additionalInterest;
         const paid = (stage === 'COMPLETED' || stage === 'POSSESSION' || stage === 'COMPENSATION') ? totalComp : 0;
         const pStatus = paid === totalComp ? 'PAID' : paid > 0 ? 'PARTIALLY_PAID' : 'APPROVED';
 
