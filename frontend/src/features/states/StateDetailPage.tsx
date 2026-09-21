@@ -19,6 +19,7 @@ import { ProgressRing } from '../../components/ProgressRing';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import { getStateAsset } from '../../utils/stateAssets';
 import { GisInteractiveMap } from '../../components/GisInteractiveMap';
+import { MASTER_PROJECT_GIS_REGISTRY } from '../../utils/projectGisConfigs';
 
 export const StateDetailPage: React.FC = () => {
   const { stateId } = useParams<{ stateId: string }>();
@@ -254,19 +255,36 @@ export const StateDetailPage: React.FC = () => {
                 Showing district nodes, survey boundaries & alignment Right of Way (RoW)
               </span>
             </div>
-            <GisInteractiveMap
-              center={
+            {(() => {
+              const pConfig = selectedMapProject ? (
+                (selectedMapProject.projectCode && MASTER_PROJECT_GIS_REGISTRY[selectedMapProject.projectCode]) ||
+                MASTER_PROJECT_GIS_REGISTRY[selectedMapProject.name] ||
+                null
+              ) : null;
+
+              const mapCenterCoord: [number, number] = pConfig?.center || (
                 selectedMapProject && selectedMapProject.centerCoord
                   ? [selectedMapProject.centerCoord[1], selectedMapProject.centerCoord[0]]
                   : stateCenter
-              }
-              zoom={selectedMapProject ? (selectedMapProject.gisMap?.zoom || 8) : (stateData.coordinates?.zoom || 7)}
-              alignmentPolyline={selectedMapProject?.gisMap?.alignmentPolyline || selectedMapProject?.alignmentCoordinates}
-              districts={districts}
-              height="540px"
-              onDistrictSelect={(d) => navigate(`/districts/${d.id}`)}
-            />
+              );
+              const mapZoomVal = pConfig?.zoom || (selectedMapProject ? 8 : (stateData.coordinates?.zoom || 7));
+              const mapPolyline = pConfig?.alignmentPolyline || selectedMapProject?.gisMap?.alignmentPolyline || selectedMapProject?.alignmentCoordinates;
+              const mapMilestones = pConfig?.milestones || [];
+
+              return (
+                <GisInteractiveMap
+                  center={mapCenterCoord}
+                  zoom={mapZoomVal}
+                  alignmentPolyline={mapPolyline}
+                  milestones={mapMilestones}
+                  districts={districts}
+                  height="540px"
+                  onDistrictSelect={(d) => navigate(`/districts/${d.id}`)}
+                />
+              );
+            })()}
           </div>
+
 
           {/* Project Selector & Details Sidebar */}
           <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: 'var(--shadow-card)' }}>
