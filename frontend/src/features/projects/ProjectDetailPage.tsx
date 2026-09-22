@@ -273,7 +273,7 @@ export const ProjectDetailPage: React.FC = () => {
               <div style={{ background: project.predictiveAnalytics.riskCategory === 'HIGH' ? '#FEF2F2' : project.predictiveAnalytics.riskCategory === 'MEDIUM' ? '#FFFBEB' : '#ECFDF5', border: `1px solid ${project.predictiveAnalytics.riskCategory === 'HIGH' ? '#FCA5A5' : project.predictiveAnalytics.riskCategory === 'MEDIUM' ? '#FDE68A' : '#A7F3D0'}`, borderRadius: '12px', padding: '16px 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 800, color: project.predictiveAnalytics.riskCategory === 'HIGH' ? '#991B1B' : '#065F46' }}>
-                    <AlertTriangle size={18} /> Predictive Delay-Risk Score (AI Predictive Engine)
+                    <AlertTriangle size={18} /> Predictive Delay-Risk Assessment (Statutory Risk Engine)
                   </div>
                   <span style={{ fontSize: '12px', fontWeight: 800, padding: '4px 12px', borderRadius: '12px', background: project.predictiveAnalytics.riskCategory === 'HIGH' ? '#DC2626' : '#059669', color: '#FFF' }}>
                     RISK SCORE: {project.predictiveAnalytics.riskScore} / 100 ({project.predictiveAnalytics.riskCategory} RISK)
