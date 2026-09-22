@@ -301,10 +301,10 @@ export const Login: React.FC = () => {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <UserCheck size={14} color={selectedRole === 'LAND_ACQUISITION_OFFICER' ? '#2563EB' : '#64748B'} />
-                    <span>LAO / Competent Auth</span>
+                    <span>District Officer (LAO)</span>
                   </div>
                   <div style={{ fontSize: '10px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
-                    Awards & Valuations
+                    Collectorate Awards & DBT
                   </div>
                 </button>
 
@@ -551,7 +551,7 @@ export const Login: React.FC = () => {
                 selectedRole === 'STATE_ADMIN'
                   ? `LOGIN AS STATE ADMIN (${selectedStateObj?.shortName?.toUpperCase() || 'STATE'})`
                   : selectedRole === 'LAND_ACQUISITION_OFFICER'
-                  ? `LOGIN AS LAO — ${districtsList.find(d => d.id === selectedDistrictId)?.name?.toUpperCase() || 'DISTRICT'}`
+                  ? `LOGIN AS DISTRICT OFFICER (LAO) — ${districtsList.find(d => d.id === selectedDistrictId)?.name?.toUpperCase() || 'DISTRICT'}`
                   : selectedRole === 'FIELD_OFFICER'
                   ? `LOGIN AS FIELD OFFICER (${selectedStateObj?.shortName?.toUpperCase() || 'STATE'})`
                   : 'LOGIN TO NATIONAL PORTAL'
